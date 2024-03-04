@@ -20,7 +20,8 @@ sidebar:
 
 <div>미루고 미뤄왔던 Meta Learning에 대한 기본 개념을 소개해보려 합니다. 지난 몇 년간 Meta Learning은 Top Tier Conference의 Main Keyword에 꾸준히 이름을 올렸을만큼 핫한 주제였습니다. 특히, AI 생태계의 순환속도를 생각해보면 꽤나 오랫동안 연구가 되고 있었던거죠. 하지만 아무래도 오래 연구된 만큼 최근에는 이 분야에 대한 saturate된 듯 합니다. Meta Learning 자체 연구로는 더 이상 pi를 키우기 어렵게 됐죠.
 <br><br> 그럼에도 불구하고, Meta Learning의 개념과 그 실효성은 여전히 중요하다고 생각합니다. 특히, <highlight style="color: red">LLM/LMM</highlight> 등의 foundation model을 training 시킬 때 상당히 다양한 task들을 cover 해야하는데, 이 과정에서 대부분의 학습을 Few-Shot Learning 형태로 진행합니다. 즉, 큰 범주에서 보면 Meta Learning의 형태로 학습을 시키는 것입니다.
-<br><br> 따라서, Meta Learning, 또는 작은 범주에선 Few-Shot Learning에 대한 개념을 아는 것은 중요하다고 생각합니다. 관련된 특정 알고리즘들을 전부 다 알 필요는 없지만, Meta Learning을 활용 시 문제를 어떻게 정의하고 또 학습 setting을 어떻게 설정할지 등에 대해서 알면 더욱 다양하게 접근할 수 있지 않을까 생각이 돼서 이에 대해서 다뤄볼까 합니다!!</div>{: .notice--success}
+  <br><br> 따라서, Meta Learning, 또는 작은 범주에선 Few-Shot Learning에 대한 개념을 아는 것은 중요하다고 생각합니다. 관련된 특정 알고리즘들을 전부 다 알 필요는 없지만, Meta Learning을 활용 시 문제를 어떻게 정의하고 또 학습 setting을 어떻게 설정할지 등에 대해서 알면 더욱 다양하게 접근할 수 있지 않을까 생각이 돼서 이에 대해서 다뤄볼까 합니다!!</div>
+
 
 
 (위 서론이 너무 길었네요... 단도직입적으로 들어가겠습니다!! :smiley:)
@@ -58,7 +59,7 @@ Few-shot learning을 간단하게 표현하면 a few data만 보고 학습하는
 
 #### 1.2 Support Set ($S$) and Query Set ($Q$)
 
-<mark style='background-color: #dcff'>우선 설명하기 앞서, $S$ 와 $Q$는 한 묶음으로 생각하셔야 합니다. AI community에서는 이 묶음을 <b>episode</b> 또는 <b>task</b>라고 표현합니다. 더 나아가서 few-shot learning을 때론 <b>episodic learning</b>이라고 표현하기도 합니다. 학습할 때 매 epoch마다 batch size만큼의 episode/task를 뽑습니다.</mark>
+우선 설명하기 앞서, $S$ 와 $Q$는 한 묶음으로 생각하셔야 합니다. AI community에서는 이 묶음을 <b>episode</b> 또는 <b>task</b>라고 표현합니다. 더 나아가서 few-shot learning을 때론 <b>episodic learning</b>이라고 표현하기도 합니다. 학습할 때 매 epoch마다 batch size만큼의 episode/task를 뽑습니다.
 
 여기서 $S$는 method를 따라서 학습에 직접적으로 참여하는 data들이고 $Q$는 학습 후 얼마나 잘 학습 됐는지 evaluate할 때 사용하는 data들입니다. 아마 few-shot learning을 처음 접하시는 분들은 이 setting이 조금 헷갈리실 수도 있을 것입니다. 그래서 아래 <a href='#figure3'>Figure 3</a>를 통해 설명드리도록 하겠습니다.
 

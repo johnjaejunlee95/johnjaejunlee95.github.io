@@ -23,9 +23,11 @@ navbar-links:
   About Me: "aboutme"
   # Categories:
   #   - Meta Learning: '/_posts/'Meta Learning'
-  Resources:
-    - Beautiful Jekyll: "https://beautifuljekyll.com"
-    - Learn markdown: "https://www.markdowntutorial.com/"
+  # Resources:
+  #   - Beautiful Jekyll: "https://beautifuljekyll.com"
+  #   - Learn markdown: "https://www.markdowntutorial.com/"
+  Search: "search/"
+  Tags: "tags/"
   Author's home: "https://johnjaejunlee95.github.io"
 
 ################
@@ -195,7 +197,7 @@ footer-hover-col: "#0085A1"
 ####################
 
 # To use Disqus comments, sign up to https://disqus.com and fill in your Disqus shortname (NOT the userid)
-#disqus: ""
+disqus: "johnjaejunlee95"
 
 # To use Facebook Comments, create a Facebook app and fill in the Facebook App ID
 #fb_comment_id: ""
