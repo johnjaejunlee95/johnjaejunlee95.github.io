@@ -102,7 +102,7 @@ $$
 
 MAML 같은 경우, hessian matrix multiplication($=\nabla_\theta^2 \mathcal{L}(\mathcal{S};\phi)$)이 들어가 있어 computational cost적인 관점에서 penalty가 있습니다. 그래서 성능을 어느정도 유지하면서 computational cost를 줄이는 방법들을 제시했습니다.
 
-그 중 하나가 FOMAML (First-Order MAML) 입니다. FOMAML은 MAML 논문에서 실험적으로 확인한 것으로, hessian matrix를 무시한 채 학습을 진행해도 어느정도의 성능을 유지한다는 것입니다. 즉 $\nabla_\theta^2 \mathcal{L}(\mathcal{S};\phi) = 0$ 이라고 가정하는 것입니다. 관련해서 <a href='#figure3'>Figure 3</a>에 잘 나타나 있는데, fintuning된 $\phi$ 에서 loss $\mathcal{L}(\phi, Q)$를 낮추는 "gradient의 방향"을  $\theta$ 에 적용하는 것입니다. 논문에서는 이 기작이 가능한 이유를 ReLU를 거치면서 hessian 값이 0으로 수렴하기 때문이라고 설명하고 있습니다. Loss landscape 관점에서 생각을 해보면, "loss를 낮추는 방향"이 비슷하다는 것입니다. 즉, 최종 update된 MAML에서의 $\theta$ 위치와 FOMAML에서의 $\theta$ 위치가 비슷한 loss landscape에 있다는 가정이 암묵적으로 들어가 있는 것이죠.
+그 중 하나가 FOMAML (First-Order MAML) 입니다. FOMAML은 MAML 논문에서 실험적으로 확인한 것으로, hessian matrix를 무시한 채 학습을 진행해도 어느정도의 성능을 유지한다는 것입니다. 즉 $\nabla_\theta^2 \mathcal{L}(\mathcal{S};\phi) = 0$ 이라고 가정하는 것입니다. 관련해서 <a href='#figure3'>Figure 3</a>에 잘 나타나 있는데, fintuning된 $\phi$ 에서 loss $\mathcal{L}(\mathcal{Q};\phi)$를 낮추는 "gradient의 방향"을  $\theta$ 에 적용하는 것입니다. 논문에서는 이 기작이 가능한 이유를 ReLU를 거치면서 hessian 값이 0으로 수렴하기 때문이라고 설명하고 있습니다. Loss landscape 관점에서 생각을 해보면, "loss를 낮추는 방향"이 비슷하다는 것입니다. 즉, 최종 update된 MAML에서의 $\theta$ 위치와 FOMAML에서의 $\theta$ 위치가 비슷한 loss landscape에 있다는 가정이 암묵적으로 들어가 있는 것이죠.
 
 
 
