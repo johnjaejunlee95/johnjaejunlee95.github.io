@@ -6,7 +6,7 @@ gh-badge: [star, follow]
 comments: true
 author: johnjaejunlee95
 title: "[개념설명] Meta Learning (2) - Approaches"
-date: "2023-12-30"
+date: "2024-03-04"
 description: ""
 categories: [Meta Learning]
 toc: false
