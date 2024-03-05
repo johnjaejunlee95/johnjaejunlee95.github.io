@@ -3,11 +3,11 @@
 Gem::Specification.new do |spec|
   spec.name          = "beautiful-jekyll-theme"
   spec.version       = "6.0.1"
-  spec.authors       = ["Dean Attali"]
-  spec.email         = ["daattali@gmail.com"]
+  spec.authors       = ["Jae-Jun Lee"]
+  spec.email         = ["johnjaejunlee95@unist.ac.kr"]
 
   spec.summary       = "Beautiful Jekyll is a ready-to-use Jekyll theme to help you create an awesome website quickly. Perfect for personal blogs or simple project websites, with a focus on responsive and clean design."
-  spec.homepage      = "https://beautifuljekyll.com"
+  spec.homepage      = "https://johnjaejunlee95.github.io"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0").select { |f| f.match(%r{^(assets|_layouts|_includes|LICENSE|README|feed|404|_data|tags|staticman)}i) }
@@ -23,7 +23,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "kramdown-parser-gfm", "~> 1.1"
   spec.add_runtime_dependency "kramdown", "~> 2.3.2"
   spec.add_runtime_dependency "webrick", "~> 1.8"
-
+  spec.add_runtime_dependency "jekyll-livereload"
+  
   spec.add_development_dependency "bundler", ">= 1.16"
   spec.add_development_dependency "rake", "~> 12.0"
 end
