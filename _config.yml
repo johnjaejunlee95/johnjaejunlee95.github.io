@@ -21,8 +21,9 @@ author: johnjaejunlee95
 
 navbar-links:
   About Me: "aboutme"
-  # Categories:
-  #   - Meta Learning: '/_posts/'Meta Learning'
+  Categories:
+    - Generative Model: '/categories/Generative Model'
+    - Meta Learning: '/categories/Meta Learning'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"

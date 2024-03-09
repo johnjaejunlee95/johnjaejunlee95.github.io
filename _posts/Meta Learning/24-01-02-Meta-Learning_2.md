@@ -21,7 +21,7 @@ sidebar:
   nav: "docs"
 ---
 
-<div>이전 posting에서는 meta-learning이 나오게 된 맥락, 그리고 meta-learning을 이해하기 위핸 기본 개념인 few-shot learning에 대해서 간단하게 설명했습니다. 그래서 이번 posting에서는 meta-learning approaches들에 대해서 설명해보려고 합니다. 시초가 된 논문들이 무엇인지, 그리고 각 논문들에서 얘기해고 싶은 point가 무엇인지에 대해서 정리해보려고 합니다. 
+<div>이전 posting에서는 meta-learning이 나오게 된 맥락, 그리고 meta-learning을 이해하기 위해 기본 개념인 few-shot learning에 대해서 간단하게 설명했습니다. 그래서 이번 posting에서는 meta-learning approaches들에 대해서 설명해보려고 합니다. 시초가 된 논문들이 무엇인지, 그리고 각 논문들에서 얘기해고 싶은 point가 무엇인지에 대해서 정리해보려고 합니다. 
 <br><br>
   다만... 2017년부터 해서 논문들이 매우 많이 나왔기 때문에 모든 논문들을 다루는 것은 불가능하므로, 핵심이 되는 논문들, 또 제가 재밌게 읽었던 논문 위주로 정리하려합니다. 그리고 다음 posting에서는 advanced methods들 위주의 논문들을 간략하게 리뷰하는 시간을 갖도록 하겠습니다 :smiley: </div>
 
