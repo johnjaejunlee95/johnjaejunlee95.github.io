@@ -6,6 +6,7 @@ comments: true
 author: johnjaejunlee95
 title: "[논문리뷰] Sharp-MAML"
 date: "2023-03-13"
+permalink: /sharp_maml/
 description: ""
 categories: [Meta Learning]
 toc: False

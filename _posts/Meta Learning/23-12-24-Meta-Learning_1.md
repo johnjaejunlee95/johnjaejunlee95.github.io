@@ -6,6 +6,7 @@ comments: true
 author: johnjaejunlee95
 title: "[개념설명] Meta Learning (1) - Few-Shot Learning"
 date: "2023-12-30"
+permalink: /meta_learning_1/
 description: ""
 categories: [Meta Learning]
 toc: False

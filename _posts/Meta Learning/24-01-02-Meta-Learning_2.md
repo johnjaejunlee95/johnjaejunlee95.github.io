@@ -8,6 +8,7 @@ author: johnjaejunlee95
 title: "[개념설명] Meta Learning (2) - Approaches"
 date: "2024-03-03"
 last-updated: "2024-03-04"
+permalink: /meta_learning_2/
 description: ""
 categories: [Meta Learning]
 hits: true 
