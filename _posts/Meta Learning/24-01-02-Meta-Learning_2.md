@@ -123,10 +123,11 @@ MAML 같은 경우, hessian matrix multiplication($=\nabla_\theta^2 \mathcal{L}(
 
 <center>
   <figcaption>
-    <a href="figure4">Figure 4. Overview of Reptile Algorithm and Visualization of how Reptile updates $\theta$</a>
+    <a id="figure4">Figure 4. Overview of Reptile Algorithm and Visualization of how Reptile updates $\theta$</a>
   </figcaption>
   <br>
 </center>
+
 
 
 
@@ -155,9 +156,10 @@ Metric-based meta learning은 말 그대로 거리 기반으로 similarity를 �
 <center>
   <img src="/images/23-12-24/matching.png" width="60%" height="60%">
   <figcaption>
-    <a href="figure5">Figure 5. Overview of Matching Network Algorithm</a>
+    <a id="figure5">Figure 5. Overview of Matching Network Algorithm</a>
   </figcaption>
 </center>
+
 우선 학습 process를 설명하기에 앞서, 이 논문에서는 최종 output에 대해서 설명합니다. 
 
 
@@ -238,7 +240,7 @@ $\Rightarrow k$ step에 따라...
 <center>
   <img src="/images/23-12-24/protonet.png" width="100%" height="100%">
   <figcaption>
-    <a href="figure6">Figure 6. Overview of ProtoNet</a>
+    <a id="figure6">Figure 6. Overview of ProtoNet</a>
   </figcaption>
 </center>
 

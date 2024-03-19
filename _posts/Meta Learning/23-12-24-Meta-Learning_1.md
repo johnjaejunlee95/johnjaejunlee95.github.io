@@ -74,15 +74,7 @@ Few-shot learning을 간단하게 표현하면 a few data만 보고 학습하는
 </center>
 
 
-
-<a href='#figure3'>Figure 3</a>을 보시면 $S$와 $Q$에 대한 예시가 왼쪽에 나와 있습니다. $S$는 어떤 class인지 아는 상태에서 학습에 참여합니다. 즉, $S$로 supervised learning처럼 model을 학습 시키는 것이죠. 그래서 $S$는 $N$-ways $K$-shots을 따릅니다. 그리고 $Q$는 어떤 class인지 모르는 상태에서 학습된 model에 넣어 나온 결과를 평가지표로써 활용합니다. 즉, 다음과 같은 process로 생각해주시면 됩니다.
-
-1. **$N$-ways $K$-shots에 따른 task(= [$S$, $Q$])를 sampling한다** 
-2. **$S$로 method에 따라 학습한다.**
-3. **$Q$로 학습이 잘 됐는지 평가한다.**
-4. **3.에서 나온 결과로 최종 loss를 뽑는다**
-5. **4.에서 나온 loss로 model 을 update한다.**
-6. **1~5를 epoch만큼 반복한다.**
+<a href='#figure3'>Figure 3</a>을 보시면 $S$와 $Q$에 대한 예시가 왼쪽에 나와 있습니다. $S$는 어떤 class인지 아는 상태에서 학습에 참여합니다. 즉, $S$로 supervised learning처럼 model을 학습 시키는 것이죠. 그래서 $S$는 $N$-ways $K$-shots을 따릅니다. 그리고 $Q$는 어떤 class인지 모르는 상태에서 학습된 model에 넣어 나온 결과를 평가지표로써 활용합니다. 
 
 여기서 한가지 중요한 점은, $Q$는 $N$-ways는 따르지만, $K$-shots을 따르진 않습니다. 즉, $S$로 인해 class의 개수는 정해져 있지만 각 class 당 image의 개수는 정해져 있지 않습니다. 꼭 class 당 $K$개의 image를 뽑을 필요가 없다는 것이죠. 보통 query set은 각 class당 15개의 data를 뽑습니다.
 
