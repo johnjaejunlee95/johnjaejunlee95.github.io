@@ -3,6 +3,7 @@
 source "https://rubygems.org"
 
 gemspec
+gem "ffi", "= 1.16.3"
 gem 'jemoji'
 gem 'tzinfo'
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw]
