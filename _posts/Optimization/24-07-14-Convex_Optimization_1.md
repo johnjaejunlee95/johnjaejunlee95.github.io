@@ -46,7 +46,7 @@ Deep Learning field에서 최적의 해를 찾기 위해 제일 기본 method �
 
 그렇다면 이제 GD에 대해 optimization이 어떻게 이루어지는지, 그리고 assumption에 따라 어떻게 optimization의 수렴형태가 변화하는지를 살펴보도록 하겠습니다. (여기서의 모든 assumption은 convex를 기준으로 합니다)
 
-### Problem Formulation 1 (Assumption: $L$-Lipschitz)
+## Problem Formulation 1 <br>(Assumption: $L$-Lipschitz)
 
 들어가기에 앞서 간략하게 optimization 설정을 보통 다음과 같이 합니다:
 
@@ -62,13 +62,9 @@ $$x_{k+1} = x_k -\gamma \nabla f(x_k)$$
 
 그렇다면 optimal solution을 찾기 위해 위의 내용을 계속해서 반복할 것입니다.  만약 학습이 발산하지 않고 진행된다고 가정한다면, 좋은 optimization algorithm은 얼마나 빨리 optimal solution을 찾냐의 싸움입니다. 그럼 이걸 어떻게 찾냐?라고 했을 때, 최종 step $T$에 대해서 upper bound 설정을 통해 찾을 수 있습니다. 즉, 학습이 최종적으로 진행됐을 때 
 
-<mark style="background:skyblue" >Theorem</mark>: Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:
+<mark style="background:skyblue" >Theorem 1:</mark> Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:
 
-
-
-$$f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{\mid\mid x_1 - x^\star \mid\mid L}{\sqrt{T}} \Rightarrow \mathcal{O}(\frac{1}{\sqrt{T}})$$
-
-
+$$f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{|| x_1 - x^\star || L}{\sqrt{T}} \Rightarrow \mathcal{O}(\frac{1}{\sqrt{T}})$$
 
 
 ### Proof:
@@ -77,24 +73,25 @@ $$f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{\mid
 
 ![](/images/24-07-24/convex_1.png)
 
-즉, convex sets에 대해서 projection했을 때, projection 위치 $\pi_c (z)$에 대한 $x$와 $z$의 inner product는 항상 음수(둔각)가 나오고 이를 피타고라스 식을 활용하면 $\mid\mid \pi_c (z)  - x\mid\mid \leq \mid\mid z - x \mid\mid$ 의 inequality가 성립합니다.  또한 나중에 proof 전개 시 피타고라스 정리를 다음과 같이 활용할 예정입니다: $\mathbf{<a,b> = \frac{1}{2}(\mid\mid a\mid\mid^2 + \mid\mid b\mid\mid ^2 -\mid\mid a-b\mid\mid ^2)}$)
+즉, convex sets에 대해서 projection했을 때, projection 위치 $\pi_c (z)$에 대한 $x$와 $z$의 inner product는 항상 음수(둔각)가 나오고 이를 피타고라스 식을 활용하면 $\mid\mid \pi_c (z)  - x\mid\mid \leq \mid\mid z - x \mid\mid$ 의 inequality가 성립합니다.  또한 나중에 proof 전개 시 피타고라스 정리를 다음과 같이 활용할 예정입니다: $\mathbf{\left<a,b\right> = \frac{1}{2}(\mid\mid a\mid\mid^2 + \mid\mid b\mid\mid ^2 -\mid\mid a-b\mid\mid ^2)}$)
 
 그럼 위의 properties를 활용해서 proof를 전개해보겠습니다: 
 
 
+
 $$
 \begin{align}
-f(x_k) - f(x^\star) &\leq \; \;<\nabla f(x_k) \;, \; x_k - x^\star > \; \rightarrow \text{1st order convexity}\\
-&= \; <-\frac{1}{\gamma}(x_k - x_{k+1}) \;,\; x_k - x^\star> \; \rightarrow \text{$x_{k+1} - x_k = - \gamma \nabla f(x_k)$ }\\
-&= \frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x_{k+1}\mid\mid ^2 + \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid (x_k - x_{k+1}) - (x_k - x^\star)\mid\mid ^2 \; \bigg] \rightarrow  \; \text{pythagoras theorem}\\
-&=\frac{1}{2\gamma} \bigg[ \; \mid\mid x_k - x^\star\mid\mid ^2 +\mid\mid \gamma \nabla f(x_k)\mid\mid ^2 - \mid\mid  x_{k+1}-  x^\star\mid\mid ^2 \; \bigg] \\
-&= \frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2
+f(x_k) - f(x^\star) &\leq \; \;\left<\nabla f(x_k) \;, \; x_k - x^\star \right> \; \rightarrow \text{1st order convexity}\\
+&= \; \left<-\frac{1}{\gamma}(x_k - x_{k+1}) \;,\; x_k - x^\star\right> \; \rightarrow \text{$x_{k+1} - x_k = - \gamma \nabla f(x_k)$ }\\
+&= \frac{1}{2\gamma} \left[ \; \mid\mid x_k - x_{k+1}\mid\mid ^2 + \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid (x_k - x_{k+1}) - (x_k - x^\star)\mid\mid ^2 \; \right] \rightarrow  \; \text{pythagoras theorem}\\
+&=\frac{1}{2\gamma} \left[ \; \mid\mid x_k - x^\star\mid\mid ^2 +\mid\mid \gamma \nabla f(x_k)\mid\mid ^2 - \mid\mid  x_{k+1}-  x^\star\mid\mid ^2 \; \right] \\
+&= \frac{1}{2\gamma} \left[ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \right] + \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2
 \end{align}
 $$
 
 
-여기서 $L$-Lipschitz Continuity 성질: 만약 $f$ 가 differentiable 하면 $\mid \nabla f (x) \mid \leq L$ 이다. $\rightarrow \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2 \leq \frac{\gamma L^2}{2}$  을 활용하면 다음과 같이 bound를 설정할 수 있습니다.
 
+여기서 $L$-Lipschitz Continuity 성질: 만약 $f$ 가 differentiable 하면 $\mid \nabla f (x) \mid \leq L$ 이다. $\rightarrow \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2 \leq \frac{\gamma L^2}{2}$  을 활용하면 다음과 같이 bound를 설정할 수 있습니다.
 
 $$
 \begin{align}
@@ -116,7 +113,7 @@ f(x_k) - f(x^\star) &\leq \frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x^\star\mi
 
 \end{align}
 $$
-  
+
 
 Inequality의 양쪽 hand side에 대해서 평균을 내면 다음과 같습니다:
 
@@ -128,7 +125,7 @@ $$
 
 여기서  $\mid\mid  x_{T+1} - x^\star\mid\mid ^2$ 는 앞에 $-$가 붙어있으므로 이 term은 항상 음수가 됩니다. 따라서 이를 그냥 소거하여 upper bound를 추가로 설정해줄 수 있습니다. 
 
-$$\Rightarrow \frac{1}{T*2\gamma} \bigg[ \mid\mid x_1 - x^\star \mid\mid ^2 - \mid\mid x_{T+1} - x^\star \mid\mid ^2 \bigg] \leq \frac{1}{T*2\gamma} \cdot \mid\mid x_1 - x^\star \mid\mid ^2$$
+$$\Rightarrow \frac{1}{T*2\gamma} \left[ || x_1 - x^\star || ^2 - || x_{T+1} - x^\star || ^2 \right] \leq \frac{1}{T*2\gamma} \cdot || x_1 - x^\star || ^2$$
 
  그리고 나서, *Jensen's Inequality를 활용하여 $f(\frac{1}{T} \sum_{k=1}^Tx_k) \leq \frac{1}{T} \sum_{k=1}^Tf(x_k)$ 로 나타낼 수 있습니다. (이미 $f$ 는 <mark style="background: orange">convex</mark>하다고 가정하였기 때문에)
 
@@ -150,15 +147,15 @@ $$
 
 $$
 \begin{align}
-f(\frac{1}{T} \sum_{k=1}^Tx_k) - f(x^\star) &\leq \frac{\mid\mid x_1 - x^\star\mid\mid ^2}{2\gamma T} + \frac{\gamma L^2}{2} \\
-&= \frac{L \sqrt{T}}{\mid\mid x_1 - x^\star\mid\mid } * \frac{\mid\mid x_1 - x^\star\mid\mid ^2}{2 T} + \frac{L^2\mid\mid x_1 - x^\star \mid\mid }{2*L \sqrt{T}} \\
-&= \frac{L\sqrt{T}(\mid\mid x_1 - x^\star \mid\mid )}{2T} + \frac{L\sqrt{T}(\mid\mid x_1 - x^\star \mid\mid )}{2T} \\
-&= \frac{L \mid\mid x_1 - x^\star\mid\mid }{\sqrt{T}}
+f(\frac{1}{T} \sum_{k=1}^Tx_k) - f(x^\star) &\leq \frac{|| x_1 - x^\star|| ^2}{2\gamma T} + \frac{\gamma L^2}{2} \\
+&= \frac{L \sqrt{T}}{|| x_1 - x^\star|| } * \frac{|| x_1 - x^\star|| ^2}{2 T} + \frac{L^2|| x_1 - x^\star || }{2*L \sqrt{T}} \\
+&= \frac{L\sqrt{T}(|| x_1 - x^\star || )}{2T} + \frac{L\sqrt{T}(|| x_1 - x^\star || )}{2T} \\
+&= \frac{L || x_1 - x^\star|| }{\sqrt{T}}
 \end{align}
 $$
 
 
-이와 같이 전개했을 때 <mark style="background:skyblue" >Theorem</mark> 과 동일하게 나오는 걸 볼 수 있습니다!! 이 말인 즉슨, $T$에 따라 convergence rate이 달라지는데 $f$가 convex 및 $L$-Lipschitz 하다고 가정했을 때, 그 속도는 $\mathcal{O}(\frac{1}{\sqrt{T}})$에 수렴한다는 의미입니다!!
+이와 같이 전개했을 때 <mark style="background:skyblue" >Theorem </mark> 과 동일하게 나오는 걸 볼 수 있습니다!! 이 말인 즉슨, $T$에 따라 convergence rate이 달라지는데 $f$가 convex 및 $L$-Lipschitz 하다고 가정했을 때, 그 속도는 $\mathcal{O}\left(\frac{1}{\sqrt{T}}\right)$에 수렴한다는 의미입니다!!
 
 ### 번외: Fixed Step Size vs. Adaptive Step Size
 
@@ -178,4 +175,4 @@ $$
 
 <br>
 
-**혹시나 글을 읽으시다가 틀린 부분이 있거나 조언해주실 부분이 있다면 언제든 연락주세요!! :smiley:**
+**읽어주셔서 매우 감사합니다!! 혹시나 글을 읽으시다가 틀린 부분이 있거나 조언해주실 부분이 있다면 언제든 전달주시면 감사하겠습니다!! **:smiley:

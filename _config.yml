@@ -24,6 +24,7 @@ navbar-links:
   Categories:
     - Generative Model: '/categories/Generative Model'
     - Meta Learning: '/categories/Meta Learning'
+    - Optimization: '/categories/Optimization'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"
