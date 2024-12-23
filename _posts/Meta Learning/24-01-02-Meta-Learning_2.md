@@ -259,7 +259,7 @@ $$
 
 
 
-사실 ProtoNet이 다른 distance metric 말고 euclidean distance를 고른 이유가 여기에 있습니다. Deep Learning의 기본 concept은 backbone network가 feature representation을 원활하게만 한다면 나머지는 상황에 맞게 (특히 classification task) linear transformation만 해주면 됩니다. 보통 이런 과정을 deep learning에서는 learnable한 linear layer를 backbone network 뒤에 붙여서 학습을 합니다. 그런데 ProtoNet은 **<mark>euclidean distance를 통해 학습을 진행하면 이런 linear transformation 과정을 내포</mark>**하고 있다고 해석하고 있습니다. 또한, euclidean distance가 적절하다고 가정을 할 수 있는 이유 중 다른 하나는 학습 시 non-linearity가 필요한 부분은 이미 backbone network를 통해서 다 학습했기 때문이라고 주장하고 있습니다. (이런.... assume이 꼭 필요한 부분인지는 잘 모르겠습니다...)
+사실 ProtoNet이 다른 distance metric 말고 euclidean distance를 고른 이유가 여기에 있습니다. Deep Learning의 기본 concept은 backbone network가 feature representation을 원활하게만 한다면 나머지는 상황에 맞게 (특히 classification task) linear transformation만 해주면 됩니다. 보통 이런 과정을 deep learning에서는 learnable한 linear layer를 backbone network 뒤에 붙여서 학습을 합니다. 그런데 ProtoNet은 **<mark>euclidean distance를 통해 학습을 진행하면 이런 linear transformation 과정을 내포</mark>**하고 있다고 해석하고 있습니다. 또한, euclidean distance가 적절하다고 가정을 할 수 있는 이유 중 다른 하나는 학습 시 non-linearity가 필요한 부분은 이미 backbone network를 통해서 다 학습했기 때문이라고 주장하고 있습니다. 사실 이 가정은 우리가 당연하게 사용하고 있는 구조: backbone model - linear layer 에 대한 내용입니다. 아무래도 당시에는 deep learning에 대한 연구가 아주 많이 되지 않았을 때라 논문에서 언급한 듯 합니다.
 
 (진짜 마지막으로...) 이렇게 reinterpret 했을 때 또 다른 장점은 ProtoNet에 MAML (이하 Proto-MAML)을 적용할 수 있다는 점입니다. $w_k^{\text{T}}f_\theta(x) +b_k$​ 가 linear layer 역할을 하기 때문에 FT가 가능해집니다. Proto-MAML 학습 process에 대해 (짧게) 설명하겠습니다.
 
