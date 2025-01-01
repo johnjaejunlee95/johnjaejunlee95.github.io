@@ -160,10 +160,10 @@
   <link rel="stylesheet" href="{{ "/assets/css/staticman.css" | relative_url }}">
   {% endif %}
 
-  {% assign favicon_exists = site.static_files | where: "path", "/favicon.ico" | size %}
+  {% assign favicon_exists = site.static_files | where: "path", "/images/logo_images/profile.jpg" | size %}
   {% if favicon_exists == 1 %}
   <!-- <link rel="icon" href="{{ '/favicon.ico' | relative_url }}" /> -->
-  <link rel="icon" type="image/png" href="/assets/favicon.svg">
+  <link rel="icon" type="image/jpg" href="/images/logo_images/profile.jpg">
 
   {% endif %}
 
