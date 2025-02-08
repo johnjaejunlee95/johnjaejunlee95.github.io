@@ -839,7 +839,7 @@ table tr td :last-child {
 /* --- Code blocks --- */
 
 code {
-  /* white-space: pre-wrap !important; */
+  white-space: pre-wrap !important;
   word-wrap: break-word !important;
   padding: 0.125rem 0.25rem;
   color: #c7254e;
@@ -887,7 +887,7 @@ pre {
 
 .highlight>pre:not([class~="highlight"]) {
   /* code block with line number */
-  padding: 0;
+  padding: 0.5rem;
 }
 
 .highlight table,
@@ -904,6 +904,7 @@ pre {
   color: rgba(0, 0, 0, 0.3);
   border-radius: 0;
   border-right: 2px solid #444;
+  padding: 0.5rem;
 }
 
 /* Make line numbers unselectable: excludes line numbers from copy-paste user ops */
