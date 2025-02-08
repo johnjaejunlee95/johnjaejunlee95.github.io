@@ -12,6 +12,7 @@ html {
 
 body {
   word-break: keep-all;
+  overflow-wrap: break-word;
   font-family: 'Lora', 'Times New Roman', serif;
   font-size: 1.125rem;
   color: {{ site.text-col | default: "#404040" }};
@@ -838,8 +839,8 @@ table tr td :last-child {
 /* --- Code blocks --- */
 
 code {
-  /* white-space: pre-wrap !important;
-  word-wrap: break-word !important; */
+  white-space: pre-wrap !important;
+  /* word-wrap: break-word !important; */
   padding: 0.125rem 0.25rem;
   color: #c7254e;
   background-color: #f9f2f4;
@@ -863,6 +864,7 @@ pre {
   background: none;
   margin: 0;
   font-size: 87%;
+  overflow: auto;
 }
 .highlight > pre {
   background-image: linear-gradient(
