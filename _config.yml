@@ -51,9 +51,6 @@ compress_html:
   blanklines: true
   clippings: none
 
-sass:
-  sass_dir: _sass
-  style: compressed
 #####################################
 # --- Footer social media links --- #
 #####################################
