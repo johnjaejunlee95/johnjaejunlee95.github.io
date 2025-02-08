@@ -1,0 +1,18 @@
+@import "{{ site.theme }}";
+
+.highlight {
+    pre {
+        white-space: pre !important;
+        word-wrap: normal !important;
+        overflow-x: auto !important;
+    }
+
+    code {
+        white-space: pre !important;
+        word-break: keep-all !important;
+    }
+}
+
+.language-python {
+    white-space: pre !important;
+}
