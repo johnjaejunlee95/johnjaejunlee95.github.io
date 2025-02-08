@@ -4,15 +4,15 @@ gh-repo: johnjaejunlee95/johnjaejunlee95.github.io
 gh-badge: [star, follow]
 comments: true
 author: johnjaejunlee95
-title: "[논문리뷰] Denoising Diffusion Implicit Model"
+title: "[개념리뷰] Active Learning / Inference"
 date: "2025-01-06"
-permalink: /ddim/
+permalink: /active_learning/
 description: ""
-categories: [Generative Model]
+categories: [Active Learning, Active Inference]
 toc: False
 hits: true
 # toc_sticky: True
-tags: [Generative, Diffusion Model, Gaussian Distribution]
+tags: [Generative, Diffusion]
 use_math: true
 author_profile: true
 published: false
@@ -27,8 +27,9 @@ sidebar:
 
 ## Reference:
 
-- [Denoising Diffusion Probabilistic Model(DDPM) Paper](https://arxiv.org/pdf/2006.11239.pdf)
+- [Denoising Diffusion Probabilistic Model(DDPM) Paper](https://arxiv.org/pdf/2006.11239)
 - [Diffusion Model 수학이 포함된 tutorial](https://youtu.be/uFoGaIVHfoE)
 - [Lil'Log's blog - What are Diffusion Models?](https://lilianweng.github.io/posts/2021-07-11-diffusion-models/)
 - [PR-409 Denoising Diffusion Probabilistic Models](https://www.youtube.com/watch?v=1j0W_lu55nc)
+- [Understanding Diffusion Models: A Unified Perspective](https://arxiv.org/pdf/2208.11970)
 

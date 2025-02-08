@@ -140,3 +140,9 @@ let BeautifulJekyllJS = {
 // 2fc73a3a967e97599c9763d05e564189
 
 document.addEventListener('DOMContentLoaded', BeautifulJekyllJS.init);
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll("pre code").forEach((block) => {
+    let lines = block.innerHTML.split("\n").map((line) => `<span>${line}</span>`);
+    block.innerHTML = lines.join("");
+  });
+});
