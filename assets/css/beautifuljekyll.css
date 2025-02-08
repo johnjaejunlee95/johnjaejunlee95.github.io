@@ -13,7 +13,7 @@ html {
 body {
   word-break: keep-all;
   overflow-wrap: break-word;
-  font-family: 'Lora', 'Times New Roman', serif;
+  font-family: 'Lora', 'Malgun Gothic', sans-serif; /* 'Lora', 'Times New Roman', serif; */
   font-size: 1.125rem;
   color: {{ site.text-col | default: "#404040" }};
   position: relative;
@@ -840,7 +840,7 @@ table tr td :last-child {
 
 code {
   white-space: pre-wrap !important;
-  /* word-wrap: break-word !important; */
+  word-wrap: break-word !important;
   padding: 0.125rem 0.25rem;
   color: #c7254e;
   background-color: #f9f2f4;
@@ -850,10 +850,17 @@ code {
 pre code {
   padding: 0;
   background-color: transparent;
-  border-radius: 0;
+  border-radius: 0; 
 }
 
 pre {
+  /* white-space: pre-wrap;        */
+  /* white-space: -moz-pre-wrap;   */
+  /* white-space: -pre-wrap;       */
+  /* white-space: -o-pre-wrap;    Opera 7 */
+  /* word-wrap: break-word;       Internet Explorer 5.5+ */
+  /* overflow-x: auto;            가로 스크롤이 필요한 경우에만 표시 */
+
   font-size: 0.875rem;
   line-height: 1.5em;
   border-radius: 0.25rem;
@@ -863,42 +870,53 @@ pre {
   border: none;
   background: none;
   margin: 0;
-  font-size: 87%;
+  padding: 16px;
   overflow: auto;
+  font-size: 87%;
+  line-height: 1.45;
+  background-color: #f6f8fa;
+  border-radius: 6px;
 }
-.highlight > pre {
-  background-image: linear-gradient(
-    rgba(0,0,0,0.03), rgba(0,0,0,0.03) 1.5em, rgba(0,0,0,0.02) 1.5em, rgba(0,0,0,0.02) 3em);
+.highlight>pre {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03) 1.5em, rgba(0, 0, 0, 0.02) 1.5em, rgba(0, 0, 0, 0.02) 3em);
   background-size: auto 3em;
   background-position-y: 0.625rem;
-  border: 1px solid rgba(0,0,0,0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-left: 0.4375rem solid #444;
 }
-.highlight > pre:not([class~="highlight"]) { /* code block with line number */
-  padding: 0;
+
+.highlight>pre:not([class~="highlight"]) {
+  /* code block with line number */
+  padding: 1rem;
 }
+
 .highlight table,
 .highlight tr,
-.highlight td { /* to be removed after fixing table styles */
+.highlight td {
+  /* to be removed after fixing table styles */
   border: none;
   background: none;
   padding: 0;
   margin: 0;
 }
+
 .highlight pre.lineno {
-  color: rgba(0,0,0,0.3);
+  color: rgba(0, 0, 0, 0.3);
   border-radius: 0;
   border-right: 2px solid #444;
+  padding: 0.5rem;
 }
 
 /* Make line numbers unselectable: excludes line numbers from copy-paste user ops */
 .lineno {
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
-.lineno::selection, .lineno::-moz-selection {
+
+.lineno::selection,
+.lineno::-moz-selection {
   background: none;
 }
 

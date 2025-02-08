@@ -47,7 +47,9 @@ round-avatar: true
 # If you want to have an image logo in the top-left corner instead of having the title of the website,
 # then specify the following parameter
 #title-img: /path/to/image
-
+compress_html:
+  blanklines: true
+  clippings: none
 
 #####################################
 # --- Footer social media links --- #
@@ -274,6 +276,10 @@ paginate: 5
 kramdown:
   input: GFM
   syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    default_lang: python
+    guess_lang: false
+    # line_numbers: true
 
 
 # Default YAML values (more information on Jekyll's site)
