@@ -25,6 +25,7 @@ navbar-links:
     - Generative Model: '/categories/Generative Model'
     - Meta Learning: '/categories/Meta Learning'
     - Optimization: '/categories/Optimization'
+    - Coding: '/categories/Coding'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"
@@ -272,7 +273,8 @@ paginate: 5
 
 kramdown:
   input: GFM
-  hard_wrap: false
+  syntax_highlighter: rouge
+
 
 # Default YAML values (more information on Jekyll's site)
 defaults:
@@ -310,3 +312,4 @@ plugins:
 
 # Beautiful Jekyll / Dean Attali
 # 2fc73a3a967e97599c9763d05e564189
+
