@@ -887,7 +887,7 @@ pre {
 
 .highlight>pre:not([class~="highlight"]) {
   /* code block with line number */
-  padding: 0.5rem;
+  padding: 1rem;
 }
 
 .highlight table,
