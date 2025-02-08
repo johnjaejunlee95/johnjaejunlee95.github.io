@@ -2,8 +2,7 @@
 
 source "https://rubygems.org"
 
-# gemspec
-gem "beautiful-jekyll-theme", "6.0.1"
+gemspec
 gem "ffi", "= 1.16.3"
 gem 'jemoji'
 gem 'tzinfo'
