@@ -866,6 +866,10 @@ pre {
   border-radius: 0.25rem;
   padding: 0.59375rem;
 }
+.highlight code {
+  white-space: pre !important;
+  word-wrap: break-word !important;
+}
 .highlight pre {
   border: none;
   background: none;
@@ -876,6 +880,9 @@ pre {
   line-height: 1.45;
   background-color: #f6f8fa;
   border-radius: 6px;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  overflow-x: auto !important;
 }
 .highlight>pre {
   background-image: linear-gradient(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.03) 1.5em, rgba(0, 0, 0, 0.02) 1.5em, rgba(0, 0, 0, 0.02) 3em);
