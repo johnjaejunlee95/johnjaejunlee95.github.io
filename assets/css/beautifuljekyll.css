@@ -3,7 +3,7 @@ layout: null
 ---
 
 @import url("pygment_highlights.css");
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap'); */
 /* --- General --- */
 
 html {
@@ -13,7 +13,7 @@ html {
 body {
   word-break: keep-all;
   overflow-wrap: break-word;
-  font-family: 'Lora', 'Malgun Gothic', sans-serif; /* 'Lora', 'Times New Roman', serif; */
+  font-family: 'Lora', 'Times New Roman', serif; /*'Lora', 'Malgun Gothic', sans-serif; /* 'Lora', 'Times New Roman', serif; */
   font-size: 1.125rem;
   color: {{ site.text-col | default: "#404040" }};
   position: relative;
@@ -859,7 +859,7 @@ pre {
   /* white-space: -pre-wrap;       */
   /* white-space: -o-pre-wrap;    Opera 7 */
   /* word-wrap: break-word;       Internet Explorer 5.5+ */
-  /* overflow-x: auto;            가로 스크롤이 필요한 경우에만 표시 */
+  overflow-x: auto;            /*가로 스크롤이 필요한 경우에만 표시*/
 
   font-size: 0.875rem;
   line-height: 1.5em;
