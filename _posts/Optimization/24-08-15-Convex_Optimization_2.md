@@ -28,7 +28,7 @@ sidebar:
 
 이전 post에서 어떤 function이 <mark style="background: orange">convex</mark> + $L$-lipschitz이라고 가정했을 때 다음과 같은 Theorem이 나왔습니다:
 
-<mark style="background:skyblue" >Theorem</mark> Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:
+<mark style="background:skyblue" >Theorem</mark> Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x\_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:
 
 $$f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{\mid\mid x_1 - x^\star \mid\mid L}{\sqrt{T}} \Rightarrow \mathcal{O}(\frac{1}{\sqrt{T}})$$
 
