@@ -26,6 +26,7 @@ navbar-links:
     - Meta Learning: '/categories/Meta Learning'
     - Optimization: '/categories/Optimization'
     - Coding: '/categories/Coding'
+    - Information Theory: '/categories/Information Theory'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"
