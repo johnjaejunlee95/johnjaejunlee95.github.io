@@ -1,5 +1,5 @@
 ---
 layout: categories
 title: Optimization
-permalink: categories/Optimization
+permalink: categories/optimization
 ---

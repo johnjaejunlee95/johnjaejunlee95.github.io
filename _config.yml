@@ -22,11 +22,11 @@ author: johnjaejunlee95
 navbar-links:
   About Me: "aboutme"
   Categories:
-    - Generative Model: '/categories/Generative Model'
-    - Meta Learning: '/categories/Meta Learning'
-    - Optimization: '/categories/Optimization'
-    - Coding: '/categories/Coding'
-    - Information Theory: '/categories/Information Theory'
+    - Generative Model: '/categories/gen_model'
+    - Meta Learning: '/categories/meta_learning'
+    - Optimization: '/categories/optimization'
+    - Coding: '/categories/coding'
+    - Information Theory: '/categories/info_theory'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"

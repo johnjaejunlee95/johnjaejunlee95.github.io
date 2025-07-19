@@ -1,5 +1,5 @@
 ---
 layout: categories
 title: Coding
-permalink: categories/Coding
+permalink: categories/coding
 ---
