@@ -6,7 +6,7 @@ comments: true
 author: johnjaejunlee95
 title: "[개념리뷰] WD에 대한 고찰"
 date: "2025-11-29"
-permalink: /deeplearning/
+permalink: /weight_decay/
 description: ""
 categories: [Deep Learning, WD]
 toc: False
