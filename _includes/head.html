@@ -178,6 +178,7 @@
   <script>
     window.MathJax = {
       tex: {
+        tags: 'ams',  // 이 부분이 핵심입니다 (AMS 스타일 번호 매기기)
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
