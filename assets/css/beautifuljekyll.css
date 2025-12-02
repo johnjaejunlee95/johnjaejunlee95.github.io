@@ -11,7 +11,12 @@ layout: null
 html {
   font-size: 100%
 }
-
+#markdown-toc {
+  position: sticky;
+  top: 50px; /* Space from the top */
+  max-height: calc(100vh - 100px); /* Makes it scrollable if too long */
+  overflow-y: auto;
+}
 body {
   word-break: keep-all;
   overflow-wrap: break-word;
@@ -1133,4 +1138,124 @@ pre {
   #nav-search-text {
     display: inline-block;
   }
+}
+
+
+
+
+/* 오른쪽 하단/상단 고정 TOC 위젯 스타일 */
+#fixed-toc-widget {
+  position: fixed;
+  top: 10em;
+  left: calc(50% + 480px + 30px);
+
+  width: 250px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+
+  max-height: 75vh;
+  overflow-y: auto;
+  z-index: 1000;
+
+  font-family: system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+/* 화면 좁을 때 숨김 */
+@media (max-width: 1450px) {
+  #fixed-toc-widget {
+    display: none !important;
+  }
+}
+
+/* TOC 타이틀 */
+.toc-header {
+  background: #6b7280;
+  /* MM 회색 헤더 */
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 8px 12px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #d1d5db;
+  letter-spacing: 0.5px;
+}
+/* 리스트 전체 구조 */
+#toc-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+
+  border-left: 1px solid #e5e7eb;
+  /* MM 스타일 */
+}
+
+/* 항목 */
+#toc-content li {
+  position: relative;
+  line-height: 1.55;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* 링크 스타일 */
+#toc-content a {
+  display: block;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+/* Hover */
+#toc-content a:hover {
+  color: #111827;
+  border-left: 2px solid #111827;
+  padding-left: 14px;
+  margin-left: -1px;
+}
+
+/* 현재 위치 강조 (tocbot active) */
+#toc-content a.is-active-link {
+  font-weight: 600;
+  color: #111827;
+  border-left: 2px solid #4f46e5;
+  /* MM 스타일 강조색 */
+  padding-left: 14px;
+  margin-left: -1px;
+}
+
+/* 계층 구조 */
+.toc-level-1 {
+  padding-left: 0;
+}
+
+.toc-level-2 {
+  padding-left: 10px;
+  font-size: 0.5rem;
+}
+
+.toc-level-3 {
+  padding-left: 22px;
+  font-size: 0.75rem;
+}
+
+.toc-level-4 {
+  padding-left: 32px;
+  font-size: 0.73rem;
+}
+
+/* 스크롤바 Minimal Mistakes 느낌 */
+#fixed-toc-widget::-webkit-scrollbar {
+  width: 6px;
+}
+
+#fixed-toc-widget::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+#fixed-toc-widget::-webkit-scrollbar-track {
+  background: transparent;
 }

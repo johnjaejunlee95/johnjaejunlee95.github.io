@@ -9,9 +9,8 @@ date: "2023-12-30"
 permalink: /meta_learning_1/
 description: ""
 categories: [Meta Learning]
-toc: False
+toc: true
 hits: true
-# toc_sticky: True
 tags: [Meta-Learning, Few-Shot Learning]
 use_math: true
 author_profile: true

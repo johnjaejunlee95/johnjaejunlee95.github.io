@@ -12,8 +12,7 @@ permalink: /Optimization_1/
 description: ""
 categories: [Optimization]
 hits: true 
-toc: false
-toc_sticky: true
+toc: true
 tags: [Convex, Optimization, Gradient Descent]
 use_math: true
 author_profile: true

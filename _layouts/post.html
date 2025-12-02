@@ -84,5 +84,63 @@ layout: base
       </ul>
       {% include comments.html %}
     </div>
+    {% if page.toc %}
+    <div id="fixed-toc-widget" class="d-none d-xl-block">
+      <div class="toc-header">Contents</div>
+      <div id="toc-content"></div>
+    </div>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var tocContent = document.getElementById('toc-content');
+        var mainContent = document.querySelector('.blog-post') || document.querySelector('.post-content');
+
+        if (tocContent && mainContent) {
+          var headings = mainContent.querySelectorAll('h1, h2, h3');
+
+          if (headings.length > 0) {
+            var ul = document.createElement('ul');
+
+            headings.forEach(function (heading) {
+              if (!heading.id) {
+                heading.id = heading.textContent.trim().replace(/\s+/g, '-').replace(/[^\w\uAC00-\uD7A3-]+/g, '').toLowerCase();
+              }
+
+              var li = document.createElement('li');
+              var a = document.createElement('a');
+
+              a.href = '#' + heading.id;
+              // MathJax 수식을 포함하여 제목 내용을 가져옵니다.
+              a.innerHTML = heading.innerHTML;
+
+              // 레벨별 클래스 추가
+              var level = parseInt(heading.tagName.substring(1)); // 1, 2, 3
+              li.classList.add('toc-level-' + level);
+
+              li.appendChild(a);
+              ul.appendChild(li);
+            });
+
+            tocContent.appendChild(ul);
+
+            // [핵심 수정] MathJax 3 충돌 방지 로직
+            // 본문 렌더링이 끝난 후(promise resolve)에 TOC를 렌더링합니다.
+            if (window.MathJax && MathJax.startup) {
+              MathJax.startup.promise.then(function () {
+                return MathJax.typesetPromise([tocContent]);
+              }).catch(function (err) {
+                console.log('MathJax TOC rendering error:', err);
+              });
+            }
+
+          } else {
+            document.getElementById('fixed-toc-widget').style.display = 'none';
+          }
+        }
+      });
+    </script>
+    {% endif %}
   </div>
 </main>
+
+<!-- ================= TOCBOT SCRIPT ================= -->

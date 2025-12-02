@@ -12,7 +12,7 @@ permalink: /meta_learning_2/
 description: ""
 categories: [Meta Learning]
 hits: true 
-toc: false
+toc: true
 toc_sticky: true
 tags: [Meta-Learning, Few-Shot Learning, MAML, Reptile, MatchingNet, ProtoNet]
 use_math: true

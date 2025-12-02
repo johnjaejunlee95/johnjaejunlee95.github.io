@@ -9,9 +9,8 @@ date: "2023-03-13"
 permalink: /sharp_maml/
 description: ""
 categories: [Meta Learning]
-toc: False
+toc: true
 hits: true
-# toc_sticky: True
 tags: [Meta-Learning, MAML, Flat-Minima, SAM]
 use_math: true
 author_profile: true

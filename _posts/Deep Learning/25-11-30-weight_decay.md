@@ -4,15 +4,14 @@ gh-repo: johnjaejunlee95/johnjaejunlee95.github.io
 gh-badge: [star, follow]
 comments: true
 author: johnjaejunlee95
-title: "[개념리뷰] WD에 대한 고찰"
-date: "2025-11-29"
+title: "[개념리뷰] Weight Decay에 대한 고찰"
+date: "2025-11-30"
 permalink: /weight_decay/
 description: ""
-categories: [Deep Learning, WD]
-toc: False
+categories: [Deep Learning, Weight Decay, LLM]
+tags: [Weight Decay, Gaussian Prior, LLM, LR Decay]
 hits: true
-# toc_sticky: True
-tags: [WD, Gaussian Prior, ]
+toc: true
 use_math: true
 author_profile: true
 published: true
@@ -21,14 +20,13 @@ sidebar:
 ---
 
 
-
-<div>이번 포스트에선 딥러닝에서 거의 필수 요소인 Weight Decay (WD)에 대해서 고찰해보려고 합니다. 기존 WD에 관한 post들은 현상들에 대한 설명들이 대부분일 것입니다. 그래서 저는 이번 포스트에서 WD가 실제로 어떤 맥락에서 사용을 하는지, 또 최근에는 어떤 의미에서 사용이 되고 있는지를 살펴보려고 합니다!! </div>
-
+<div>이번 포스트에선 딥러닝에서 거의 필수 요소인 Weight Decay에 대해서 고찰해보려고 합니다. 기존 WD에 관한 post들은 현상들에 대한 설명들이 대부분일 것입니다. 그래서 저는 이번 포스트에서 WD가 실제로 어떤 맥락에서 사용을 하는지, 또 최근에는 어떤 의미에서 사용이 되고 있는지를 살펴보려고 합니다!! </div>
 
 
-## Recap of WD
 
-최근 model을 학습시킬 때, 대부분 **Weight Decay (WD)**를 사용하곤 합니다. WD를 사용했을 때 가져다주는 이점이 많은데, 대표적인 효과로는 **Overfitting 방지** 입니다. 그렇다면 WD가 무엇이길래 overfitting을 방지할 수 있을까요?
+## Recap of Weight Decay (WD)
+
+최근 model을 학습시킬 때, 대부분 **Weight Decay (WD)**를 사용하곤 합니다. WD를 사용했을 때 가져다주는 이점이 많은데, 대표적인 효과로는 **overfitting 방지** 입니다. 그렇다면 WD가 무엇이길래 overfitting을 방지할 수 있을까요?
 
 대체적으로 Deep Learning을 처음 접할 때 WD를 다음과 같이 배울 것입니다:
 
@@ -126,7 +124,7 @@ $$
 
 $$
 \begin{aligned} 
-\theta_{MAP} &= \arg\min_\theta \left[ -\log p(\mathcal{D}|\theta) - \log p(\theta) \right] \\ &= \arg\min_\theta \left[ \underbrace{\mathcal{L}(\theta)}_{\sim \text{MLE}} - \log \left( \exp\left( -\frac{||\theta||^2}{2\sigma^2} \right) \right) \right] 
+\theta_{MAP} &= \arg\min_\theta \left[ -\log p(\mathcal{D}|\theta) - \log p(\theta) \right] \\ &= \arg\min_\theta \left[ \underbrace{\mathcal{L}(\theta)}_{=\text{MLE}} - \log \left( \exp\left( -\frac{||\theta||^2}{2\sigma^2} \right) \right) \right] 
 \end{aligned}
 $$
 
