@@ -27,7 +27,7 @@ navbar-links:
     - Optimization: '/categories/optimization'
     - Coding: '/categories/coding'
     - Information Theory: '/categories/info_theory'
-    - Deep Learning: '/categories/deeplearning/'
+    - Deep Learning: '/categories/deeplearning'
   # Resources:
   #   - Beautiful Jekyll: "https://beautifuljekyll.com"
   #   - Learn markdown: "https://www.markdowntutorial.com/"
@@ -302,7 +302,6 @@ defaults:
       comments: true  # add comments to all blog posts
       social-share: true # add social media sharing buttons to all blog posts
       toc: true
-      toc_sticky: true
   -
     scope:
       path: "" # any file that's not a post will be a "page" layout by default
