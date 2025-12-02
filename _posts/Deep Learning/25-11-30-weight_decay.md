@@ -184,9 +184,7 @@ $$
 
 문제는 **학습 후반부**입니다. LR이 매우 작아지면, weight를 업데이트하는 **보폭(Step Size)**이 줄어들 뿐만 아니라 **gradient 자체의 영향력**도 미미해집니다. 즉, model이 더 이상 유의미한 학습을 하지 못하고 정체될 위험이 있습니다.
 
-바로 이 관점에서 loss term에 포함된 **WD의 역할**이 중요해집니다. 이에 대해 아주 명확히 규명된 것은 아니지만, 최근 [연구/논문](https://arxiv.org/pdf/2310.04415)들을 통해 *실험적으로 밝혀진 사실들*이 있습니다. 아래 <a href='#figure1'>Figure 1</a>을 통해 그 결과를 확인할 수 있습니다.
-
-<a href='#figure1'>Figure 1</a>을 자세히 보면, WD를 강하게 주었을 때 학습 초반부의 Training Loss 값은 다소 클지라도, **최종적으로는 WD를 더 크게 준 경우의 Training Loss 값이 더 낮게 수렴**하는 것을 확인할 수 있습니다.
+바로 이 관점에서 loss term에 포함된 **WD의 역할**이 중요해집니다. 이에 대해 아주 명확히 규명된 것은 아니지만, 최근 [연구/논문](https://arxiv.org/pdf/2310.04415)들을 통해 *실험적으로 밝혀진 현상*이 있는데, 아래 <a href='#figure1'>Figure 1</a>을 통해 그 결과를 확인할 수 있습니다. <a href='#figure1'>Figure 1</a>을 자세히 보면, WD를 강하게 주었을 때 학습 초반부의 Training Loss 값은 다소 클지라도, **최종적으로는 WD를 더 크게 준 경우의 Training Loss 값이 더 낮게 수렴**하는 것을 확인할 수 있습니다.
 
 <center>
   <div style="display: flex; justify-content: center; gap: 10px;">
