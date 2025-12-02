@@ -211,14 +211,15 @@ $$
 
 <center>
   <div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="/images/25-11-30/train_validation_loss_WD.png" style="width: 48%;">
-    <img src="/images/25-11-30/wd_lr_decay_v3.png" style="width: 48%;">
+    <img src="/images/25-11-30/train_validation_loss_WD.png" style="width: 45%; height: 45%">
+    <img src="/images/25-11-30/wd_lr_decay_v3.png" style="width: 54%; height: 54%">
   </div>
   <figcaption>
     <a id='figure2'>Figure 2. WD on Constant LR</a>
   </figcaption>
   <br>
 </center>
+
 
 위 내용들을 종합해 봤을 때, **LLM에서의 WD는 기존 overfitting 방지하는 개념과 달리, LR Scheduling과 결부되어 학습의 지속성을 유지하기 위해 사용된다고 이해**하면 좋을 것 같습니다. 
 
