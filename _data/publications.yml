@@ -3,8 +3,8 @@
   conference: "The Thirteenth International Conference on Learning Representations (ICLR)"
   year: 2025
   location: "Singapore EXPO, Singapore"
-  paper_url: ""  # 링크가 있으면 채워넣으세요
-  code_url: ""   # 링크가 있으면 채워넣으세요
+  paper_url: "https://openreview.net/forum?id=5BXWhVbHAK"
+  code_url: "https://github.com/johnjaejunlee95/synergistic-multimodal"
 
 - title: "XB-MAML: Learning Expandable Basis Parameters for Effective Meta-Learning with Wide Task Coverage"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
@@ -12,4 +12,4 @@
   year: 2024
   location: "Valencia, Spain"
   paper_url: "https://proceedings.mlr.press/v238/lee24b.html" # 예시 링크
-  code_url: ""
+  code_url: "https://github.com/johnjaejunlee95/XB-MAML"
