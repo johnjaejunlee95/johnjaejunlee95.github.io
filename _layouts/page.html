@@ -8,20 +8,71 @@ layout: base
   <div class="row">
     <div class="{% if page.full-width %} col {% else %} col-xl-9.5 offset-xl-1 col-lg-10 offset-lg-1 {% endif %}">
       {% if page.before-content %}
-        <div class="before-content">
-          {% for file in page.before-content %}
-            {% include {{ file }} %}
-          {% endfor %}
-        </div>
+      <div class="before-content">
+        {% for file in page.before-content %}
+        {% include {{ file }} %}
+        {% endfor %}
+      </div>
       {% endif %}
-      <img src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fjohnjaejunlee95.github.io%2F&label=Visitors&icon=github&color=%23ffd966&message=&style=for-the-badge&tz=UTC">
 
-      {{ content }}
+      <img
+        src="https://hitscounter.dev/api/hit?url=https%3A%2F%2Fjohnjaejunlee95.github.io%2F&label=Visitors&icon=github&color=%23ffd966&message=&style=for-the-badge&tz=UTC"
+        style="margin-bottom: 20px;">
 
+      <div class="post-content">
+        {{ content }}
+      </div>
+
+      {% if page.publications %}
+      <div class="publications-section" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 30px;">
+        <h2>📝 Publications</h2>
+
+        <ul style="list-style: none; padding-left: 0;">
+          {% for pub in site.data.publications %}
+          <li style="margin-bottom: 25px;">
+            <div style="font-size: 1.15em; font-weight: bold; color: #333;">
+              {{ pub.title }}
+            </div>
+
+            <div style="color: #444; margin-top: 4px;">
+              {{ pub.authors | markdownify | remove: '<p>' | remove: '</p>' }}
+            </div>
+
+            <div style="font-style: italic; color: #666; font-size: 0.95em;">
+              {{ pub.conference }}{% if pub.location %}, 
+                {{ pub.location }}
+              {% endif %} ({{ pub.year }})
+            </div>
+
+            <div style="margin-top: 8px; font-size: 0.9em;">
+              {% if pub.paper_url %}
+              <a href="{{ pub.paper_url }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555; margin-right: 5px;">
+                📄 Paper
+              </a>
+              {% endif %}
+              {% if pub.code_url %}
+              <a href="{{ pub.code_url }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555; margin-right: 5px;">
+                <i class="fab fa-github"></i> Code
+              </a>
+              {% endif %}
+              {% if pub.project_url %}
+              <a href="{{ pub.project_url }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555;">
+                🌐 Project
+              </a>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
       {% if page.after-content %}
         <div class="after-content">
           {% for file in page.after-content %}
-            {% include {{ file }} %}
+          {% include {{ file }} %}
           {% endfor %}
         </div>
       {% endif %}

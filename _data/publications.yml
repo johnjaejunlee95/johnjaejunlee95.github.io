@@ -1,0 +1,15 @@
+- title: "Can One Modality Model Synergize Training of Other Modality Models?"
+  authors: "**Jae-Jun Lee**, Sung Whan Yoon"
+  conference: "The Thirteenth International Conference on Learning Representations (ICLR)"
+  year: 2025
+  location: "Singapore EXPO, Singapore"
+  paper_url: ""  # 링크가 있으면 채워넣으세요
+  code_url: ""   # 링크가 있으면 채워넣으세요
+
+- title: "XB-MAML: Learning Expandable Basis Parameters for Effective Meta-Learning with Wide Task Coverage"
+  authors: "**Jae-Jun Lee**, Sung Whan Yoon"
+  conference: "International Conference on Artificial Intelligence and Statistics (AISTATS)"
+  year: 2024
+  location: "Valencia, Spain"
+  paper_url: "https://proceedings.mlr.press/v238/lee24b.html" # 예시 링크
+  code_url: ""
