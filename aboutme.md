@@ -3,7 +3,13 @@ layout: page
 title: "About Me"
 date: "2026-01-12"
 description: "AI Researcher @ UNIST | Meta-Learning, Multimodal & Flatness"
+education: true
+experiences: true
+projects: true
+patents: true
+teaching: true
 publications: true
+skills: true
 ---
 
 ### (In Korean)
@@ -64,24 +70,4 @@ I am also planning to translate my posts into English soon, so please stay tuned
     <i class="fab fa-linkedin"></i> LinkedIn
   </a>
 </div>
-
-
-<!-- ## 📝 Publications
-
-**Can One Modality Model Synergize Training of Other Modality Models?** **Jae-Jun Lee**, Sung Whan Yoon  
-*The Thirteenth International Conference on Learning Representations (ICLR)*, 2025 (Singapore EXPO, Singapore)  
-[[Paper]](https://openreview.net/forum?id=5BXWhVbHAK) [[Code]](https://github.com/johnjaejunlee95/synergistic-multimodal)
-
-**XB-MAML: Learning Expandable Basis Parameters for Effective Meta-Learning with Wide Task Coverage** **Jae-Jun Lee**, Sung Whan Yoon  
-*International Conference on Artificial Intelligence and Statistics (AISTATS)*, 2024  
-(Valencia, Spain)  
-[[Paper]](https://arxiv.org/abs/2403.06768) [[Code]](https://github.com/johnjaejunlee95/XB-MAML) -->
-
-
-
-
-
-
-
-
 

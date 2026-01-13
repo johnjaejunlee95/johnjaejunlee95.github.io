@@ -7,6 +7,7 @@ layout: base
 <main class="{% if page.full-width %} container-fluid {% else %} container-md {% endif %}">
   <div class="row">
     <div class="{% if page.full-width %} col {% else %} col-xl-9.5 offset-xl-1 col-lg-10 offset-lg-1 {% endif %}">
+
       {% if page.before-content %}
       <div class="before-content">
         {% for file in page.before-content %}
@@ -23,27 +24,93 @@ layout: base
         {{ content }}
       </div>
 
-      {% if page.publications %}
-      <div class="publications-section" style="margin-top: 50px; border-top: 1px solid #eee; padding-top: 30px;">
-        <h2>📝 Publications</h2>
+      <details style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+        <summary style="cursor: pointer; font-size: 2.2rem; font-weight: 800; color: #333; user-select: none; line-height: 1.2;">
+          🧾 My CV
+          <span style="font-weight: 400; color: #777; font-size: 0.95rem; margin-left: 0.4rem;">
+            (click to expand)
+          </span>
+        </summary>
+      
+      <div style="margin-top: 1rem;">
 
+      {% if page.education %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🎓 Education</h3>
+        <br>
+        <ul style="list-style: none; padding-left: 0;">
+          {% for edu in site.data.education %}
+          <li style="margin-bottom: 18px;">
+            <div style="font-size: 1.05em; font-weight: bold; color: #333;">
+              {{ edu.school }}
+            </div>
+            <div style="color: #444; margin-top: 4px;">
+              {{ edu.degree }}{% if edu.department %} — {{ edu.department }}{% endif %}
+            </div>
+            <div style="color: #666; font-size: 0.95em;">
+              {{ edu.start }} - {{ edu.end }}{% if edu.gpa %} · GPA: {{ edu.gpa }}{% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if page.experiences %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🧪 Experience</h3>
+        <br>
+        <ul style="list-style: none; padding-left: 0;">
+          {% for exp in site.data.experiences %}
+          <li style="margin-bottom: 22px;">
+            <div style="font-size: 1.1em; font-weight: bold; color: #333;">
+              {{ exp.org }}
+            </div>
+
+            <div style="color: #444; margin-top: 4px;">
+              {{ exp.role }}
+            </div>
+
+            <div style="color: #666; font-size: 0.95em;">
+              {{ exp.start }} - {{ exp.end }}
+            </div>
+
+            {% if exp.highlights %}
+            <ul style="margin-top: 8px;">
+              {% for h in exp.highlights %}
+              <li>{{ h | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if page.publications %}
+      <div class="publications-section"
+        style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>📝 Publications</h3>
+        <br>
+      
         <ul style="list-style: none; padding-left: 0;">
           {% for pub in site.data.publications %}
           <li style="margin-bottom: 25px;">
             <div style="font-size: 1.15em; font-weight: bold; color: #333;">
               {{ pub.title }}
             </div>
-
+      
             <div style="color: #444; margin-top: 4px;">
               {{ pub.authors | markdownify | remove: '<p>' | remove: '</p>' }}
             </div>
-
+      
             <div style="font-style: italic; color: #666; font-size: 0.95em;">
-              {{ pub.conference }}{% if pub.location %}, 
-                {{ pub.location }}
+              {{ pub.conference }}{% if pub.location %},
+              {{ pub.location }}
               {% endif %} ({{ pub.year }})
             </div>
-
+      
             <div style="margin-top: 8px; font-size: 0.9em;">
               {% if pub.paper_url %}
               <a href="{{ pub.paper_url }}" target="_blank"
@@ -69,12 +136,188 @@ layout: base
         </ul>
       </div>
       {% endif %}
-      {% if page.after-content %}
-        <div class="after-content">
-          {% for file in page.after-content %}
-          {% include {{ file }} %}
+      
+      {% if page.patents %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🧾 Patents</h3>
+        <br>
+        <ul style="list-style: none; padding-left: 0;">
+          {% for p in site.data.patents %}
+          <li style="margin-bottom: 18px;">
+            <div style="font-size: 1.05em; font-weight: bold; color: #333;">
+              {{ p.title }}
+            </div>
+      
+            <div style="color: #444; margin-top: 4px;">
+              {{ p.inventors | markdownify | remove: '<p>' | remove: '</p>' }}
+            </div>
+      
+            <div style="color: #666; font-size: 0.95em;">
+              {% if p.number %}{{ p.number }}{% endif %}
+              {% if p.publication_date %}{% if p.number %} · {% endif %}Publication: {{ p.publication_date }}{% endif %}
+            </div>
+      
+            {% if p.url and p.url != "" %}
+            <div style="margin-top: 8px; font-size: 0.9em;">
+              <a href="{{ p.url }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555;">
+                🔗 Link
+              </a>
+            </div>
+            {% endif %}
+          </li>
           {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      {% if page.projects %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🧩 Projects</h3>
+        <br>
+
+        {% for prj in site.data.projects %}
+        <details style="margin-bottom: 16px;">
+          <summary style="cursor: pointer; font-size: 1.05em; font-weight: bold; color: #333;">
+            {{ prj.title }}
+            {% if prj.start or prj.end %}
+            <span style="color:#777; font-weight: normal;">
+              ({{ prj.start }}{% if prj.end %} - {{ prj.end }}{% endif %})
+            </span>
+            {% endif %}
+          </summary>
+
+          <div style="margin-top: 10px; color: #444;">
+            {% if prj.sponsor %}<div><b>Sponsor:</b> {{ prj.sponsor }}</div>{% endif %}
+            {% if prj.role %}<div><b>Role:</b> {{ prj.role }}</div>{% endif %}
+
+            {% if prj.partners %}
+            <div style="margin-top: 6px;">
+              <b>Partners:</b>
+              {% if prj.partners.research %}
+              <div>- Research: {{ prj.partners.research | join: ", " }}</div>
+              {% endif %}
+              {% if prj.partners.industry %}
+              <div>- Industry: {{ prj.partners.industry | join: ", " }}</div>
+              {% endif %}
+            </div>
+            {% endif %}
+
+            {% if prj.bullets %}
+            <ul style="margin-top: 8px;">
+              {% for b in prj.bullets %}
+              <li>{{ b | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if prj.links %}
+            <div style="margin-top: 8px; font-size: 0.9em;">
+              {% if prj.links.paper %}
+              <a href="{{ prj.links.paper }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555; margin-right: 5px;">
+                📄 Paper
+              </a>
+              {% endif %}
+              {% if prj.links.code %}
+              <a href="{{ prj.links.code }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555; margin-right: 5px;">
+                <i class="fab fa-github"></i> Code
+              </a>
+              {% endif %}
+              {% if prj.links.project %}
+              <a href="{{ prj.links.project }}" target="_blank"
+                style="text-decoration: none; border: 1px solid #ccc; padding: 2px 8px; border-radius: 4px; color: #555;">
+                🌐 Project
+              </a>
+              {% endif %}
+            </div>
+            {% endif %}
+          </div>
+        </details>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if page.teaching %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🧑‍🏫 Teaching & Service</h3>
+        <br>
+      
+        {% assign tutor_items = site.data.teaching | where: "category", "tutor" %}
+        {% assign program_items = site.data.teaching | where: "category", "program" %}
+        {% assign novatus_items = site.data.teaching | where: "category", "novatus" %}
+      
+        {% if tutor_items.size > 0 %}
+        <h4 style="margin-top: 0.8rem;">📚 TA</h4>
+        <ul style="list-style: none; padding-left: 0; margin-top: 0.6rem;">
+          {% for t in tutor_items %}
+          <li style="margin-bottom: 14px;">
+            <div style="font-weight: bold; color: #333;">{{ t.title }}</div>
+            <div style="color: #444;">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+            <div style="color: #666; font-size: 0.95em;">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+          </li>
+          {% endfor %}
+        </ul>
+        <hr style="border: none; border-top: 1px dashed #ddd; margin: 1rem 0;">
+        {% endif %}
+      
+        {% if program_items.size > 0 %}
+        <h4 style="margin-top: 1.2rem;">🏫 Special Program</h4>
+        <ul style="list-style: none; padding-left: 0; margin-top: 0.6rem;">
+          {% for t in program_items %}
+          <li style="margin-bottom: 14px;">
+            <div style="font-weight: bold; color: #333;">{{ t.title }}</div>
+            <div style="color: #444;">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+            <div style="color: #666; font-size: 0.95em;">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+          </li>
+          {% endfor %}
+        </ul>
+        <hr style="border: none; border-top: 1px dashed #ddd; margin: 1rem 0;">
+        {% endif %}
+      
+        {% if novatus_items.size > 0 %}
+        <h4 style="margin-top: 1.2rem;">🌱 AI Novatus Academia</h4>
+        <ul style="list-style: none; padding-left: 0; margin-top: 0.6rem;">
+          {% for t in novatus_items %}
+          <li style="margin-bottom: 14px;">
+            <div style="font-weight: bold; color: #333;">{{ t.title }}</div>
+            <div style="color: #444;">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+            <div style="color: #666; font-size: 0.95em;">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+          </li>
+          {% endfor %}
+        </ul>
+        <hr style="border: none; border-top: 1px dashed #ddd; margin: 1rem 0;">
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if page.skills %}
+      <div style="margin-top: 1.5rem; margin-bottom: 1.5rem; border-top: 1px solid #eee; padding-top: 0.8rem;">
+        <h3>🛠️ Skills</h3>
+        <br>
+        {% for s in site.data.skills %}
+        <div style="margin-bottom: 14px;">
+          <div style="font-weight: bold; color: #333;">{{ s.category }}</div>
+          <div style="color: #444;">
+            {% if s.items %}
+            {{ s.items | join: " · " }}
+            {% endif %}
+          </div>
         </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      </div>
+    </details>
+
+      {% if page.after-content %}
+      <div class="after-content">
+        {% for file in page.after-content %}
+        {% include {{ file }} %}
+        {% endfor %}
+      </div>
       {% endif %}
 
       {% include comments.html %}
