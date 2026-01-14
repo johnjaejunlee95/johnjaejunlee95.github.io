@@ -100,59 +100,7 @@ layout: page
     {% endfor %}
 </ul>
 
-{% if paginator and paginator.total_pages and paginator.total_pages > 1 %}
-<ul class="pagination main-pager">
-
-    {%- comment -%} Prev {%- endcomment -%}
-    {% if paginator.previous_page %}
-    <li class="page-item previous">
-        <a class="page-link" href="{{ paginator.previous_page_path | replace: '/index.html', '/' | relative_url }}"
-            aria-label="Previous">
-            ‹
-        </a>
-    </li>
-    {% else %}
-    <li class="page-item previous disabled"><span class="page-link">‹</span></li>
-    {% endif %}
-
-    {%- comment -%} Numbers {%- endcomment -%}
-    {% assign pattern = page.pagination.permalink
-    | default: site.pagination.permalink
-    | default: "/posts/page/:num/" %}
-
-    {% for i in (1..paginator.total_pages) %}
-    {% if i == paginator.page %}
-    <li class="page-item active"><span class="page-link">{{ i }}</span></li>
-    {% else %}
-    {% if i == 1 %}
-    {% assign href = paginator.first_page_path | replace: '/index.html', '/' %}
-    {% else %}
-    {% assign href = pattern | replace: ':num', i %}
-    {% endif %}
-    <li class="page-item">
-        <a class="page-link" href="{{ href | replace: '/index.html', '/' | relative_url }}">{{ i }}</a>
-    </li>
-    {% endif %}
-    {% endfor %}
-
-    {%- comment -%} Next {%- endcomment -%}
-    {% if paginator.next_page %}
-    <li class="page-item next">
-        <a class="page-link" href="{{ paginator.next_page_path | replace: '/index.html', '/' | relative_url }}"
-            aria-label="Next">
-            ›
-        </a>
-    </li>
-    {% else %}
-    <li class="page-item next disabled"><span class="page-link">›</span></li>
-    {% endif %}
-
-</ul>
-{% endif %}
-
-
-
-<!-- {% if paginator.total_pages > 1 %}
+{% if paginator.total_pages > 1 %}
 <ul class="pagination main-pager">
     {% if paginator.previous_page %}
     <li class="page-item previous">
@@ -171,4 +119,4 @@ layout: page
     </li>
     {% endif %}
 </ul>
-{% endif %} -->
+{% endif %}

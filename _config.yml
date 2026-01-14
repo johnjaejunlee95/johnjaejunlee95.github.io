@@ -20,7 +20,7 @@ author: johnjaejunlee95
 ###############################################
 
 navbar-links:
-  Author's home (About Me): "https://johnjaejunlee95.github.io"
+  About Me: "https://johnjaejunlee95.github.io"
   Posts: "/posts/"
   Categories:
     - Generative: '/categories/generative'
@@ -325,7 +325,7 @@ pagination:
   enabled: true
   per_page: 5
   sort_reverse: true
-  permalink: "/posts/page/:num/"
+  permalink: "/page:num/"
 
 plugins:
   - jekyll-paginate-v2

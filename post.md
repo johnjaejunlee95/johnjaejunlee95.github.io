@@ -5,5 +5,6 @@ permalink: /posts/
 pagination:
   enabled: true
   collection: posts
-  permalink: "/posts/page/:num/"
+  per_page: 5
+  permalink: "/page:num/"
 ---
