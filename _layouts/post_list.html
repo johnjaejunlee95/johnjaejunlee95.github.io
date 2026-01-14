@@ -100,6 +100,31 @@ layout: page
     {% endfor %}
 </ul>
 
+
+{% if paginator and paginator.total_pages and paginator.total_pages > 1 %}
+<ul class="pagination main-pager">
+    {% if paginator.previous_page %}
+    <li class="page-item previous">
+        <a class="page-link" href="{{ paginator.previous_page_path | relative_url }}">
+            <i class="fas fa-arrow-left" aria-hidden="true"></i>
+            <span class="d-none d-sm-inline-block">Newer Posts</span>
+        </a>
+    </li>
+    {% endif %}
+
+    {% if paginator.next_page %}
+    <li class="page-item next">
+        <a class="page-link" href="{{ paginator.next_page_path | relative_url }}">
+            <span class="d-none d-sm-inline-block">Older Posts</span>
+            <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </a>
+    </li>
+    {% endif %}
+</ul>
+{% endif %}
+
+
+<!-- 
 {% if paginator.total_pages > 1 %}
 <ul class="pagination main-pager">
     {% if paginator.previous_page %}
@@ -119,4 +144,4 @@ layout: page
     </li>
     {% endif %}
 </ul>
-{% endif %}
+{% endif %} -->
