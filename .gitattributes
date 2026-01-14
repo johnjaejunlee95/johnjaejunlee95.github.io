@@ -1,48 +1,87 @@
-# Define standard eol format
+# =========================
+# Line ending normalization
+# =========================
 
-# Web Files
+# Default rule:
+# - Treat files as text when Git can detect it
+# - Store text files in the repository with LF line endings
+* text=auto eol=lf
+
+# -------------------------
+# Web files (force LF)
+# -------------------------
 *.html text eol=lf
-*.md text eol=lf
-*.css text eol=lf
-*.js text eol=lf
+*.md   text eol=lf
+*.css  text eol=lf
+*.js   text eol=lf
 
-# Jekyll related files
-*.yml text eol=lf
+# -------------------------
+# YAML / Jekyll (force LF)
+# -------------------------
+*.yml  text eol=lf
+*.yaml text eol=lf
 
-# Git related files
-.gittattributes text eol=lf
-.gitignore text eol=lf
-.gitkeep text eol=lf
+# -------------------------
+# Git-related files (force LF)
+# NOTE: Make sure the filename is ".gitattributes" (no typos)
+# -------------------------
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+.gitkeep       text eol=lf
 
-# Ruby files
-*.rb text eol=lf
-Gemfile text eol=lf
+# -------------------------
+# Ruby files (force LF)
+# -------------------------
+*.rb         text eol=lf
+Gemfile      text eol=lf
 Gemfile.lock text eol=lf
 
-# Github specific fies
+# -------------------------
+# GitHub/Repo metadata (force LF)
+# NOTE: GitHub commonly uses "LICENSE" (US spelling), but keep both if needed
+# -------------------------
+LICENSE text eol=lf
 LICENCE text eol=lf
 
-# Docker specific files
+# -------------------------
+# Docker files (force LF)
+# -------------------------
 Dockerfile text eol=lf
 
-# VSCode files
+# -------------------------
+# VSCode / JSON (force LF)
+# -------------------------
 *.json text eol=lf
 
-# General multimedia files
-*.jpg binary
+# -------------------------
+# Windows-specific scripts (prefer CRLF for compatibility)
+# If you don't use these, you can remove this section.
+# -------------------------
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# =========================
+# Binary files (no EOL conversion)
+# =========================
+*.jpg  binary
 *.jpeg binary
-*.gif binary
-*.png binary
+*.gif  binary
+*.png  binary
+*.exe  binary
+*.data binary
+*.ttf  binary
+*.eof  binary
+*.eot  binary
+*.swf  binary
+*.mov  binary
+*.mp4  binary
+*.mp3  binary
+*.ogg  binary
+*.flv  binary
+
+# -------------------------
+# Project-specific binary extensions (no EOL conversion)
+# -------------------------
 *.t3x binary
 *.t3d binary
-*.exe binary
-*.data binary
-*.ttf binary
-*.eof binary
-*.eot binary
-*.swf binary
-*.mov binary
-*.mp4 binary
-*.mp3 binary
-*.ogg binary
-*.flv binary

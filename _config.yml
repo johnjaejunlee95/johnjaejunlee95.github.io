@@ -20,7 +20,8 @@ author: johnjaejunlee95
 ###############################################
 
 navbar-links:
-  About Me: "aboutme"
+  Author's home (About Me): "https://johnjaejunlee95.github.io"
+  Posts: "/posts/"
   Categories:
     - Generative: '/categories/generative'
     - Meta Learning: '/categories/meta_learning'
@@ -33,7 +34,6 @@ navbar-links:
   #   - Learn markdown: "https://www.markdowntutorial.com/"
   Search: "search/"
   Tags: "tags/"
-  Author's home: "https://johnjaejunlee95.github.io"
 
 ################
 # --- Logo --- #
