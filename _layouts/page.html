@@ -24,6 +24,8 @@ layout: base
         {{ content }}
       </div>
 
+      {% if page.show_cv %}
+
       <details style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
         <summary style="cursor: pointer; font-size: 2.2rem; font-weight: 800; color: #333; user-select: none; line-height: 1.2;">
           🧾 My CV
@@ -311,7 +313,8 @@ layout: base
 
       </div>
     </details>
-
+    {% endif %}
+    
       {% if page.after-content %}
       <div class="after-content">
         {% for file in page.after-content %}
