@@ -1,10 +1,4 @@
 ---
 layout: post_list
 title: 소소한 AI 블로그
-permalink: /posts/
-pagination:
-  enabled: true
-  collection: posts
-  per_page: 5
-  permalink: "/page:num/"
 ---
