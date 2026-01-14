@@ -2,7 +2,7 @@ name: Deploy Jekyll site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]  # master면 ["master"]
+    branches: ["main"]   # default가 master면 ["master"]
 
 permissions:
   contents: read
@@ -17,29 +17,25 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
 
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Build the site in the jekyll/builder container
-        run: |
-          export JEKYLL_VERSION=3.8
-          docker run \
-            -v ${{ github.workspace }}:/srv/jekyll \
-            -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-            -e PAGES_REPO_NWO=${{ github.repository }} \
-            jekyll/builder:$JEKYLL_VERSION /bin/bash -lc "\
-              chmod -R 777 /srv/jekyll && \
-              jekyll build --future --baseurl '${{ steps.pages.outputs.base_path }}' \
-            "
+      - name: Build with Jekyll (bundle exec)
+        env:
+          JEKYLL_ENV: production
+        run: bundle exec jekyll build --trace --baseurl "${{ steps.pages.outputs.base_path }}"
 
-      - name: Debug built output
+      - name: Debug pagination output
         run: |
-          echo "Baseurl: ${{ steps.pages.outputs.base_path }}"
-          ls -la _site | head -n 50
           ls -la _site/posts || true
           find _site/posts -maxdepth 2 -type d -name "page*" -print || true
 
@@ -49,8 +45,7 @@ jobs:
           path: ./_site
 
   deploy:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
     steps:
-      - name: Deploy
-        uses: actions/deploy-pages@v4
+      - uses: actions/deploy-pages@v4
