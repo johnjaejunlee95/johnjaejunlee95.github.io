@@ -1,8 +1,8 @@
-name: Build and Deploy Jekyll site to GitHub Pages
+name: Deploy Jekyll site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]   # 기본 브랜치가 master면 master로 바꿔
+    branches: ["main"]   # 기본 브랜치가 master면 ["master"]로 변경
 
 permissions:
   contents: read
@@ -30,10 +30,15 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Build with Jekyll
+      - name: Build with Jekyll (bundle exec)
         env:
           JEKYLL_ENV: production
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+
+      - name: Debug pagination output
+        run: |
+          ls -la _site/posts || true
+          find _site/posts -maxdepth 2 -type d -name "page*" -print || true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

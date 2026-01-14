@@ -327,6 +327,7 @@ pagination:
   sort_reverse: true
 
 plugins:
+  - jekyll-remote-theme
   - jekyll-paginate-v2
   - jekyll-sitemap
   - jemoji
