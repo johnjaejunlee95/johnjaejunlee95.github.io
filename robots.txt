@@ -1,8 +1,4 @@
-User-agent: Googlebot
-User-agent: NaverBot
+User-agent: *
 Allow: /
-
-User-agent: BadBot
-Disallow: /
 
 Sitemap: https://johnjaejunlee95.github.io/sitemap.xml

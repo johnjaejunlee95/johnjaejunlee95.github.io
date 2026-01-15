@@ -107,6 +107,8 @@ share-links-active:
   linkedin: true
   vk: false
 
+url: "https://johnjaejunlee95.github.io"
+
 # How to display the link to your website in the footer
 # Remove this if you don't want a link in the footer
 url-pretty: "johnjaejunlee.github.io"
