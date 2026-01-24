@@ -5,6 +5,7 @@ mathjax: true
 show_subscribe: false
 license: false
 show_author_profile: true
+comments: true
 ---
 
 # Sharp-MAML: Sharpness-Aware Model-Agnostic Meta Learning
