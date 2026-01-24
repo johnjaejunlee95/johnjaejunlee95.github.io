@@ -86,3 +86,18 @@ As a side note, when training LLM/LMM these days, most are trained with few-shot
 ### *Future Series
 
 Trying to post as detailed as possible made it too long. Originally, I intended to put all information in one post, but as I wrote, there were more parts to explain and too much content to cover than I thought, so I think it shouldn't get any longer. So, I will wrap up here for now, and continue posting about meta learning approaches, methods, significance, etc., in a series format later. Thank you for reading.
+
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = window.location.href;
+  this.page.identifier = window.location.pathname;
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
