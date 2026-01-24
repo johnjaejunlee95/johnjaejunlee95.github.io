@@ -1,4 +1,5 @@
 ---
+layout: article
 title: "[Paper Review] Sharp-MAML"
 tags: [Meta-Learning, MAML, Flat-Minima, SAM]
 mathjax: true
