@@ -269,3 +269,18 @@ Actually, there is a paper that proposed [(fo-)Proto-MAML](https://arxiv.org/pdf
 Up to this post, I think I have covered almost all pioneer papers of meta-learning. Research on meta-learning exploded for about 4-5 years after 2016 and 2017 when the papers explained above appeared, and although it has decreased slightly now, it is still consistently published in top-conference papers. However, the trend has now changed from researching the meta-learning algorithm itself to applying it to other research. Especially, as foundation model research becomes extremely active, the concept of few-shot, which can train with a small amount of data, seems to have become more important.
 
 As the next topic, I am thinking of posting about foundation models (LLM, LVM, etc.) that I have just started, whether it be paper reviews or concepts. I'm not sure which specific direction to take yet, but I will return after studying to some extent. Thank you for reading.
+
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = window.location.href;
+  this.page.identifier = window.location.pathname;
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
