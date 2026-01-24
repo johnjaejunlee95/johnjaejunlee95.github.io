@@ -224,7 +224,19 @@ In expanding the formulas, I tried to explain as best as I could, but as the con
 I will stop the proofs related to Convex here. (Most are proved similarly.) I will return with different content in the next post.
 
 
-
-<br>
-
 **$\*\$Thank you very much for reading. If there are any incorrect parts while reading or if you have any advice, I would appreciate it if you could share your opinions anytime.**
+
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = window.location.href;
+  this.page.identifier = window.location.pathname;
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
