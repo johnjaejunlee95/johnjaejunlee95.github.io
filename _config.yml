@@ -181,7 +181,6 @@ analytics:
     anonymize_ip: false # Anonymize IP tracking for Analytics
 
 # theme: jekyll-text-theme
-
 ## => Build
 ##############################
 markdown    : kramdown
