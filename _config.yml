@@ -180,7 +180,7 @@ analytics:
     tracking_id : # Google Analytics id for the site
     anonymize_ip: false # Anonymize IP tracking for Analytics
 
-theme: jekyll-text-theme
+remote_theme: kitian616/jekyll-text-theme
 ## => Build
 ##############################
 markdown    : kramdown
