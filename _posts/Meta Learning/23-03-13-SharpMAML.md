@@ -190,3 +190,18 @@ Just as I was getting interested in Flatness while studying Meta-Learning, the S
 * Finn, Chelsea, Pieter Abbeel, and Sergey Levine. "Model-agnostic meta-learning for fast adaptation of deep networks." International conference on machine learning. PMLR, 2017. ([Paper](http://proceedings.mlr.press/v70/finn17a/finn17a.pdf))
 * Foret, Pierre, et al. "Sharpness-aware minimization for efficiently improving generalization." arXiv preprint arXiv:2010.01412 (2020). ([Paper](https://arxiv.org/pdf/2010.01412))
 * Li, Hao, et al. "Visualizing the loss landscape of neural nets." Advances in neural information processing systems 31 (2018). ([Paper](https://arxiv.org/abs/1712.09913))
+
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = window.location.href;
+  this.page.identifier = window.location.pathname;
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>
