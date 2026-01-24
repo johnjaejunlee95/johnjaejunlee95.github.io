@@ -1,5 +1,5 @@
 ---
-title: "[Concept] Meta Learning (2) - Approaches"
+title: "[Conceptual Background] Meta Learning (2) - Approaches"
 tags: [Meta-Learning, Few-Shot Learning, MAML, Reptile, MatchingNet, ProtoNet]
 mathjax: true
 show_subscribe: false

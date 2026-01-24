@@ -1,5 +1,5 @@
 ---
-title: "[Concept] Meta Learning (1) - Few-Shot Learning"
+title: "[Conceptual Background] Meta Learning (1) - Few-Shot Learning"
 tags: [Meta-Learning, Few-Shot Learning]
 mathjax: true
 show_subscribe: false

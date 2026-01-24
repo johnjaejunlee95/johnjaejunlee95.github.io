@@ -1,5 +1,5 @@
 ---
-title: "[Concept] Convex Optimization 1"
+title: "[Theoretical Background] Convex Optimization 1"
 tags: [Convex, Optimization, Gradient Descent]
 mathjax: true
 show_subscribe: false

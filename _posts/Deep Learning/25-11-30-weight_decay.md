@@ -1,5 +1,5 @@
 ---
-title: "[Concept] Rethinking on Weight Decay"
+title: "[Conceptual Background] Rethinking on Weight Decay"
 tags: [Weight Decay, Gaussian Prior, LLM, LR Decay]
 mathjax: true
 show_subscribe: false
