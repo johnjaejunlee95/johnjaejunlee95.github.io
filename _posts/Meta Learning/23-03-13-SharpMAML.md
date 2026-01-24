@@ -1,12 +1,12 @@
 ---
-layout: article
 title: "[Paper Review] Sharp-MAML"
 tags: [Meta-Learning, MAML, Flat-Minima, SAM]
 mathjax: true
 show_subscribe: false
 license: false
 show_author_profile: true
-comments: true
+canonical_url: https://johnjaejunlee95.github.io/en/POST-URL/
+
 ---
 
 # Sharp-MAML: Sharpness-Aware Model-Agnostic Meta Learning
