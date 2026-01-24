@@ -20,9 +20,9 @@ text_skin: ocean # "default" (default), "dark", "forest", "ocean", "chocolate", 
 highlight_theme: tomorrow-night-eighties # "default" (default), "tomorrow", "tomorrow-night", "tomorrow-night-eighties", "tomorrow-night-blue", "tomorrow-night-bright"
 url: https://johnjaejunlee95.github.io
 baseurl: /en
-title   : JOHNJAEJUNLEE95's Easy AI Blog
+title   : johnjaejunlee95's Easy AI Blog
 description: > # this means to ignore newlines until "Language & timezone"
-  An easy-to-follow AI blog covering AI topics.
+  An easy-to-follow blog covering AI topics.
 
 sass:
   style: compressed
