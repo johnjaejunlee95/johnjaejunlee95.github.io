@@ -1,0 +1,46 @@
+- title: "Virtual Tactile Signal Generation (Vision–Tactile Integrated AGI)"
+  start: "Sept. 2025"
+  end: "Present"
+  sponsor: "IITP"
+  partners:
+    research:
+      - "Korea University Sejong Campus"
+      - "UNIST"
+      - "Technische Universität Berlin"
+    industry:
+      - "Immertix"
+      - "PSDL"
+      - "SURROMIND"
+      - "Sotong Five"
+      - "Nongshim Data System (NDS)"
+  role: "Core member (MIIT, UNIST)"
+  bullets:
+    - "Developing 3D reconstruction with object-part segmentation enriched with tactile information."
+  links: {}
+
+- title: "Reinforcement Learning for High-Efficiency & Reliable Combustion System"
+  start: "Mar. 2022"
+  end: "Aug. 2023"
+  sponsor: "Samyang Corp. & UNIST"
+  role: "Core member (MIIT, UNIST)"
+  bullets:
+    - "Designed a smart control system for combustion processes using deep reinforcement learning."
+  links: {}
+
+- title: "Heterogeneous Home Appliance Data Analysis Framework"
+  start: "Jul. 2022"
+  end: "Jan. 2023"
+  sponsor: "LG H&A"
+  role: "Core member (MIIT, UNIST)"
+  bullets:
+    - "Built a causal discovery framework under limited data using CCM + Meta-Learning."
+  links: {}
+
+- title: "Identification Data Processing for On-Site Police Use"
+  start: "Apr. 2021"
+  end: "Aug. 2021"
+  sponsor: "NRF"
+  role: "Project member (DTL, Yonsei University)"
+  bullets:
+    - "Developed an Android app for facial verification (Java / Android Studio)."
+  links: {}

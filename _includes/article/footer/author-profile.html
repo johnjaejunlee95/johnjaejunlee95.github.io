@@ -13,35 +13,35 @@
     {%- endif -%}
       {%- include snippets/get-nav-url.html path=_author.avatar -%}
       {%- assign _author_avatar = __return -%}
-      <img class="author-profile__avatar" itemprop="image" src="{{ _author_avatar }}" />
+      <img class="author-profile__avatar" itemprop="image" src="{{ _author_avatar }}" style="margin-top: 0.5rem;" />
     {%- if _author.url -%}
     </a>
     {%- endif -%}
   {%- endif -%}
 
 
-    <div class="item__content">
-
+    <div class="item__content" style="margin: 0.5rem;">
+    
       {%- if _author.name -%}
-        <meta itemprop="name" content="{{ _author.name }}">
-        <p class="author-profile__name">
-          {%- if _author.url -%}
-            <meta itemprop="url" content="{{ _author.url }}">
-            <a href="{{ _author.url }}">
+      <meta itemprop="name" content="{{ _author.name }}">
+      <p class="author-profile__name">
+        {%- if _author.url -%}
+        <meta itemprop="url" content="{{ _author.url }}">
+        <a href="{{ _author.url }}">
           {%- endif -%}
-              {{ _author.name }}
+          {{ _author.name }}
           {%- if _author.url -%}
-            </a>
-          {%- endif -%}
-        </p>
+        </a>
+        {%- endif -%}
+      </p>
       {%- endif -%}
-
+    
       {%- if _author.bio -%}
-        <p itemprop="description">{{ _author.bio }}</p>
+      <p itemprop="description">{{ _author.bio }}</p>
       {%- endif -%}
       <div class="author-profile__links">
         {%- include author-links.html author=_author -%}
       </div>
-
+    
     </div>
 </div>

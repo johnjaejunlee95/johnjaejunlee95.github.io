@@ -1,0 +1,14 @@
+---
+layout: page
+---
+<div class="layout--archive js-all">
+    <div class="js-result layout--archive__result d-none">
+        {%- include posts-list.html articles=site.posts type='brief' show_info=true reverse=true group_by='year' -%}
+    </div>
+</div>
+
+<script>
+  {%- include scripts/posts.js -%}
+</script>
+
+{{ content }}

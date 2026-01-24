@@ -1,74 +1,45 @@
 ---
 layout: article
-titles:
-  # @start locale config
-  en      : &EN       About
-  en-GB   : *EN
-  en-US   : *EN
-  en-CA   : *EN
-  en-AU   : *EN
-  zh-Hans : &ZH_HANS  关于
-  zh      : *ZH_HANS
-  zh-CN   : *ZH_HANS
-  zh-SG   : *ZH_HANS
-  zh-Hant : &ZH_HANT  關於
-  zh-TW   : *ZH_HANT
-  zh-HK   : *ZH_HANT
-  ko      : &KO       소개
-  ko-KR   : *KO
-  fr      : &FR       À propos
-  fr-BE   : *FR
-  fr-CA   : *FR
-  fr-CH   : *FR
-  fr-FR   : *FR
-  fr-LU   : *FR
-  # @end locale config
-key: page-about
+titles: About Me
+education: true
+experiences: true
+projects: true
+patents: true
+teaching: true
+skills: true
+publications: true
+show_cv: true
 ---
 
-![TeXt Theme](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/TeXt-home.jpg)
+Hello! I am **@johnjaejunlee95**, a 5th-year M.S./Ph.D. integrated student at the **Graduate School of Artificial Intelligence, UNIST**.
 
-TeXt is a super customizable Jekyll theme for personal site, team site, blog, project, documentation, etc. Similar to iOS 11 style, it has large and prominent titles, round buttons and cards.
+My research stems from a fundamental question: **"How do AI models learn and generalize?"**
 
-```javascript
-(() => console.log('Hello, World!'))();
-```
+* **Past:** Meta-Learning, Generalization
+* **Current:** Multimodal Learning (Theoretical Approach & Applications e.g., VLA), Flatness (Loss Landscape Perspective), AI4Science (Bio)
 
-## Features
+While my earlier research focused on Meta-Learning, I am currently conducting research on **Multimodal Learning**. I focus on analyzing **Multimodal Learning** through a theoretical lens, specifically connecting it to the geometry of the **Loss Landscape (Flatness)**. Recently, I have also developed an interest in **Bioinformatics (e.g., EEG)** and have begun exploring the field of **AI4Science**.
 
-- Responsive
-- Semantic HTML
-- Skins
-- Highlight Theme
-- Internationalization
-- Search
-- Table of contents
-- Authors
-- Additional styles (alert, tag, image, icon, button, grid, etc)
-- Extensions (audios, videos, slides, demos)
-- Markdown enhancements ([MathJax](https://www.mathjax.org/), [mermaid](https://mermaidjs.github.io/), [chartjs](http://www.chartjs.org/))
-- Sharing ([AddToAny](https://www.addtoany.com/), [AddThis](https://www.addthis.com/))
-- Comments ([Disqus](https://disqus.com/), [Gitalk](https://gitalk.github.io/), [Valine](https://valine.js.org/en/))
-- Pageview ([LeanCloud](https://leancloud.cn/))
-- Analytics ([Google Analytics](https://analytics.google.com/analytics/web/))
-- RSS ([jekyll-feed](https://github.com/jekyll/jekyll-feed))
+My goal extends beyond merely building high-performance models; I aim to become a researcher who **"deeply understands AI based on solid theoretical and mathematical grounds and explains it clearly to the audience."** I aspire to uncover the operating principles of models both intuitively and theoretically, and to act as a bridge, conveying complex engineering concepts to the public in an intuitive and approachable way.
 
-## Skins
+This blog will primarily feature posts on:
 
-TeXt has 6 built-in skins, you can also set up your own skin.
+* **Deep Learning: Concepts, Algorithms & Intuition**
+* **Essential Mathematics for AI**
+* **Paper Reviews**
 
-| `default` | `dark` | `forest` |
-| --- |  --- | --- |
-| ![Default](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_default.jpg) | ![Dark](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_dark.jpg) | ![Forest](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_forest.jpg) |
+<div style="text-align: center;">
+  <a href="mailto:johnjaejunlee95@unist.ac.kr" style="text-decoration: none; margin-right: 15px;">
+    <i class="fas fa-envelope"></i> Email
+  </a>
+  <a href="https://www.github.com/johnjaejunlee95" style="text-decoration: none; margin-right: 15px;">
+    <i class="fab fa-github"></i> Github
+  </a>
+  <a href="https://www.facebook.com/johnjaejunlee" style="text-decoration: none; margin-right: 15px;">
+    <i class="fab fa-facebook"></i> Facebook
+  </a>
+  <a href="https://www.linkedin.com/in/johnjaejunlee95" style="text-decoration: none;">
+    <i class="fab fa-linkedin"></i> LinkedIn
+  </a>
+</div>
 
-| `ocean` | `chocolate` | `orange` |
-| --- |  --- | --- |
-| ![Ocean](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_ocean.jpg) | ![Chocolate](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_chocolate.jpg) | ![Orange](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/skins_orange.jpg) |
-
-### Highlight Theme
-
-TeXt use [Tomorrow](https://github.com/chriskempson/tomorrow-theme) as the highlight theme.
-
-| `tomorrow` | `tomorrow-night` | `tomorrow-night-eighties` | `tomorrow-night-blue` | `tomorrow-night-bright` |
-| --- |  --- | --- | --- |  --- |
-| ![Tomorrow](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/highlight_tomorrow.png) | ![Tomorrow Night](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/highlight_tomorrow-night.png) | ![Tomorrow Night Eighties](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/highlight_tomorrow-night-eighties.png) | ![Tomorrow Night Blue](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/highlight_tomorrow-night-blue.png) | ![Tomorrow Night Bright](https://raw.githubusercontent.com/kitian616/jekyll-TeXt-theme/master/screenshots/highlight_tomorrow-night-bright.png) |

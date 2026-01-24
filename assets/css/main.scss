@@ -1,74 +1,58 @@
----
-# Only the main Sass file needs front matter (the dashes are enough)
----
+@use "sass:color";
 
-@import
+// 2. 고정 경로 파일들 (@use 방식으로 변경하여 경고 제거)
+// 'as *'를 붙여야 하위 파일의 변수와 믹스인을 그대로 쓸 수 있습니다.
+@use "common/variables" as *;
+@use "common/function" as *;
+@use "common/classes" as *;
+@use "common/reset" as *;
+@use "common/print" as *;
+@use "common/components/button" as *;
+@use "common/components/image" as *;
+@use "common/components/card" as *;
+@use "common/components/gallery" as *;
+@use "common/components/hero" as *;
+@use "common/components/menu" as *;
+@use "common/components/modal" as *;
+@use "common/components/toc" as *;
+@use "common/components/item" as *;
+@use "common/components/swiper" as *;
 
-    "skins/{{ site.text_skin | default: site.data.variables.default.text_skin }}",
-    // "skins/chocolate",
-    // "skins/dark",
-    // "skins/default",
-    // "skins/forest",
-    // "skins/ocean",
-    // "skins/orange",
+@use "animate/fade-in" as *;
+@use "animate/fade-in-down" as *;
+@use "animate/fade-in-up" as *;
 
-    "skins/highlight/{{ site.highlight_theme | default: site.data.variables.default.highlight_theme }}",
-    // "skins/highlight/tomorrow",
-    // "skins/highlight/tomorrow-night",
-    // "skins/highlight/tomorrow-night-eighties",
-    // "skins/highlight/tomorrow-night-blue",
-    // "skins/highlight/tomorrow-night-bright",
+@use "components/main" as *;
+@use "components/header" as *;
+@use "components/footer" as *;
+@use "components/article-list" as *;
+@use "components/article-info" as *;
+@use "components/article-header" as *;
+@use "components/article-content" as *;
+@use "components/article-footer" as *;
+@use "components/author-links" as *;
+@use "components/author-profile" as *;
+@use "components/tags" as *;
+@use "components/search" as *;
+@use "components/lightbox" as *;
+@use "components/extensions" as *;
 
+@use "additional/alert" as *;
+@use "additional/tag" as *;
+@use "additional/photo-frame" as *;
 
-    "common/variables",
-    "common/function",
-    "common/classes",
-    "common/reset",
-    "common/print",
-    "common/components/button",
-    "common/components/image",
-    "common/components/card",
-    "common/components/gallery",
-    "common/components/hero",
-    "common/components/menu",
-    "common/components/modal",
-    "common/components/toc",
-    "common/components/item",
-    "common/components/swiper",
+@use "layout/base" as *;
+@use "layout/page" as *;
+@use "layout/article" as *;
+@use "layout/articles" as *;
+@use "layout/archive" as *;
+@use "layout/home" as *;
+@use "layout/landing" as *;
+@use "layout/404" as *;
 
-    "animate/fade-in",
-    "animate/fade-in-down",
-    "animate/fade-in-up",
+@use "custom" as *;
 
-    "components/main",
-    "components/header",
-    "components/footer",
-    "components/article-list",
-    "components/article-info",
-    "components/article-header",
-    "components/article-content",
-    "components/article-footer",
-    "components/author-links",
-    "components/author-profile",
-    "components/tags",
-    "components/search",
-    "components/lightbox",
-    "components/extensions",
-
-
-    "additional/alert",
-    "additional/tag",
-    "additional/photo-frame",
-
-    "layout/base",
-    "layout/page",
-
-    "layout/article",
-    "layout/articles",
-    "layout/archive",
-    "layout/home",
-    "layout/landing",
-    "layout/404",
-
-    "custom"
-;
+// 3. Liquid 변수가 포함된 동적 경로는 기존 @import 유지
+// (Sass @use는 변수가 포함된 경로를 지원하지 않으므로 이 부분은 경고가 남을 수 있습니다)
+@import "skins/{{ site.text_skin | default: site.data.variables.default.text_skin }}";
+@import "skins/highlight/{{ site.highlight_theme | default: site.data.variables.default.highlight_theme }}";

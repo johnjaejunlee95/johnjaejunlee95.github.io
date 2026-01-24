@@ -9,6 +9,7 @@
       <div class="header__title">
         <div class="header__brand">
           {%- include svg/logo.svg -%}
+          <!-- <img src="{{ '/_includes/svg/logo.svg' | relative_url }}" alt="Profile" style="height: 4em; width: auto; vertical-align: middle; border-radius: 50%; margin-right: 2em;" /> -->
           {%- assign _paths_root = site.paths.root | default: site.data.variables.default.paths.root  -%}
           {%- include snippets/get-nav-url.html path=_paths_root -%}
           {%- if site.title -%}

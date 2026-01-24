@@ -1,0 +1,14 @@
+- category: "Programming"
+  items: ["Python", "MATLAB (basic)", "C/C++ (basic)"]
+
+- category: "Tools & Platforms"
+  items: ["Linux", "Bash", "Git", "Conda"]
+
+- category: "AI Frameworks / Libraries"
+  items: ["PyTorch", "JAX (basic)", "Scikit-Learn", "Pandas", "Hugging Face"]
+
+- category: "Math Background"
+  items: ["Linear Algebra", "Probability & Statistics", "Information Theory", "Estimation Theory (basic)", "Learning Theory (basic)"]
+
+- category: "Writing / Workflow"
+  items: ["LaTeX", "Markdown", "Notion"]
