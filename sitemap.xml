@@ -1,6 +1,6 @@
 ---
 layout: null
-permalink: /en/sitemap.xml
+permalink: /sitemap.xml
 ---
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -9,14 +9,12 @@ permalink: /en/sitemap.xml
                             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   {% for post in site.posts %}
-    {% if post.url contains "/en/" %}
     <url>
       <loc>{{ site.url }}{{ site.baseurl }}{{ post.url }}</loc>
       <lastmod>{{ post.last_modified_at | default: post.date | date_to_xmlschema }}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
     </url>
-    {% endif %}
   {% endfor %}
 
   {% for page in site.pages %}
@@ -28,14 +26,13 @@ permalink: /en/sitemap.xml
           or page.name == "404.html"
           or page.name == "feed.xml"
           or page.name == "robots.txt" %}
-      {% if u == "/en/" or u contains "/en/" %}
       <url>
         <loc>{{ site.url }}{{ site.baseurl }}{{ u }}</loc>
         <lastmod>{{ page.last_modified_at | default: site.time | date_to_xmlschema }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
       </url>
-      {% endif %}
     {% endunless %}
   {% endfor %}
+
 </urlset>
