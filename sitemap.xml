@@ -9,14 +9,12 @@ permalink: /sitemap.xml
                             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   {% for post in site.posts %}
-    {% unless post.url contains "/en/" %}
     <url>
       <loc>{{ site.url }}{{ site.baseurl }}{{ post.url }}</loc>
       <lastmod>{{ post.last_modified_at | default: post.date | date_to_xmlschema }}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
     </url>
-    {% endunless %}
   {% endfor %}
 
   {% for page in site.pages %}
@@ -24,18 +22,16 @@ permalink: /sitemap.xml
     {% unless u contains ".xml"
           or u contains "assets"
           or u contains ".css"
+          or u contains "/google"
           or page.name == "404.html"
           or page.name == "feed.xml"
-          or page.name == "robots.txt"
-          or page.name contains "google" %}
-      {% unless u == "/en/" or u contains "/en/" %}
+          or page.name == "robots.txt" %}
       <url>
         <loc>{{ site.url }}{{ site.baseurl }}{{ u }}</loc>
         <lastmod>{{ page.last_modified_at | default: site.time | date_to_xmlschema }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
       </url>
-      {% endunless %}
     {% endunless %}
   {% endfor %}
 </urlset>
