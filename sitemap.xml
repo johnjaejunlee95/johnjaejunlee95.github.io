@@ -1,35 +1,35 @@
 ---
 layout: null
+permalink: /en/sitemap.xml
 ---
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd"
-        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+                            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
   {% for post in site.posts %}
+    {% if post.url contains "/en/" %}
     <url>
-      <loc>{{ site.url }}{{ site.baseurl }}{{ post.url }}</loc>
+      <loc>{{ site.url }}{{ post.url }}</loc>
       <lastmod>{{ post.last_modified_at | default: post.date | date_to_xmlschema }}</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.8</priority>
     </url>
+    {% endif %}
   {% endfor %}
 
   {% for page in site.pages %}
-    {% unless page.url contains '.xml'
-          or page.url contains 'assets'
-          or page.url contains '.css'
-          or page.name == '404.html'
-          or page.name == 'feed.xml'
-          or page.name == 'robots.txt' %}
+    {% assign u = page.url | remove: "index.html" %}
+    {% unless u contains ".xml" or u contains "assets" or u contains ".css" or page.name == "404.html" or page.name == "feed.xml" or page.name == "robots.txt" %}
+      {% if u == "/en/" or u contains "/en/" %}
       <url>
-        <loc>{{ site.url }}{{ site.baseurl }}{{ page.url | remove: "index.html" }}</loc>
+        <loc>{{ site.url }}{{ u }}</loc>
         <lastmod>{{ page.last_modified_at | default: site.time | date_to_xmlschema }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.5</priority>
       </url>
+      {% endif %}
     {% endunless %}
   {% endfor %}
-
 </urlset>
