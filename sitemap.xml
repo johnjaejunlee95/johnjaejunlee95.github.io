@@ -24,10 +24,10 @@ permalink: /en/sitemap.xml
     {% unless u contains ".xml"
           or u contains "assets"
           or u contains ".css"
+          or u contains "/google"
           or page.name == "404.html"
           or page.name == "feed.xml"
-          or page.name == "robots.txt"
-          or page.name contains "google" %}
+          or page.name == "robots.txt" %}
       {% if u == "/en/" or u contains "/en/" %}
       <url>
         <loc>{{ site.url }}{{ site.baseurl }}{{ u }}</loc>
