@@ -1,0 +1,13 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🎓 Education</h3>
+
+  <ul class="cv-list cv-list-flat">
+    {% for edu in site.data.education %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ edu.school }}</div>
+      <div class="cv-item-sub">{{ edu.degree }}{% if edu.department %} — {{ edu.department }}{% endif %}</div>
+      <div class="cv-item-meta">{{ edu.start }} - {{ edu.end }}{% if edu.gpa %} · GPA: {{ edu.gpa }}{% endif %}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

@@ -1,0 +1,31 @@
+<section class="cv-block cv-publications">
+  <h3 class="cv-block-title">📝 Publications</h3>
+
+  <ul class="cv-list cv-list-flat">
+    {% for pub in site.data.publications %}
+    <li class="cv-item cv-publication-item">
+      <div class="cv-item-title">{{ pub.title }}</div>
+
+      <div class="cv-item-sub">
+        {{ pub.authors | markdownify | remove: '<p>' | remove: '</p>' }}
+      </div>
+
+      <div class="cv-item-meta cv-item-meta-italic">
+        {{ pub.conference }}{% if pub.location %}, {{ pub.location }}{% endif %} ({{ pub.year }})
+      </div>
+
+      <div class="cv-link-row">
+        {% if pub.paper_url %}
+        <a class="cv-tag-link" href="{{ pub.paper_url }}" target="_blank">📄 Paper</a>
+        {% endif %}
+        {% if pub.code_url %}
+        <a class="cv-tag-link" href="{{ pub.code_url }}" target="_blank"><i class="fab fa-github"></i> Code</a>
+        {% endif %}
+        {% if pub.project_url %}
+        <a class="cv-tag-link" href="{{ pub.project_url }}" target="_blank">🌐 Project</a>
+        {% endif %}
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

@@ -1,0 +1,9 @@
+# Local development overrides
+# Purpose: avoid fetching remote_theme over HTTPS in environments with strict SSL/CRL validation.
+
+remote_theme:
+
+plugins:
+  - jekyll-paginate-v2
+  - jekyll-sitemap
+  - jemoji

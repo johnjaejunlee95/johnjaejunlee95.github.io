@@ -1,0 +1,20 @@
+{% assign sorted_pubs = site.data.publications | sort: "year" | reverse %}
+
+<div class="section-head">
+  <h3>Selected Publications</h3>
+  <p>Quick view of representative papers</p>
+</div>
+
+<ul class="pub-list">
+  {% for pub in sorted_pubs limit: 4 %}
+  <li>
+    <div class="pub-title">{{ pub.title }}</div>
+    <div class="pub-meta">{{ pub.conference }} ({{ pub.year }}){% if pub.location %} · {{ pub.location }}{% endif %}</div>
+    <div class="pub-links">
+      {% if pub.paper_url %}<a href="{{ pub.paper_url }}" target="_blank" rel="noopener noreferrer">Paper</a>{% endif %}
+      {% if pub.code_url %}<a href="{{ pub.code_url }}" target="_blank" rel="noopener noreferrer">Code</a>{% endif %}
+      {% if pub.project_url %}<a href="{{ pub.project_url }}" target="_blank" rel="noopener noreferrer">Project</a>{% endif %}
+    </div>
+  </li>
+  {% endfor %}
+</ul>

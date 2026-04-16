@@ -1,0 +1,10 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🛠️ Skills</h3>
+
+  {% for s in site.data.skills %}
+  <div class="cv-skill-item">
+    <div class="cv-item-title">{{ s.category }}</div>
+    <div class="cv-item-sub">{% if s.items %}{{ s.items | join: " · " }}{% endif %}</div>
+  </div>
+  {% endfor %}
+</section>

@@ -1,0 +1,23 @@
+<div class="section-head">
+  <h3>Experience Snapshot</h3>
+  <p>Research and industry collaboration</p>
+</div>
+
+<ul class="exp-list">
+  {% for exp in site.data.experiences %}
+  <li>
+    <div class="exp-top">
+      <div class="exp-org">{{ exp.org }}</div>
+      <div class="exp-time">{{ exp.start }} - {{ exp.end }}</div>
+    </div>
+    <div class="exp-role">{{ exp.role }}</div>
+    {% if exp.highlights %}
+    <ul class="exp-highlights">
+      {% for h in exp.highlights %}
+      <li>{{ h | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>

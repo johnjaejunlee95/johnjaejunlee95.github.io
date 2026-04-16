@@ -1,0 +1,28 @@
+<div class="home-cv-shell">
+  <div class="home-panel-head">
+    <h2>Curriculum Vitae</h2>
+    <p>Structured by section for easier updates</p>
+  </div>
+
+  <nav class="home-anchor-nav home-anchor-nav-cv" aria-label="CV sections">
+    {% if page.education %}<a href="#cv-education">Education</a>{% endif %}
+    {% if page.experiences %}<a href="#cv-experience">Experience</a>{% endif %}
+    {% if page.publications %}<a href="#cv-publications">Publications</a>{% endif %}
+    {% if page.patents %}<a href="#cv-patents">Patents</a>{% endif %}
+    {% if page.projects %}<a href="#cv-projects">Projects</a>{% endif %}
+    {% if page.teaching %}<a href="#cv-teaching">Teaching</a>{% endif %}
+    {% if page.academic_experiences %}<a href="#cv-academic-experiences">Academic</a>{% endif %}
+    {% if page.skills %}<a href="#cv-skills">Skills</a>{% endif %}
+  </nav>
+
+  <div class="cv-sections">
+    {% if page.education %}<div id="cv-education">{% include home/cv/education.html %}</div>{% endif %}
+    {% if page.experiences %}<div id="cv-experience">{% include home/cv/experiences.html %}</div>{% endif %}
+    {% if page.publications %}<div id="cv-publications">{% include home/cv/publications.html %}</div>{% endif %}
+    {% if page.patents %}<div id="cv-patents">{% include home/cv/patents.html %}</div>{% endif %}
+    {% if page.projects %}<div id="cv-projects">{% include home/cv/projects.html %}</div>{% endif %}
+    {% if page.teaching %}<div id="cv-teaching">{% include home/cv/teaching.html %}</div>{% endif %}
+    {% if page.academic_experiences %}<div id="cv-academic-experiences">{% include home/cv/academic_experiences.html %}</div>{% endif %}
+    {% if page.skills %}<div id="cv-skills">{% include home/cv/skills.html %}</div>{% endif %}
+  </div>
+</div>

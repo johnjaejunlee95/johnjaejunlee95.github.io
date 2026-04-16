@@ -1,0 +1,46 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🧑‍🏫 Teaching & Service</h3>
+
+  {% assign tutor_items = site.data.teaching | where: "category", "tutor" %}
+  {% assign program_items = site.data.teaching | where: "category", "program" %}
+  {% assign novatus_items = site.data.teaching | where: "category", "novatus" %}
+
+  {% if tutor_items.size > 0 %}
+  <h4 class="cv-subgroup-title">📚 TA</h4>
+  <ul class="cv-list cv-list-flat cv-subgroup-list">
+    {% for t in tutor_items %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ t.title }}</div>
+      <div class="cv-item-sub">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+      <div class="cv-item-meta">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if program_items.size > 0 %}
+  <h4 class="cv-subgroup-title">🏫 Special Program</h4>
+  <ul class="cv-list cv-list-flat cv-subgroup-list">
+    {% for t in program_items %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ t.title }}</div>
+      <div class="cv-item-sub">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+      <div class="cv-item-meta">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if novatus_items.size > 0 %}
+  <h4 class="cv-subgroup-title">🌱 AI Novatus Academia</h4>
+  <ul class="cv-list cv-list-flat cv-subgroup-list">
+    {% for t in novatus_items %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ t.title }}</div>
+      <div class="cv-item-sub">{{ t.role }}{% if t.org %} · {{ t.org }}{% endif %}</div>
+      <div class="cv-item-meta">{{ t.start }}{% if t.end %} - {{ t.end }}{% endif %}</div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</section>

@@ -1,0 +1,26 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🧾 Patents</h3>
+
+  <ul class="cv-list cv-list-flat">
+    {% for p in site.data.patents %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ p.title }}</div>
+
+      <div class="cv-item-sub">
+        {{ p.inventors | markdownify | remove: '<p>' | remove: '</p>' }}
+      </div>
+
+      <div class="cv-item-meta">
+        {% if p.number %}{{ p.number }}{% endif %}
+        {% if p.publication_date %}{% if p.number %} · {% endif %}Publication: {{ p.publication_date }}{% endif %}
+      </div>
+
+      {% if p.url and p.url != "" %}
+      <div class="cv-link-row">
+        <a class="cv-tag-link" href="{{ p.url }}" target="_blank">🔗 Link</a>
+      </div>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>
