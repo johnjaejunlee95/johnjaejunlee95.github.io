@@ -1,0 +1,21 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🧪 Experience</h3>
+
+  <ul class="cv-list cv-list-flat">
+    {% for exp in site.data.experiences %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ exp.org }}</div>
+      <div class="cv-item-sub">{{ exp.role }}</div>
+      <div class="cv-item-meta">{{ exp.start }} - {{ exp.end }}</div>
+
+      {% if exp.highlights %}
+      <ul class="cv-highlights">
+        {% for h in exp.highlights %}
+        <li>{{ h | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</section>

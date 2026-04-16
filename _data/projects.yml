@@ -1,12 +1,22 @@
-- title: "Virtual Tactile Signal Generation (Vision–Tactile Integrated AGI)"
+- title: "AI-based Cone Beam CT Image Enhancement"
+  start: "Mar. 2026"
+  end: "Dec. 2026"
+  sponsor: "Dongnam Institute of Radiological & Medical Sciences"
+  role: "Core member (MIIT, UNIST)"
+  bullets:
+    - "Development of generative model-based image enhancement for Cone Beam CT (CBCT) images."
+    - "Fully contributing as a core member (MIIT, UNIST)."
+  links: {}
+
+- title: "Virtual Tactile Signal Generation Based on Multimodal Vision-Tactile AGI"
   start: "Sept. 2025"
-  end: "Present"
+  end: "Dec. 2025"
   sponsor: "IITP"
   partners:
     research:
       - "Korea University Sejong Campus"
       - "UNIST"
-      - "Technische Universität Berlin"
+      - "Technische Universitat Berlin"
     industry:
       - "Immertix"
       - "PSDL"
@@ -15,16 +25,18 @@
       - "Nongshim Data System (NDS)"
   role: "Core member (MIIT, UNIST)"
   bullets:
-    - "Developing 3D reconstruction with object-part segmentation enriched with tactile information."
+    - "Development of 3D reconstruction containing tactile information of each segmented object."
+    - "Fully contributed as a core member (MIIT, UNIST)."
   links: {}
 
-- title: "Reinforcement Learning for High-Efficiency & Reliable Combustion System"
+- title: "RL Solution for High-Efficiency and Reliable Combustion System"
   start: "Mar. 2022"
   end: "Aug. 2023"
   sponsor: "Samyang Corp. & UNIST"
   role: "Core member (MIIT, UNIST)"
   bullets:
-    - "Designed a smart control system for combustion processes using deep reinforcement learning."
+    - "Designed a smart control system for combustion processes using deep reinforcement learning to improve efficiency and reliability."
+    - "Fully contributed as a core member (MIIT, UNIST)."
   links: {}
 
 - title: "Heterogeneous Home Appliance Data Analysis Framework"
@@ -33,14 +45,16 @@
   sponsor: "LG H&A"
   role: "Core member (MIIT, UNIST)"
   bullets:
-    - "Built a causal discovery framework under limited data using CCM + Meta-Learning."
+    - "Designed a framework to identify causal relationships among heterogeneous smart home appliances using CCM and Meta-Learning under limited data."
+    - "Fully contributed as a core member (MIIT, UNIST)."
   links: {}
 
-- title: "Identification Data Processing for On-Site Police Use"
+- title: "Identification Data Processing Technology for On-Site Police Use"
   start: "Apr. 2021"
   end: "Aug. 2021"
-  sponsor: "NRF"
+  sponsor: "National Research Foundation of Korea (NRF)"
   role: "Project member (DTL, Yonsei University)"
   bullets:
-    - "Developed an Android app for facial verification (Java / Android Studio)."
+    - "Developed a mobile app for facial verification for on-site use cases including missing-child identification."
+    - "Built with Android Studio and Java."
   links: {}

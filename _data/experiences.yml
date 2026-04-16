@@ -1,20 +1,20 @@
-- org: "Machine Intelligence and Information Theory Lab (MIIT), UNIST"
-  role: "M.S.–Ph.D. Combined Research Student"
+- org: "Machine Intelligence and Information Theory Lab (MIIT)"
+  role: "M.S.-Ph.D. Combined Research Student @ Ulsan National Institute of Science and Technology (UNIST)"
   start: "Mar. 2022"
   end: "Present"
   highlights:
-    - "Research on meta-learning / multimodal learning / robust VLA (ongoing)."
+    - "Research in meta-learning, multimodal learning, and robust VLA."
 
-- org: "Design Technology Laboratory (DTL), Yonsei University"
-  role: "B.S. Internship"
+- org: "Design Technology Laboratory (DTL)"
+  role: "B.S. Internship @ Yonsei University"
   start: "Feb. 2021"
   end: "Aug. 2021"
   highlights:
-    - "Worked on applied ML / mobile pipeline development."
+    - "Worked on practical ML/mobile implementation projects."
 
-- org: "SoC and Embedded System (SES), Dankook University"
-  role: "B.S. Internship"
+- org: "SoC and Embedded System (SES)"
+  role: "B.S. Internship @ Dankook University"
   start: "Jul. 2020"
   end: "Feb. 2021"
   highlights:
-    - "Worked on embedded / SoC-related projects."
+    - "Worked on embedded/SoC-related research and development tasks."

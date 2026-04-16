@@ -1,0 +1,18 @@
+<div class="section-head">
+  <h3>Representative Projects</h3>
+  <p>Current and recent projects</p>
+</div>
+
+<div class="project-grid">
+  {% for prj in site.data.projects limit: 3 %}
+  <article class="project-card">
+    <h4>{{ prj.title }}</h4>
+    <p class="project-time">{{ prj.start }}{% if prj.end %} - {{ prj.end }}{% endif %}</p>
+    {% if prj.sponsor %}<p class="project-sponsor"><b>Sponsor:</b> {{ prj.sponsor }}</p>{% endif %}
+    {% if prj.role %}<p class="project-role"><b>Role:</b> {{ prj.role }}</p>{% endif %}
+    {% if prj.bullets and prj.bullets.size > 0 %}
+    <p class="project-bullet">{{ prj.bullets[0] }}</p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>

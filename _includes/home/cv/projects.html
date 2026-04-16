@@ -1,0 +1,53 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🧩 Projects</h3>
+
+  {% for prj in site.data.projects %}
+  <details class="cv-project-item">
+    <summary class="cv-project-summary">
+      {{ prj.title }}
+      {% if prj.start or prj.end %}
+      <span class="cv-item-meta">({{ prj.start }}{% if prj.end %} - {{ prj.end }}{% endif %})</span>
+      {% endif %}
+    </summary>
+
+    <div class="cv-project-body">
+      {% if prj.sponsor %}<div><b>Sponsor:</b> {{ prj.sponsor }}</div>{% endif %}
+      {% if prj.role %}<div><b>Role:</b> {{ prj.role }}</div>{% endif %}
+
+      {% if prj.partners %}
+      <div class="cv-project-partners">
+        <b>Partners:</b>
+        {% if prj.partners.research %}
+        <div>- Research: {{ prj.partners.research | join: ", " }}</div>
+        {% endif %}
+        {% if prj.partners.industry %}
+        <div>- Industry: {{ prj.partners.industry | join: ", " }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      {% if prj.bullets %}
+      <ul class="cv-highlights">
+        {% for b in prj.bullets %}
+        <li>{{ b | markdownify | remove: '<p>' | remove: '</p>' }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
+      {% if prj.links %}
+      <div class="cv-link-row">
+        {% if prj.links.paper %}
+        <a class="cv-tag-link" href="{{ prj.links.paper }}" target="_blank">📄 Paper</a>
+        {% endif %}
+        {% if prj.links.code %}
+        <a class="cv-tag-link" href="{{ prj.links.code }}" target="_blank"><i class="fab fa-github"></i> Code</a>
+        {% endif %}
+        {% if prj.links.project %}
+        <a class="cv-tag-link" href="{{ prj.links.project }}" target="_blank">🌐 Project</a>
+        {% endif %}
+      </div>
+      {% endif %}
+    </div>
+  </details>
+  {% endfor %}
+</section>

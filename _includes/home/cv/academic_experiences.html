@@ -1,0 +1,12 @@
+<section class="cv-block">
+  <h3 class="cv-block-title">🧠 Academic Experiences</h3>
+
+  <ul class="cv-list cv-list-flat">
+    {% for item in site.data.academic_experiences %}
+    <li class="cv-item">
+      <div class="cv-item-title">{{ item.title }}</div>
+      <div class="cv-item-meta">{{ item.years }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>

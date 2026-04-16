@@ -1,0 +1,62 @@
+---
+layout: page
+type: article
+---
+
+<div class="home-v3">
+  {% include home/visitor_badge.html %}
+
+  <nav class="scan-nav" aria-label="Home sections">
+    <a href="#home-profile">Profile</a>
+    <a href="#home-news">News</a>
+    <a href="#home-publications">Publications</a>
+    <a href="#home-experience">Experience</a>
+    <a href="#home-projects">Projects</a>
+    <a href="#home-details">Details</a>
+  </nav>
+
+  <section id="home-profile" class="scan-card">
+    {% include home/hero.html %}
+  </section>
+
+  <section id="home-news" class="scan-card">
+    {% include home/recent_news.html %}
+  </section>
+
+  <div class="scan-grid-2">
+    <section id="home-publications" class="scan-card">
+      {% include home/selected_publications.html %}
+    </section>
+
+    <section id="home-experience" class="scan-card">
+      {% include home/experience_snapshot.html %}
+    </section>
+  </div>
+
+  <section id="home-projects" class="scan-card">
+    {% include home/project_snapshot.html %}
+  </section>
+
+  <section id="home-details" class="scan-card scan-card-details">
+    <div class="section-head">
+      <h3>Detailed Sections</h3>
+      <p>Expand only when you need the full content</p>
+    </div>
+
+    <details class="scan-detail-toggle">
+      <summary>Detailed Bio</summary>
+      <div class="scan-detail-body home-about-content">
+        {{ content }}
+      </div>
+    </details>
+
+    {% if page.show_cv %}
+    <details class="scan-detail-toggle">
+      <summary>Full CV</summary>
+      <div class="scan-detail-body">
+        {% include home/cv.html %}
+      </div>
+    </details>
+    {% endif %}
+  </section>
+</div>
