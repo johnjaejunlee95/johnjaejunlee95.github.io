@@ -29,6 +29,9 @@ links:
     url: "https://johnjaejunlee95.github.io/en/"
 
 news:
+  - date: "2026"
+    text: "ICML 2026 paper accepted: Understanding Multimodal Learning: A Loss Landscape Smoothness Perspective."
+    link: ""
   - date: "2025"
     text: "ICLR 2025 paper accepted: Can One Modality Model Synergize Training of Other Modality Models?"
     link: "https://openreview.net/forum?id=5BXWhVbHAK"

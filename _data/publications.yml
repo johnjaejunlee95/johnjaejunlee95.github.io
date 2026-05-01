@@ -1,3 +1,11 @@
+- title: "Understanding Multimodal Learning: A Loss Landscape Smoothness Perspective"
+  authors: "**Jae-Jun Lee**, Sung Whan Yoon"
+  conference: "Forty-third International Conference on Machine Learning (ICML)"
+  year: 2026
+  location: ""
+  paper_url: ""
+  code_url: ""
+
 - title: "Can One Modality Model Synergize Training of Other Modality Models?"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
   conference: "The Thirteenth International Conference on Learning Representations (ICLR)"

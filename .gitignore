@@ -11,3 +11,7 @@ ehthumbs.db
 Gemfile.lock
 
 beautiful-jekyll-theme-*.gem
+
+# bundler local artifacts
+.bundle/
+vendor/bundle/
