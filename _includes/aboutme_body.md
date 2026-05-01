@@ -17,7 +17,7 @@
 * **Mathematics for AI** (AI를 위한 수학)
 * **Paper Reviews** (좋은 논문 리뷰)
 
-마지막으로 최근에 영어 버전 blog도 오픈했습니다. 많은 관심 부탁드립니다!!😃 [Link](https://johnjaejunlee95.github.io/en/)
+마지막으로 최근에 영어 버전 blog도 오픈했습니다. 많은 관심 부탁드립니다!! [Link](https://johnjaejunlee95.github.io/en/)
 
 ---
 <!-- 
