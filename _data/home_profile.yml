@@ -1,7 +1,7 @@
 eyebrow: "AI Researcher"
 name: "Jae-Jun Lee"
 headline: "M.S.-Ph.D. Combined Candidate @ Graduate School of Artificial Intelligence, UNIST"
-summary_ko: "AI 모델이 학습하고 일반화되는 원리를 이론적으로 이해하는 연구를 하고 있습니다. 현재는 Meta-Learning, 일반화/강건성 관점의 Multimodal Learning 이론, 그리고 EEG 기반 AI4Science에 집중하고 있습니다."
+summary_ko: "AI 모델이 학습하고 일반화되는 원리를 이론적으로 이해하는 연구를 하고 있습니다. 이전에는 Meta-Learning, 그리고 현재는 일반화/강건성 관점의 Multimodal Learning 이론 (Core AI)와 EEG와 같은 biomedical data 기반의 AI application 관련 연구(AI + X)를 하고 있습니다."
 summary_en: "I study how AI models learn and generalize, with current focus on meta-learning, robustness/generalization perspectives of multimodal learning, and EEG-based AI4Science."
 location: "Ulsan, South Korea"
 focus_keywords:
