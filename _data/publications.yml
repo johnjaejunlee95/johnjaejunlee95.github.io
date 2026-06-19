@@ -2,9 +2,9 @@
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
   conference: "Forty-third International Conference on Machine Learning (ICML)"
   year: 2026
-  location: ""
+  location: "Seoul, South Korea"
   paper_url: ""
-  code_url: ""
+  code_url: "https://github.com/johnjaejunlee95/multimodal-flatness-perspective"
 
 - title: "Can One Modality Model Synergize Training of Other Modality Models?"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"

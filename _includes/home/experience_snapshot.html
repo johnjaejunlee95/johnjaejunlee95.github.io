@@ -1,6 +1,6 @@
 <div class="section-head">
-  <h3>Experience Snapshot</h3>
-  <p>Research and industry collaboration</p>
+  <h3>Research Experience</h3>
+  <p>Academic research appointments</p>
 </div>
 
 <ul class="exp-list">
@@ -11,6 +11,11 @@
       <div class="exp-time">{{ exp.start }} - {{ exp.end }}</div>
     </div>
     <div class="exp-role">{{ exp.role }}</div>
+    {% if exp.lab %}
+    <div class="exp-lab">
+      Lab: {{ exp.lab }}{% if exp.lab_url %} <a href="{{ exp.lab_url }}" target="_blank" rel="noopener noreferrer">[link]</a>{% endif %}
+    </div>
+    {% endif %}
     {% if exp.highlights %}
     <ul class="exp-highlights">
       {% for h in exp.highlights %}

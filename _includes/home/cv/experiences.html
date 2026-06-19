@@ -1,11 +1,16 @@
 <section class="cv-block">
-  <h3 class="cv-block-title">🧪 Experience</h3>
+  <h3 class="cv-block-title">🧪 Research Experience</h3>
 
   <ul class="cv-list cv-list-flat">
     {% for exp in site.data.experiences %}
     <li class="cv-item">
       <div class="cv-item-title">{{ exp.org }}</div>
       <div class="cv-item-sub">{{ exp.role }}</div>
+      {% if exp.lab %}
+      <div class="cv-item-sub">
+        Lab: {{ exp.lab }}{% if exp.lab_url %} <a href="{{ exp.lab_url }}" target="_blank" rel="noopener noreferrer">[link]</a>{% endif %}
+      </div>
+      {% endif %}
       <div class="cv-item-meta">{{ exp.start }} - {{ exp.end }}</div>
 
       {% if exp.highlights %}
