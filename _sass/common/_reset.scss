@@ -128,7 +128,7 @@ h6 {
 }
 
 a {
-  font-weight: map-get($base, font-weight-bold);
+  font-weight: inherit;
   @include link-colors($main-color-1);
 }
 

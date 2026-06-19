@@ -7,6 +7,7 @@
   }
   .main {
     @include flexbox();
+    @include justify-content(center);
     @include media-breakpoint-down(md) {
       @include flex-direction(column);
     }
@@ -37,11 +38,12 @@
   @include menu(3, 0);
   @include align-items(center);
   @include flex-wrap(nowrap);
-  @include flex(1);
+  @include flex(0 1 auto);
   height: map-get($layout, header-height);
-  margin-right: map-get($spacers, 3);
+  margin-right: 17rem;
   white-space: nowrap;
   @include media-breakpoint-down(md) {
+    width: 100%;
     height: auto;
     margin-right: 0;
   }
@@ -85,15 +87,16 @@
 .header__brand {
   @include flexbox();
   @include align-items(center);
+  @include flex(0 0 auto);
   &>svg {
-    width: map-get($base, font-size-h4) * 1.6;
-    height: map-get($base, font-size-h4) * 1.6;
-    margin-right: map-get($spacers, 3);
+    width: map-get($base, font-size-h4) * 1.7;
+    height: map-get($base, font-size-h4) * 1.7;
+    margin-right: 0.25rem;
     vertical-align: middle;
-    @include media-breakpoint-down(md) {
-      width: map-get($base, font-size-h4) * 1.2;
-      height: map-get($base, font-size-h4) * 1.2;
-    }
+    // @include media-breakpoint-down(md) {
+    //   width: map-get($base, font-size-h4) * 1.2;
+    //   height: map-get($base, font-size-h4) * 1.2;
+    // }
   }
 
   &>a {
