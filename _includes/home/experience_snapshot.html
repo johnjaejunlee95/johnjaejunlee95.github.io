@@ -13,7 +13,8 @@
     <div class="exp-role">{{ exp.role }}</div>
     {% if exp.lab %}
     <div class="exp-lab">
-      Lab: {{ exp.lab }}{% if exp.lab_url %} <a href="{{ exp.lab_url }}" target="_blank" rel="noopener noreferrer">[link]</a>{% endif %}
+      <strong>Lab:</strong>
+      {% if exp.lab_url %}<a href="{{ exp.lab_url }}" target="_blank" rel="noopener noreferrer">{{ exp.lab }}</a>{% else %}{{ exp.lab }}{% endif %}
     </div>
     {% endif %}
     {% if exp.highlights %}

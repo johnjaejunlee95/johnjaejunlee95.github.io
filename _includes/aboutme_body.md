@@ -1,6 +1,6 @@
 ### (In Korean)
 
-안녕하세요, UNIST 인공지능대학원에서 석박통합 과정 5년차를 보내고 있는 **@johnjaejunlee95**입니다.
+안녕하세요, UNIST 인공지능대학원 박사과정을 수료하고 학위 취득을 준비 중인 **@johnjaejunlee95**입니다.
 
 저는 "AI 모델이 어떻게 학습하고 일반화되는가"에 깊은 관심을 가지고 있으며, 현재 집중하고 있는 연구 분야는 다음과 같습니다.
 
@@ -23,7 +23,7 @@
 <!-- 
 ### (In English)
 
-Hello! I am **@johnjaejunlee95**, a 5th-year M.S./Ph.D. integrated student at the **Graduate School of Artificial Intelligence, UNIST**.
+Hello! I am **@johnjaejunlee95**, a 5th-year Ph.D. candidate at the **Graduate School of Artificial Intelligence, UNIST**.
 
 My research stems from a fundamental question: **"How do AI models learn and generalize?"**
 
