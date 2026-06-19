@@ -6,41 +6,6 @@
   margin-bottom: 0.75rem;
 }
 
-.scan-nav {
-  position: sticky;
-  top: 58px;
-  z-index: 15;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-  margin: 0 0 1rem;
-  padding: 0.7rem;
-  border: 1px solid #dde4ed;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(8px);
-}
-
-.scan-nav a {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.28rem 0.7rem;
-  border-radius: 999px;
-  border: 1px solid #d8e0ea;
-  color: #39424e;
-  background: #f6f8fb;
-  text-decoration: none;
-  font-size: 0.86rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.scan-nav a:hover {
-  background: #eaf2ff;
-  border-color: #bfd2f2;
-  text-decoration: none;
-}
-
 .scan-card {
   border: 1px solid #e2e8f0;
   background: linear-gradient(180deg, #ffffff 0%, #fbfcfe 100%);
@@ -304,7 +269,8 @@
   white-space: nowrap;
 }
 
-.exp-role {
+.exp-role,
+.exp-lab {
   margin-top: 0.25rem;
   color: #3f4650;
 }
@@ -578,10 +544,6 @@
 }
 
 @media (max-width: 768px) {
-  .scan-nav {
-    position: static;
-  }
-
   .scan-card {
     border-radius: 14px;
     padding: 0.95rem;
