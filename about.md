@@ -11,7 +11,7 @@ publications: true
 show_cv: true
 ---
 
-Hello! I am **@johnjaejunlee95**, a 5th-year M.S./Ph.D. integrated student at the **Graduate School of Artificial Intelligence, UNIST**.
+Hello! I am **@johnjaejunlee95**, a 5th-year Ph.D. candidate at the **Graduate School of Artificial Intelligence, UNIST**.
 
 My research stems from a fundamental question: **"How do AI models learn and generalize?"**
 
@@ -42,4 +42,3 @@ This blog will primarily feature posts on:
     <i class="fab fa-linkedin"></i> LinkedIn
   </a>
 </div>
-
