@@ -96,6 +96,7 @@
   margin: 0.3rem 0;
   color: #475569;
   line-height: 1.55;
+  font-size: 0.95rem;
 }
 
 .hero-summary-en {
@@ -234,13 +235,14 @@
 .pub-title {
   font-weight: 700;
   color: #253141;
-  line-height: 1.35;
+  /* line-height: 1.35; */
+  font-size: 1rem;
 }
 
 .pub-meta {
   margin-top: 0.2rem;
   color: #64748b;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .pub-links {
@@ -252,20 +254,21 @@
 }
 
 .exp-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 0.8rem;
+  /* display: flex; */
+  /* justify-content: space-between; */
+  /* align-items: baseline; */
+  /* gap: 0.8rem; */
 }
 
 .exp-org {
   font-weight: 700;
   color: #253141;
+  font-size: 1rem;
 }
 
 .exp-time {
   color: #64748b;
-  font-size: 0.84rem;
+  font-size: 0.86rem;
   white-space: nowrap;
 }
 
@@ -273,7 +276,7 @@
 .exp-lab {
   margin-top: 0.25rem;
   color: #3f4650;
-  font-size: 0.9rem;
+  font-size: 0.86rem;
 }
 
 .exp-highlights {
@@ -296,7 +299,7 @@
 
 .project-card h4 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #223042;
 }
 
@@ -311,6 +314,7 @@
 .project-bullet {
   margin: 0.25rem 0;
   color: #3f4650;
+  font-size: 0.86rem;
 }
 
 .scan-card-details {
@@ -416,6 +420,7 @@
 
 .cv-item {
   margin-bottom: 0.7rem;
+  font-size: 0.95rem;
 }
 
 .cv-item:last-child {
@@ -423,7 +428,7 @@
 }
 
 .cv-item-title {
-  font-size: 0.98rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #2b3441;
 }
@@ -489,16 +494,18 @@
   cursor: pointer;
   font-weight: 700;
   color: #2b3441;
+  font-size: 1.05rem;
 }
 
 .cv-project-body {
   margin-top: 0.46rem;
   color: #3f4650;
+  font-size: 0.9rem;
 }
 
 .cv-subgroup-title {
   margin-top: 0.85rem;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.55rem;
   font-size: 0.96rem;
   color: #2b3441;
 }
@@ -509,6 +516,7 @@
 
 .cv-skill-item {
   margin-bottom: 0.55rem;
+  font-size: 0.95rem;
 }
 
 .cv-skill-item:last-child {

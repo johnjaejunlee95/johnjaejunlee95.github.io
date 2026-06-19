@@ -1,12 +1,3 @@
-- org: "Technische Universität Berlin (TU Berlin)"
-  role: "Research Intern"
-  lab: "Machine Learning Group, Berlin Institute for the Foundations of Learning and Data (BIFOLD)"
-  lab_url: "https://www.ml.tu-berlin.de/"
-  start: "Jun. 2026"
-  end: "Aug. 2026"
-  # highlights:
-  #   - "Three-month research internship at BIFOLD."
-
 - org: "Ulsan National Institute of Science and Technology (UNIST)"
   role: "Ph.D. Candidate"
   lab: "Machine Intelligence and Information Theory Lab (MIIT)"
@@ -15,6 +6,15 @@
   end: "Present"
   # highlights:
   #   - "Research in meta-learning, multimodal learning, and robustness."
+
+- org: "Technische Universität Berlin (TU Berlin)"
+  role: "Research Intern"
+  lab: "Machine Learning Group, Berlin Institute for the Foundations of Learning and Data (BIFOLD)"
+  lab_url: "https://www.ml.tu-berlin.de/"
+  start: "Jun. 2026"
+  end: "Aug. 2026"
+  # highlights:
+  #   - "Three-month research internship at BIFOLD."
 
 - org: "Yonsei University"
   role: "Undergraduate Research Intern"
