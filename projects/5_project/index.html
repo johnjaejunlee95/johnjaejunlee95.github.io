@@ -9,11 +9,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>
-        blog | Jae-Jun  Lee</title>
+    <title>project 5 | Jae-Jun  Lee</title>
     <meta name="author" content="Jae-Jun  Lee" />
-    <meta name="description" content="Ph.D. candidate at UNIST studying multimodal learning, robustness, generalization, and AI + X.
-" />
+    <meta name="description" content="a project with a background image" />
     <meta name="keywords" content="meta-learning, multimodal learning, robustness, generalization, biomedical ai, unist" />
 
 
@@ -34,7 +32,7 @@
     <link rel="shortcut icon" href="/en/assets/img/logo_images/profile.jpg"/>
     
     <link rel="stylesheet" href="/en/assets/css/main.css">
-    <link rel="canonical" href="https://johnjaejunlee95.github.io/en/blog/">
+    <link rel="canonical" href="https://johnjaejunlee95.github.io/en/projects/5_project/">
     
     <!-- Dark Mode -->
     
@@ -78,8 +76,8 @@
                 <a class="nav-link" href="/en/publications/">publications</a>
               </li>
               <!-- Blog -->
-              <li class="nav-item active">
-                <a class="nav-link" href="/en/blog/">blog<span class="sr-only">(current)</span></a>
+              <li class="nav-item ">
+                <a class="nav-link" href="/en/blog/">blog</a>
               </li>
               <li class="nav-item ">
                 <a class="nav-link" href="/en/misc/">Misc.</a>
@@ -101,124 +99,160 @@
 
     <!-- Content -->
     <div class="container mt-5">
-      <div class="post">
+      <!-- page.html -->
+        <div class="post">
 
-  <div class="header-bar">
-    <h1>Fun Things in AI</h1>
-    <h2></h2>
-  </div>
+          <header class="post-header">
+            <h1 class="post-title">project 5</h1>
+            <p class="post-description">a project with a background image</p>
+          </header>
 
-  
+          <article>
+            <p>Every project has a beautiful feature showcase page.
+It’s easy to include images in a flexible 3-column grid format.
+Make your photos 1/3, 2/3, or full width.</p>
 
-  <ul class="post-list">
+<p>To give your project a background in the portfolio page, just add the img tag to the front matter like so:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+layout: page
+title: project
+description: a project with a background image
+img: /assets/img/12.jpg
+---
+</code></pre></div></div>
+
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
     
 
-    
-    <li>
-      <h3>
-        
-          <a class="post-title" href="/en/blog/2025/weight_decay/">[Conceptual Background] Rethinking on Weight Decay</a>
-        
-      </h3>
-      <p>In this post, I intend to reflect on Weight Decay, which is an almost essential element in Deep Learning. Existing posts regarding WD mostly explain the phenomenon itself. So, in this post, I intend to examine in what context WD is actually used, and in what sense it is being used recently. 
-</p>
-      <p class="post-meta">
-        14 min read &nbsp; &middot; &nbsp;
-        November 30, 2025
-      </p>
-    </li>
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/1.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
 
+  </picture>
+
+</figure>
+
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
     
 
-    
-    <li>
-      <h3>
-        
-          <a class="post-title" href="/en/blog/2025/AEP/">[Information Theory] Asymptotic Equipartition Property (AEP)</a>
-        
-      </h3>
-      <p>Recently, while studying AI, I naturally began to think a lot from the perspective of Information Theory. In that process, I took a deep look into the theory itself again, and since my blog content had been sparse for a while, I thought this would be a good opportunity to organize and post what I've studied, centering on the textbook "Elements of Information Theory". I plan to organize it to be as easy to understand as possible, with explanations centered on intuitive examples, accompanied by formulas and proofs where absolutely necessary.
-</p>
-      <p class="post-meta">
-        18 min read &nbsp; &middot; &nbsp;
-        July 19, 2025
-      </p>
-    </li>
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/3.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
 
+  </picture>
+
+</figure>
+
+    </div>
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
     
 
-    
-    <li>
-      <h3>
-        
-          <a class="post-title" href="/en/blog/2025/DDP/">[Coding] Super Easy Guide to Applying PyTorch DDP</a>
-        
-      </h3>
-      <p>This is my first coding-related post. The topic is DDP. Recently, as model capacities have grown, using multiple GPUs has become essential. Consequently, utilizing DDP effectively has become very important. Therefore, in this post, I will share how to apply DDP. I will cut to the chase regarding the general mechanics and focus simply and clearly on the arguments. (I will proceed with the method I personally use!)
-</p>
-      <p class="post-meta">
-        10 min read &nbsp; &middot; &nbsp;
-        February 8, 2025
-      </p>
-    </li>
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
 
-    
+  </picture>
 
-    
-    <li>
-      <h3>
-        
-          <a class="post-title" href="/en/blog/2024/ConvexOptimization2/">[Theoretical Background] Convex Optimization 2</a>
-        
-      </h3>
-      <p>I’m back with the second post related to optimization. Last time, we examined how it expands and converges when the function is L-lipschitz. This time, let's examine what happens when stronger constraints / assumptions are applied. Then, without further ado, let's jump right in.
-</p>
-      <p class="post-meta">
-        9 min read &nbsp; &middot; &nbsp;
-        August 15, 2024
-      </p>
-    </li>
+</figure>
 
-    
-
-    
-    <li>
-      <h3>
-        
-          <a class="post-title" href="/en/blog/2024/ConvexOptimization1/">[Theoretical Background] Convex Optimization 1</a>
-        
-      </h3>
-      <p>This year, I took a class involving the concept of Optimization for the first time. In dealing with the Deep Learning field, it was accepted like a foundational discipline to mathematically verify whether convergence happens, and if so, how fast it happens. While the Meta Learning and Generative Models I posted previously, and the Foundation Models I announced I would post in the future, are good, I thought it would also be good to upload concepts based on mathematics. So, I plan to try posting mainly about the content I learned during my graduate school classes. Since I have organized what I learned regarding these contents, I plan to post them periodically without making excuses. 
-</p>
-      <p class="post-meta">
-        8 min read &nbsp; &middot; &nbsp;
-        July 14, 2024
-      </p>
-    </li>
-
-    
-  </ul>
-
-  <nav aria-label="Blog page naviation">
-  <ul class="pagination pagination-lg justify-content-center">
-    <li class="page-item disabled">
-      <a class="page-link" href="" tabindex="-1" aria-disabled="">Newer</a>
-    </li><li class="page-item active"><a class="page-link" href="/en/blog/index.html" title="blog">1</a></li>
-      <li class="page-item "><a class="page-link" href="/en/blog/page/2/index.html" title="blog - page 2">2</a></li>
-      <li class="page-item ">
-      <a class="page-link" href="/en/blog/page/2/">Older</a>
-    </li>
-  </ul>
-</nav>
-
+    </div>
 </div>
+<div class="caption">
+    Caption photos easily. On the left, a road goes through a tunnel. Middle, leaves artistically fall in a hipster photoshoot. Right, in another hipster photoshoot, a lumberjack grasps a handful of pine needles.
+</div>
+<div class="row">
+    <div class="col-sm mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    
+
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/5.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    This image can also have a caption. It's like magic.
+</div>
+
+<p>You can also put regular text between your rows of images.
+Say you wanted to write a little bit about your project before you posted the rest of the images.
+You describe how you toiled, sweated, <em>bled</em> for your project, and then… you reveal it’s glory in the next row of images.</p>
+
+<div class="row justify-content-sm-center">
+    <div class="col-sm-8 mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    
+
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/6.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
+
+  </picture>
+
+</figure>
+
+    </div>
+    <div class="col-sm-4 mt-3 mt-md-0">
+        <figure>
+
+  <picture>
+    
+
+    <!-- Fallback to the original file -->
+    <img src="/en/assets/img/11.jpg" class="img-fluid rounded z-depth-1" width="auto" height="auto" title="example image" onerror="this.onerror=null; $('.responsive-img-srcset').remove();">
+
+  </picture>
+
+</figure>
+
+    </div>
+</div>
+<div class="caption">
+    You can also have artistically styled 2/3 + 1/3 images, like these.
+</div>
+
+<p>The code is simple.
+Just wrap your images with <code class="language-plaintext highlighter-rouge">&lt;div class="col-sm"&gt;</code> and place them inside <code class="language-plaintext highlighter-rouge">&lt;div class="row"&gt;</code> (read more about the <a href="https://getbootstrap.com/docs/4.4/layout/grid/" target="_blank" rel="noopener noreferrer">Bootstrap Grid</a> system).
+To make images responsive, add <code class="language-plaintext highlighter-rouge">img-fluid</code> class to each; for rounded corners and shadows use <code class="language-plaintext highlighter-rouge">rounded</code> and <code class="language-plaintext highlighter-rouge">z-depth-1</code> classes.
+Here’s the code for the last row of images above:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"row justify-content-sm-center"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-8 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
+        {% include figure.html path="assets/img/6.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"col-sm-4 mt-3 mt-md-0"</span><span class="nt">&gt;</span>
+        {% include figure.html path="assets/img/11.jpg" title="example image" class="img-fluid rounded z-depth-1" %}
+    <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/div&gt;</span>
+</code></pre></div></div>
+
+
+          </article>
+
+        </div>
 
     </div>
 
     <!-- Footer -->    
     <footer class="fixed-bottom">
       <div class="container mt-0">
-        &copy; Copyright 2026 Jae-Jun  Lee. Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme.
+        © Copyright 2026 Jae-Jun  Lee. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="noopener noreferrer">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" target="_blank" rel="noopener noreferrer">al-folio</a> theme.
 
       </div>
     </footer>

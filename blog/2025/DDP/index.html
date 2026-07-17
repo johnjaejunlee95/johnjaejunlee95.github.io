@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<!-- _layouts/distill.html -->
+<html>
+  <head>    <!-- Metadata, OpenGraph and Schema.org -->
+    
+
+    <!-- Standard metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>[Coding] Super Easy Guide to Applying PyTorch DDP | Jae-Jun  Lee</title>
+    <meta name="author" content="Jae-Jun  Lee" />
+    <meta name="description" content="This is my first coding-related post. The topic is DDP. Recently, as model capacities have grown, using multiple GPUs has become essential. Consequently, utilizing DDP effectively has become very important. Therefore, in this post, I will share how to apply DDP. I will cut to the chase regarding the general mechanics and focus simply and clearly on the arguments. (I will proceed with the method I personally use!)
+" />
+    <meta name="keywords" content="meta-learning, multimodal learning, robustness, generalization, biomedical ai, unist" />
+
+
+    <!-- Bootstrap & MDB -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons">
+
+    <!-- Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" media="none" id="highlight_theme_light" />
+
+    <!-- Styles -->
+    
+    <link rel="shortcut icon" href="/en/assets/img/logo_images/profile.jpg"/>
+    
+    <link rel="stylesheet" href="/en/assets/css/main.css">
+    <link rel="canonical" href="https://johnjaejunlee95.github.io/en/blog/2025/DDP/">
+    
+    <!-- Dark Mode -->
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/native.css" media="none" id="highlight_theme_dark" />
+
+    <script src="/en/assets/js/theme.js"></script>
+    <script src="/en/assets/js/dark_mode.js"></script>
+    
+
+
+    <!-- jQuery -->
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    <!-- MathJax -->
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        tags: 'ams',
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+  <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    <!-- Distill js -->
+    <script src="/en/assets/js/distillpub/template.v2.js"></script>
+    <script src="/en/assets/js/distillpub/transforms.v2.js"></script>
+    <script src="/en/assets/js/distillpub/overrides.js"></script>
+    
+  </head>
+
+  <d-front-matter>
+    <script async type="text/json">{
+      "title": "[Coding] Super Easy Guide to Applying PyTorch DDP",
+      "description": "This is my first coding-related post. The topic is DDP. Recently, as model capacities have grown, using multiple GPUs has become essential. Consequently, utilizing DDP effectively has become very important. Therefore, in this post, I will share how to apply DDP. I will cut to the chase regarding the general mechanics and focus simply and clearly on the arguments. (I will proceed with the method I personally use!)",
+      "published": "February 8, 2025",
+      "authors": [
+        {
+          "author": "Jae-Jun Lee",
+          "authorURL": null,
+          "affiliations": [
+            {
+              "name": "UNIST",
+              "url": null
+            }
+          ]
+        }
+        
+      ],
+      "katex": {
+        "delimiters": [
+          {
+            "left": "$$",
+            "right": "$$",
+            "display": true
+          },
+          {
+            "left": "$",
+            "right": "$",
+            "display": false
+          }
+        ]
+      }
+    }</script>
+  </d-front-matter>
+
+  <body class="fixed-top-nav">
+
+    <!-- Header -->
+    <header>
+
+      <!-- Nav Bar -->
+      <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top">
+        <div class="container">
+          <a class="navbar-brand title font-weight-bolder" href="https://johnjaejunlee95.github.io/en/">Jae-Jun  Lee</a>
+          <!-- Navbar Toggle -->
+          <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar top-bar"></span>
+            <span class="icon-bar middle-bar"></span>
+            <span class="icon-bar bottom-bar"></span>
+          </button>
+
+          <div class="collapse navbar-collapse text-right" id="navbarNav">
+            <ul class="navbar-nav ml-auto flex-nowrap">
+
+              <!-- About -->
+              <li class="nav-item ">
+                <a class="nav-link" href="/en/">about</a>
+              </li>
+              
+
+              <!-- Other pages -->
+              <li class="nav-item ">
+                <a class="nav-link" href="/en/publications/">publications</a>
+              </li>
+              <!-- Blog -->
+              <li class="nav-item active">
+                <a class="nav-link" href="/en/blog/">blog<span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link" href="/en/misc/">Misc.</a>
+              </li>
+              
+              <!-- Toogle theme mode -->
+              <li class="toggle-container">
+                <button id="light-toggle" title="Change theme">
+                  <i class="fas fa-moon"></i>
+                  <i class="fas fa-sun"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+
+    <!-- Content -->
+    <div class="post distill">
+
+      <d-title>
+        <h1>[Coding] Super Easy Guide to Applying PyTorch DDP</h1>
+        <p>This is my first coding-related post. The topic is DDP. Recently, as model capacities have grown, using multiple GPUs has become essential. Consequently, utilizing DDP effectively has become very important. Therefore, in this post, I will share how to apply DDP. I will cut to the chase regarding the general mechanics and focus simply and clearly on the arguments. (I will proceed with the method I personally use!)
+</p>
+      </d-title>
+
+      <d-byline></d-byline>
+
+      <d-article>
+        
+        
+        
+        
+
+        <d-contents>
+          <nav class="l-text figcaption">
+          <h3>Contents</h3>
+            
+              
+              
+            
+              
+              
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-2"><a href="#environment-setup-before-we-begin">Environment Setup Before We Begin</a></div>
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#1-installing-miniconda">1. Installing Miniconda:</a></div>
+                
+              
+            
+              
+              
+                
+              
+            
+              
+              
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#2-creating-a-miniconda-virtual-environment">2. Creating a Miniconda Virtual Environment:</a></div>
+                
+              
+            
+              
+              
+                
+              
+            
+              
+              
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#3-installing-packages-within-miniconda-same-for-linux--windows">3. Installing Packages within Miniconda (Same for Linux &amp; Windows)</a></div>
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-2"><a href="#applying-ddp">Applying DDP</a></div>
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#terminal-and-script-input-method">Terminal and Script Input Method</a></div>
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#settings-within-python-code">Settings Within Python Code</a></div>
+                
+              
+            
+              
+              
+                
+              
+            
+              
+              
+            
+              
+              
+                
+              
+            
+              
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-3"><a href="#additional-tip---export-nccl_p2p_disable1">Additional Tip - export NCCL_P2P_DISABLE=1</a></div>
+                
+              
+            
+              
+              
+                
+                  
+                  
+                  
+                  <div class="toc-level-2"><a href="#conclusion">Conclusion…</a></div>
+                
+              
+            
+          </nav>
+        </d-contents>
+
+        <h1 id="pytorch-ddp">PyTorch DDP</h1>
+
+<h2 id="environment-setup-before-we-begin">Environment Setup Before We Begin</h2>
+
+<p>Before we start, you need to install PyTorch + CUDA, which you can do by following the official website. You can proceed with the PyTorch installation as is, but I notice some people try to install CUDA manually. Personally, I do not recommend this. There are many settings to configure, especially on Windows. Therefore, <strong>I strongly recommend creating a virtual environment using <em>miniconda</em> or venv.</strong> Below, I will briefly outline the method I usually use for setup.</p>
+
+<blockquote>
+  <p><em>I prefer utilizing miniconda over anaconda. It is much lighter because it installs only the absolutely essential elements for creating a virtual environment.</em></p>
+</blockquote>
+
+<h3 id="1-installing-miniconda">1. Installing Miniconda:</h3>
+
+<h4 id="linux">
+<strong>Linux</strong>:</h4>
+
+<ol>
+  <li>Go to this <a href="https://repo.anaconda.com/miniconda/" target="_blank" rel="noopener noreferrer">Link</a> and download <code class="language-plaintext highlighter-rouge">Miniconda3-latest-Linux-x86_64.sh</code>.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">bash Miniconda3-latest-Linux-x86_64.sh</code>.</li>
+</ol>
+
+<h4 id="windows">
+<strong>Windows</strong>:</h4>
+
+<ol>
+  <li>Go to this <a href="https://repo.anaconda.com/miniconda/" target="_blank" rel="noopener noreferrer">Link</a> and download/run <code class="language-plaintext highlighter-rouge">Miniconda3-latest-Windows-x86_64.exe</code>.</li>
+</ol>
+
+<h3 id="2-creating-a-miniconda-virtual-environment">2. Creating a Miniconda Virtual Environment:</h3>
+
+<h4 id="linux-1">Linux:</h4>
+
+<ol>
+  <li>In the terminal: <code class="language-plaintext highlighter-rouge">conda create -n your_own_env_name python=3.9</code>
+</li>
+</ol>
+
+<h4 id="windows-1">Windows:</h4>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">Anaconda Prompt</code> from the Start menu.</li>
+  <li>In the terminal: <code class="language-plaintext highlighter-rouge">conda create -n your_own_env_name python=3.9</code>
+</li>
+</ol>
+
+<blockquote>
+  <p><em>You can set <strong>your_own_env_name</strong> to whatever name you prefer.</em></p>
+</blockquote>
+
+<h3 id="3-installing-packages-within-miniconda-same-for-linux--windows">3. Installing Packages within Miniconda (Same for Linux &amp; Windows)</h3>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">conda activate your_own_env_name</code> in the terminal.</li>
+  <li>Select your <em>desired version and OS</em> on this <a href="https://pytorch.org/get-started/previous-versions/" target="_blank" rel="noopener noreferrer">Link</a> and run the command in the terminal (pip / conda doesn’t matter).</li>
+  <li>*You must run the command that includes CUDA (e.g., <code class="language-plaintext highlighter-rouge">conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=11.8 -c pytorch -c nvidia</code>)</li>
+</ol>
+
+<blockquote>
+  <p><em>Additionally, recently when installing numpy, version 2 is sometimes installed. If that happens, you can reinstall version 1. (e.g., <code class="language-plaintext highlighter-rouge">pip install numpy==1.26.</code> etc.)</em></p>
+</blockquote>
+
+<p>Now, PyTorch and CUDA are automatically installed within your virtual environment. If you wish to install additional CUDA environments like cuDNN, you can run <code class="language-plaintext highlighter-rouge">conda install -c anaconda cudatoolkit==[desired version]</code> and <code class="language-plaintext highlighter-rouge">conda install -c anaconda cudnn</code>. This will install the desired cudatoolkit version and the matching cudnn version.</p>
+
+<h2 id="applying-ddp">Applying DDP</h2>
+
+<p>Now, let’s get straight to the point. We will look at applying DDP in two parts. The first is the <strong>terminal and script input</strong> method, and the second is the <strong>setting within the Python code</strong>.</p>
+
+<h3 id="terminal-and-script-input-method">Terminal and Script Input Method</h3>
+
+<p>First, assuming that DDP setup is complete within the Python code, you can input the following:</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port 56789 main.py</code></strong></p>
+
+<p>Let’s look at this step by step.</p>
+
+<ul>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">CUDA_VISIBLE_DEVICES=0,1,2,3</code>:</strong> This specifies which GPUs you will use among the ones available to you. For example, if your local machine or server has 8 GPUs, this means you will only use GPUs 0 through 3. If you don’t specify this separately, it will use all of them.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">torchrun</code>:</strong> Before PyTorch version 2.0, we used <code class="language-plaintext highlighter-rouge">python -m torch.distributed.launch</code>, but after version 2.0, <code class="language-plaintext highlighter-rouge">torchrun</code> allows you to execute DDP without needing to type <code class="language-plaintext highlighter-rouge">python -m</code>.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">--nproc_per_node=4</code>:</strong> You can decide how many processors to use on that node. Here, “processor” refers to a GPU. Simply match this to the number of GPUs. <br>(In the example above, since we use 4 GPUs, it is set to 4; the node is the local machine or server).</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">--master_port 56789</code>:</strong> This part is actually optional, but it sets the port number when running DDP. Sometimes, when running multiple DDP instances on a local machine or server, execution might fail if port numbers overlap. In that case, you can just input any number you like.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">main.py</code>:</strong> The name of the file you want to execute. (Obviously…)</li>
+</ul>
+
+<p>There are more arguments you can apply. For instance, there is <code class="language-plaintext highlighter-rouge">--master_addr</code>, which is used when utilizing multi-nodes, i.e., multiple servers. However, since this post is intended for those new to DDP and most won’t need to use multi-nodes, I will skip this.</p>
+
+<h3 id="settings-within-python-code">Settings Within Python Code</h3>
+
+<p>Before we dive in, there is one short thing to mention. As you can see from specifying arguments like <code class="language-plaintext highlighter-rouge">--master_addr</code> above, DDP is similar to creating a sort of virtual environment for each GPU. In other words, it is easier to understand if you imagine that each GPU is configured like a virtual environment to run the Python file. During this process, variables are set within Python for each GPU (<code class="language-plaintext highlighter-rouge">os.environ['variable_name']</code>). Let’s briefly touch upon two variables.</p>
+
+<ul>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">os.environ['WORLD_SIZE']</code>:</strong> This refers to the node number executed via torchrun. In practice, this becomes the server number. Since we are explaining based on 1 server (single node), in most cases, this will be <strong><code class="language-plaintext highlighter-rouge">os.environ['WORLD_SIZE']=0</code></strong>.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">os.environ['LOCAL_RANK']</code>:</strong> This refers to each processor executed via torchrun. In other words, understand this as the GPU number (0 to 3 in the current example).</li>
+</ul>
+
+<h4 id="ddp-initialization">DDP Initialization</h4>
+
+<p>Based on this, let’s see how to set it up within the Python code. Everyone has their own coding style, but I usually write it as follows:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><table class="rouge-table"><tbody><tr>
+<td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td>
+<td class="code"><pre><span class="n">args</span><span class="p">.</span><span class="n">device</span> <span class="o">=</span> <span class="sh">'</span><span class="s">cuda:0</span><span class="sh">'</span>
+<span class="n">args</span><span class="p">.</span><span class="n">world_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">args</span><span class="p">.</span><span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">args</span><span class="p">.</span><span class="n">local_rank</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">LOCAL_RANK</span><span class="sh">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">set_device</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">local_rank</span><span class="p">)</span>
+<span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">init_process_group</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="sh">'</span><span class="s">nccl</span><span class="sh">'</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="sh">'</span><span class="s">env://</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">args</span><span class="p">.</span><span class="n">world_size</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">get_world_size</span><span class="p">()</span>
+<span class="n">args</span><span class="p">.</span><span class="n">local_rank</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">get_rank</span><span class="p">()</span>
+</pre></td>
+</tr></tbody></table></code></pre></figure>
+
+<hr>
+
+<p>This is just my coding style; I often utilize <code class="language-plaintext highlighter-rouge">args.xxx</code>. (You could set variables separately, but keeping them inside arguments makes it convenient to use anywhere in the code.)</p>
+
+<p>Let’s examine the code line by line.</p>
+
+<ul>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">args.device='cuda:0' ~ args.rank=0</code>:</strong> You can understand this as the step to initialize variables needed for DDP.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">args.local_rank = int(os.environ.get("LOCAL_RANK", 0))</code>:</strong> As mentioned above, <code class="language-plaintext highlighter-rouge">os.environ['LOCAL_RANK']</code> refers to the GPU number where the code is running. Therefore, understand this as receiving the variable corresponding to the GPU number into <code class="language-plaintext highlighter-rouge">args.local_rank</code> via the <em>get()</em> function inside <em>os.environ</em>.
+    <ul>
+      <li>Example 1: If it corresponds to GPU 0, <code class="language-plaintext highlighter-rouge">args.local_rank = 0</code>
+</li>
+      <li>Example 2: If it corresponds to GPU 3, <code class="language-plaintext highlighter-rouge">args.local_rank = 3</code>
+</li>
+    </ul>
+  </li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">torch.cuda.set_device(args.local_rank)</code>:</strong> Usually, there are two ways to move parameters to the GPU in PyTorch: <code class="language-plaintext highlighter-rouge">params.to('cuda:#')</code> and <code class="language-plaintext highlighter-rouge">params.cuda()</code>. I’ll skip explaining the first method as it is widely used. The second method moves them to the current default GPU. At this time, the default GPU is usually set to the first GPU (index 0). <em>set_device</em> can be used to change this. In other words, this part designates the default GPU using the <code class="language-plaintext highlighter-rouge">args.local_rank</code> specified above.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">torch.distributed.init_process_group(backend='nccl', init_method='env://')</code>:</strong> Understand this as the part that finally initializes everything so that each GPU can operate correctly. Here, <em>backend=’nccl’</em> specifies that CUDA will handle the operations, and <em>init_method=’env://’</em> specifies the arbitrary virtual environment created for the current DDP. Since most people use this form, there is no need to change it.</li>
+  <li>
+<strong><code class="language-plaintext highlighter-rouge">args.world_size, args.local_rank</code>:</strong> I typically use these two for the finally designated <code class="language-plaintext highlighter-rouge">WORLD_SIZE</code> and <code class="language-plaintext highlighter-rouge">LOCAL_RANK</code>. For <code class="language-plaintext highlighter-rouge">args.local_rank</code>, understand it as initializing it once more for verification purposes.</li>
+</ul>
+
+<h4 id="applying-ddp-to-the-model">Applying DDP to the Model</h4>
+
+<p>Next, let’s look at how to apply DDP to the model and train it. (It’s very simple.)</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><table class="rouge-table"><tbody><tr>
+<td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td>
+<td class="code"><pre><span class="kn">from</span> <span class="n">torch.nn.parallel</span> <span class="kn">import</span> <span class="n">DistributedDataParallel</span> <span class="k">as</span> <span class="n">DDP</span>
+<span class="n">model</span> <span class="o">=</span> <span class="nc">DDP</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">device_ids</span><span class="o">=</span><span class="p">[</span><span class="n">args</span><span class="p">.</span><span class="n">local_rank</span><span class="p">])</span>
+<span class="bp">...</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="n">loss</span><span class="p">.</span><span class="nf">backward</span><span class="p">()</span> 
+</pre></td>
+</tr></tbody></table></code></pre></figure>
+
+<hr>
+
+<p>As you can see, the model is distributed using DistributedDataParallel provided by PyTorch. In this process, it distributes to each GPU using the <code class="language-plaintext highlighter-rouge">args.local_rank</code> designated earlier. (Note: <em>device_ids=[args.local_rank]</em>, brackets are needed for <em>args.local_rank</em>).</p>
+
+<h3 id="additional-tip---export-nccl_p2p_disable1">Additional Tip - <code class="language-plaintext highlighter-rouge">export NCCL_P2P_DISABLE=1</code>
+</h3>
+
+<p>Unfortunately, sometimes it doesn’t work smoothly… It might fail due to various reasons like twisted configurations or conflicts. Still, nowadays, thanks to LLMs (ChatGPT, Claude, Gemini, etc.), debugging has become much easier if you can catch the error message well. I highly recommend utilizing them properly if it’s not an internal code issue.</p>
+
+<p>However… there are times when no error message appears, and you get stuck in infinite loading. This was my case; right when entering the DDP function, it would suddenly freeze and then hang indefinitely. I don’t know the exact cause, but it seems to be a situation where a problem occurs when GPUs are processing the model during the internal DDP function operations… (I’ve even tried debugging by printing everything inside the PyTorch framework… <img class="emoji" title=":confounded:" alt=":confounded:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f616.png" height="20" width="20"><img class="emoji" title=":disappointed_relieved:" alt=":disappointed_relieved:" src="https://github.githubassets.com/images/icons/emoji/unicode/1f625.png" height="20" width="20">)</p>
+
+<p>In such cases, you can try <code class="language-plaintext highlighter-rouge">export NCCL_P2P_DISABLE=1</code>. If you run this once in the terminal and then run the code, it often works smoothly. Haha.</p>
+
+<h2 id="conclusion">Conclusion…</h2>
+
+<p>This was my first time posting about coding, and I hope this information is beneficial to those who are new to PyTorch and DDP. Haha. I experienced it, and looking around, I see people struggling for quite a long time when trying DDP for the first time. (ㅠㅠ) There are times when looking up blogs doesn’t work, and LLMs are unkind, so I hope this post is a big help in those cases!</p>
+
+      </d-article>
+
+      <d-appendix>
+        <d-footnote-list></d-footnote-list>
+        <d-citation-list></d-citation-list>
+      </d-appendix>
+
+    </div>
+
+    <!-- Footer -->    
+    <footer class="fixed-bottom">
+      <div class="container mt-0">
+        © Copyright 2026 Jae-Jun  Lee. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="noopener noreferrer">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" target="_blank" rel="noopener noreferrer">al-folio</a> theme.
+
+      </div>
+    </footer>
+
+    <d-bibliography src="/en/assets/bibliography/blogs.bib"></d-bibliography>
+    
+    
+
+    <!-- Bootsrap & MDB scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+
+    
+  </body>
+</html>

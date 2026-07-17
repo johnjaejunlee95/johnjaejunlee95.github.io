@@ -1,0 +1,1565 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator><link href="https://johnjaejunlee95.github.io/en/feed.xml" rel="self" type="application/atom+xml" /><link href="https://johnjaejunlee95.github.io/en/" rel="alternate" type="text/html" hreflang="en" /><updated>2026-07-17T13:06:19+00:00</updated><id>https://johnjaejunlee95.github.io/en/feed.xml</id><title type="html">blank</title><subtitle>Ph.D. candidate at UNIST studying multimodal learning, robustness, generalization, and AI + X.
+</subtitle><entry><title type="html">[Conceptual Background] Rethinking on Weight Decay</title><link href="https://johnjaejunlee95.github.io/en/blog/2025/weight_decay/" rel="alternate" type="text/html" title="[Conceptual Background] Rethinking on Weight Decay" /><published>2025-11-30T00:00:00+00:00</published><updated>2025-11-30T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2025/weight_decay</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2025/weight_decay/"><![CDATA[<h2 id="recap-of-weight-decay-wd">Recap of Weight Decay (WD)</h2>
+
+<p>Recently, when training models, we mostly use <strong>Weight Decay (WD)</strong>. There are many benefits to using WD, and a representative effect is <strong>preventing overfitting</strong>. Then, what is WD, and how can it prevent overfitting?</p>
+
+<p>Generally, when encountering Deep Learning for the first time, you probably learn WD as follows:</p>
+
+\[\begin{equation} 
+
+\mathcal{L}_{total}= \textcolor{red}{\underbrace{\frac{1}{n}\sum_{i=0}^n \ell(f(x_i;\theta), y_i)}_{\text{Loss Function }(\mathcal{L}(\theta))}} + \textcolor{blue}{\underbrace{\frac{\lambda}{2}||\theta||_2}_{\text{WD}}} \label{eq:weight_decay} 
+
+\end{equation}\]
+
+<p>In other words, when training through the Loss Function as shown above, we train in a direction that <strong>reduces the norm value of the model’s weight parameter</strong> in addition to the existing derived loss. When this happens, intuitively, it sends most weight parameters close to 0, <strong>reducing the model’s complexity, and through this, we can see the effect of preventing overfitting</strong>.</p>
+
+<p>However, here we need to examine the role of WD a bit deeper. The reason is that the role of WD is <em>not limited simply to ‘preventing Overfitting’</em>. For example, recently WD is essentially applied even to very large models like LLMs. If you think about it, since LLMs are trained for about 1 epoch on very large datasets, there is essentially no need to consider overfitting. Nevertheless, we often proceed by applying an (<em>even</em>) <strong>larger WD ratio $\lambda$</strong>.</p>
+
+<p>Therefore, in this post, I will try to explain the <strong>role of WD and its significance</strong> as I see it.</p>
+
+<h2 id="1-wd-is-actually-a-prior-knowledge-distribution">1) WD is actually a Prior Knowledge Distribution!</h2>
+
+<p>There is one ‘representative assumption’ commonly used when doing statistical modeling in the deep learning field. When setting a distribution, we assume it follows the <strong>Gaussian Distribution</strong>, which is the easiest to handle. The reason is simple. The normal distribution can perfectly define the entire distribution knowing only the Mean and Variance without complex parameters. Therefore, before the full-scale explanation, I will also proceed with the following assumption:</p>
+
+<blockquote>
+  <p><strong>Assumption:</strong> Model weight parameters follow a <strong>Gaussian distribution</strong>.</p>
+</blockquote>
+
+<p>If the above assumption holds, we can derive the following statement:</p>
+
+<blockquote>
+  <p><strong>WD is a Maximum A Posteriori (MAP) estimation assuming the weights have a Gaussian prior.</strong></p>
+</blockquote>
+
+<p>Then, let’s examine slowly what this means. Here, we will look at deep learning training not from an optimization perspective, but from a <strong>probability perspective of finding the optimal solution</strong>.</p>
+
+<p><em>(This content was written by synthesizing the contents of PRML Chapter 3.3 and various other materials.)</em></p>
+
+<h3 id="expansion-of-concept-from-mle-to-map">Expansion of concept from MLE to MAP</h3>
+
+<p>Usually, during training, we aim to find the model parameter $\theta$ that minimizes the Loss Function (e.g., MSE, CE). In statistical terms, this is called <strong>Maximum Likelihood Estimation (MLE)</strong>. MLE is an estimation method from the data perspective; simply put, it means <em>“Let’s estimate $\theta$ that can maximize the probability $p(\mathcal{D} \mid \theta)$ that the given dataset $\mathcal{D}$ is observed”</em>. Expressing this MLE as a formula gives:</p>
+
+\[\begin{equation} 
+\theta_{\text{MLE}} = \arg\max_{\theta} p(\mathcal{D} \mid \theta) \end{equation}\]
+
+<p>I think most of you know this formula; it is the Loss Function we usually represent. That is, if we substitute the above MLE into a minimization problem by attaching a $-$, it becomes the Loss Function $\mathcal{L}(\theta)$ we usually use.</p>
+
+<p><em>(Returning to the main point)</em> However, although MLE is the most universal, it has a downside. It is the point that <strong>it relies entirely on the observed dataset $\mathcal{D}$</strong>. Let me explain with an example. Let’s say we found the optimal $\theta^\ast$ for a specific dataset $\mathcal{D}_1$. Even if this $\theta^\ast$ is optimal in $\mathcal{D}_1$, it might not be the optimal solution for a new $\mathcal{D}_2$ where the data distribution is slightly different. In other words, when the given data is too small or biased, MLE tries to learn by excessively fitting to the characteristics (even noise) of that data, and this becomes the fundamental cause of what we commonly call overfitting.</p>
+
+<p>Then, to prevent overfitting, <strong>what if we make an assumption (prior) about $\theta$ before seeing $\mathcal{D}$?</strong> In other words, if we proceed with training looking only at $\mathcal{D}$, problems may arise when deviating too much from that data distribution, so it means <strong>“How about defining the $\theta$ we want to find optimally in advance before seeing $\mathcal{D}$?”</strong>. Here, we view it from a Bayesian perspective. That is, we consider the prior for $\theta$ before seeing $\mathcal{D}$, and this is called <strong>Maximum A Posteriori (MAP)</strong> estimation. Expressing this as a formula gives:</p>
+
+\[\begin{equation} 
+\theta_{\text{MAP}} = \arg\max_\theta p(\theta \mid \mathcal{D}) 
+\end{equation}\]
+
+<p>Here, $p(\theta \mid \mathcal{D})$ can be expanded as follows by Bayes’ theorem:</p>
+
+\[\begin{equation} 
+\theta_{\text{MAP}} = \arg\max_\theta \frac{p(\mathcal{D} \mid \theta) p (\theta)}{p(\mathcal{D})} 
+\end{equation}\]
+
+<p>The equation above changes into a problem of maximizing the product of $p(\mathcal{D}\mid \theta)$ (<strong>Likelihood</strong>) and $p(\theta)$ (<strong>Prior</strong>). And here, since $p(\mathcal{D})$ can be treated as a constant we already know, there is no need to consider it. Now then, how can we treat $p(\theta)$ as a prior and solve the problem?</p>
+
+<h3 id="prior-knowledge-gaussian-prior-mathbftheta">Prior Knowledge: Gaussian Prior $\mathbf{\theta}$</h3>
+
+<p>Now, let’s apply the assumption about the <strong>Gaussian prior</strong> mentioned earlier. Assuming $p(\theta)$ can be expressed as a probability distribution, and it follows the most standard $\mathcal{N}(0, \sigma^2)$, $\theta$ can be expressed with the following relation:</p>
+
+\[\begin{equation} 
+\theta \sim \mathcal{N}(0, \sigma^2I) \;\; \Rightarrow \;\;  p(\theta) \propto \exp(-\frac{\|\theta\|_2}{2\sigma^2}) \label{eq:prior_gaussian} 
+\end{equation}\]
+
+<p>Let’s substitute this assumption into the MAP equation. To simplify the calculation of the multiplication form, if we take the Log on both sides and attach a negative sign (-) again to substitute it into a Minimization problem, it becomes as follows:</p>
+
+\[\begin{aligned} 
+\theta_{MAP} &amp;= \arg\min_\theta \left[ -\log p(\mathcal{D}|\theta) - \log p(\theta) \right] \\ &amp;= \arg\min_\theta \left[ \underbrace{\mathcal{L}(\theta)}_{=\text{MLE}} - \log \left( \exp\left( -\frac{||\theta||^2}{2\sigma^2} \right) \right) \right] 
+\end{aligned}\]
+
+<p>If we organize the equation above, as $\log$ and $\exp$ disappear, it can be represented as follows:</p>
+
+\[\begin{equation} 
+\mathcal{L}= \textcolor{red}{\underbrace{\mathcal{L}(\theta)}_{=\text{MLE}}} + \textcolor{blue}{\underbrace{\frac{1}{2\sigma^2} ||\theta||^2}_{\text{Prior}}} \label{eq:map_min} 
+\end{equation}\]
+
+<p>Looking at this equation, it is very similar to the WD Eq.\eqref{eq:weight_decay} summarized above. Here, only $\frac{\lambda}{2}$ in Eq.\eqref{eq:weight_decay} and $\frac{1}{2\sigma^2}$ in Eq.\eqref{eq:map_min} are different, but the form is exactly the same. In other words, <strong>if $\lambda = \frac{1}{\sigma^2}$, they can be said to be perfectly equivalent.</strong></p>
+
+<h3 id="meaning-of-wd-ratio-lambda">Meaning of WD Ratio $\lambda$</h3>
+
+<p>The WD we conventionally used was not a simple technique, but a method approached with the concept that the weight parameter is a <strong>Prior following $\mathcal{N}(0, \sigma^2I)$</strong> (Eq. $\eqref{eq:prior_gaussian}$).</p>
+
+<p>Furthermore, it is important here that <strong>$\lambda$ and variance $\sigma^2$ are inversely proportional</strong>. Usually, when $\lambda$ is set too large, cases arise where training does not converge. Also, when $\lambda$ is set too small, we do not see the full effect of WD. Thinking about these cases in conjunction with variance $\sigma^2$ helps understand why this happens:</p>
+
+<ul>
+  <li><strong>$\lambda \uparrow$  $\Rightarrow$  $\sigma^2 \downarrow$</strong> : A <strong>small variance</strong> of the Prior Distribution means the variables are heavily concentrated around 0. In this case, if the distribution of dataset $\mathcal{D}$ is large, it is difficult to find the optimal $\theta$.</li>
+  <li><strong>$\lambda \downarrow$  $\Rightarrow$  $\sigma^2 \uparrow$</strong> : A <strong>large variance</strong> of the Prior Distribution means the variables are relatively well spread out. Therefore, in this case, since it effectively has a similar effect to almost no prior assumption being applied, the risk of overfitting still exists.</li>
+</ul>
+
+<p>Understanding this <strong>role of Prior ($\lambda$)</strong> allows us to clearly understand why such strong WD is used in recent training settings of deep learning models, especially in modern models like <strong>Vision Transformer (ViT)</strong>.</p>
+
+<p>Generally, even when training Vision Transformer (ViT) on datasets like ImageNet, we often set a much higher $\lambda$ value than existing CNN models. This is to control the characteristics of ViT, that is, the <strong>‘Degree of Freedom’</strong> the model possesses. Unlike CNNs, ViT has almost no <strong>Inductive Bias (constraints)</strong> such as connectivity between pixels or Spatial Locality during training. In other words, it implies that the <strong>Hypothesis Space</strong> the Weight Parameter must search to find the optimal solution is <strong>very wide</strong>.</p>
+
+<p>When the freedom of the space the weight searches is high during training like this, it is an advantage if there is infinite data, but it often becomes a disadvantage when data is limited. This is because it learns even the trivial noise of data, making it easy for overfitting to occur. If, at this time, we apply a <strong>constraint called Prior</strong> to the model parameter through WD, the effective space the weight needs to search becomes much narrower, and consequently, we can effectively prevent Overfitting.</p>
+
+<p>Synthesizing this example and the formulas developed earlier, the conclusion is as follows. Conclusively, WD should not be viewed <em>only as the role of a simple regularizer</em>, but as a <strong>balanced process</strong> of finding the optimal solution by reflecting the <strong>Prior Distribution (Given Prior / Gaussian Distribution Assumption)</strong> we assumed onto the <strong>training that relies entirely on data (MLE)</strong>.</p>
+
+<h2 id="2-wd-in-llms">2) WD in LLMs</h2>
+
+<p>The content above showed the connection between WD and overfitting. But in fact, WD is not used only to prevent overfitting. For example, as briefly mentioned above, strong WD is applied even in Large Language Model (LLM) training where overfitting does not need to be considered. Let’s see the reason for that. Here, we will look at deep learning training from an optimization perspective again.</p>
+
+<p>(This content excerpts parts of <em>Lecture 3 from Stanford CS336 LLM from Scratch</em>.)</p>
+
+<h3 id="llms-only-train-once">LLMs Only Train Once</h3>
+
+<p>First, we need to understand the training characteristics of LLMs. The goal of LLMs like GPT-3 and LLaMA is to become a <strong>Generalist</strong> performing various tasks, not a specific task, and for this, they learn vast amounts of data, enough to say they crawled the entire internet.</p>
+
+<p>Since the data is so vast, <strong>it is common for LLMs to train for only 1 Epoch</strong>. It means they scan through the data only once without seeing the same data repeatedly. From this perspective, <strong>overfitting in the traditional sense is indeed not a matter of consideration in LLMs.</strong> Nevertheless, why do LLMs apply strong WD?</p>
+
+<h3 id="llms-need-more-gradients">LLMs Need More Gradients</h3>
+
+<p>The reason lies in the interaction with <strong>Learning Rate (LR) Scheduling</strong>. Most recent LLM training uses scheduling like <strong>Cosine Decay</strong>. It is a method of increasing the LR through Warm-up in the early stages of training, then gradually decreasing it as training progresses, making it close to 0 at the very end.</p>
+
+<p>The problem is the <strong>latter part of training</strong>. When the LR becomes very small, not only does the <strong>Step Size</strong> updating the weight decrease, but the <strong>influence of the gradient itself</strong> also becomes insignificant. In other words, there is a risk that the model stagnates without performing meaningful learning anymore.</p>
+
+<p>Precisely from this perspective, the <strong>role of WD</strong> included in the loss term becomes important. Although this has not been very clearly defined, there is a <em>phenomenon revealed experimentally</em> through recent <a href="https://arxiv.org/pdf/2310.04415">research/papers</a>, and we can check the results through <a href="#figure1">Figure 1</a> below. Looking closely at <a href="#figure1">Figure 1</a>, although the Training Loss value in the early part of training might be somewhat larger when strong WD is applied, we can verify that <strong>ultimately, the Training Loss value converges lower when larger WD is applied</strong>.</p>
+
+<center>
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="/en/assets/img/25-11-30/wd_lr_decay.png" style="width: 48%;" />
+    <img src="/en/assets/img/25-11-30/wd_lr_decay_v2.png" style="width: 48%;" />
+  </div>
+  <figcaption>
+    <a id="figure1">Figure 1. Comparison of WD settings on cosine LR decay</a>
+  </figcaption>
+  <br />
+</center>
+
+<p>In that lecture, Professor Hashimoto interprets this as follows:</p>
+
+<blockquote>
+  <p><strong><code class="language-plaintext highlighter-rouge">(Paraphrased)</code></strong> Due to LR Scheduling, the Learning Rate decreases as it goes towards the latter part of training, and accordingly, the Gradient also decreases, so the training effect may become insignificant at the very end of training. At this time, <strong>if we apply strong WD</strong>, it means <strong>it maintains the Gradient values at a certain magnitude even at the end of training, enabling continuous learning</strong>.</p>
+</blockquote>
+
+<p>Research results supporting this are also shown in the paper as <a href="#figure2">Figure 2</a> below.</p>
+
+<p>First, looking at the <strong>graph on the left</strong>, it shows the relationship between Training &amp; Validation Loss according to the WD value. As can be seen in the graph, the Training Loss and Validation Loss values appear almost identical regardless of whether the WD value is large or small. In other words, we can see that <strong>the Generalization Gap converges to almost 0 regardless of the WD size</strong>. This clearly shows that WD in LLM training is <strong>unrelated to preventing Overfitting (Generalization)</strong>.</p>
+
+<p>On the other hand, the <strong>graph on the right</strong> shows the result according to WD when using <strong>Constant LR</strong> (keeping Learning Rate constant without decreasing). Here, unlike <a href="#figure1">Figure 1</a>, we can verify that the Training Loss value <em>rather</em> increases as WD gets larger. In other words, in a situation where LR does not decrease, we can verify that applying strong WD acts <strong>simply as an effect of strongly constraining the Prior</strong>, <em>rather</em> causing harm to performance.</p>
+
+<center>
+  <div style="display: flex; justify-content: center; gap: 10px;">
+    <img src="/en/assets/img/25-11-30/train_validation_loss_WD.png" style="width: 45%; height: 45%" />
+    <img src="/en/assets/img/25-11-30/wd_lr_decay_v3.png" style="width: 54%; height: 54%" />
+  </div>
+  <figcaption>
+    <a id="figure2">Figure 2. WD on Constant LR</a>
+  </figcaption>
+  <br />
+</center>
+
+<p>Synthesizing the contents above, it would be good to understand that <strong>WD in LLMs is used to maintain the continuity of training in conjunction with LR Scheduling, unlike the existing concept of preventing overfitting</strong>.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>In conclusion, <strong>Weight Decay (WD)</strong> can be viewed from two perspectives: the <strong>Statistical Perspective</strong> and the <strong>Optimization Perspective</strong>:</p>
+
+<ul>
+  <li>Viewed from the <strong><code class="language-plaintext highlighter-rouge">Statistical Perspective</code></strong>, by introducing a <strong>Gaussian Prior</strong> to the <strong>MLE</strong> method which relies entirely on data and converting it to <strong>MAP estimation</strong>, it prevents data bias and allows finding a stable solution.</li>
+  <li>At the same time, from the <strong><code class="language-plaintext highlighter-rouge">Optimization Perspective</code></strong>, it performs the role of guaranteeing the continuity of training by preserving the magnitude of the <strong>Gradient</strong>, which decreases as <strong>Learning Rate Decay</strong> progresses during large-scale training like <strong>LLMs</strong>.</li>
+</ul>
+
+<p>In other words, WD can be defined as performing two core functions according to the setting: <strong>limiting the Hypothesis Space through Prior to search for the optimal solution from a <code class="language-plaintext highlighter-rouge">statistical perspective</code></strong> and <strong>maintaining training momentum from an <code class="language-plaintext highlighter-rouge">optimization perspective</code></strong>.</p>
+
+<hr />
+
+<p>I have organized concepts used in deep learning after a long time. I will often post about concepts that are used frequently but whose beyond can be examined. Thank you for reading.</p>
+
+<h2 id="reference">Reference</h2>
+
+<ul>
+  <li>Bishop, Christopher M. Pattern Recognition and Machine Learning. New York :Springer, 2006. (<a href="https://www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf">Original Book</a>)</li>
+  <li>Andriushchenko, Maksym, et al. “Why do we need weight decay in modern deep learning?.” ICLR (2023). (<a href="http://proceedings.mlr.press/v70/finn17a/finn17a.pdf">Paper</a>)</li>
+  <li>Stanford CS336 Lecture 3 (<a href="https://www.youtube.com/watch?v=ptFiH_bHnJw&amp;list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_&amp;index=3">Youtube</a>)</li>
+</ul>
+
+<div id="disqus_thread"></div>
+<script>
+var disqus_config = function () {
+  this.page.url = window.location.href;
+  this.page.identifier = window.location.pathname;
+};
+(function() {
+  var d = document, s = d.createElement('script');
+  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
+  s.setAttribute('data-timestamp', +new Date());
+  (d.head || d.body).appendChild(s);
+})();
+</script>]]></content><author><name>Jae-Jun Lee</name></author><category term="Weight Decay" /><category term="Gaussian Prior" /><category term="LLM" /><category term="LR Decay" /><summary type="html"><![CDATA[In this post, I intend to reflect on Weight Decay, which is an almost essential element in Deep Learning. Existing posts regarding WD mostly explain the phenomenon itself. So, in this post, I intend to examine in what context WD is actually used, and in what sense it is being used recently.]]></summary></entry><entry><title type="html">[Information Theory] Asymptotic Equipartition Property (AEP)</title><link href="https://johnjaejunlee95.github.io/en/blog/2025/AEP/" rel="alternate" type="text/html" title="[Information Theory] Asymptotic Equipartition Property (AEP)" /><published>2025-07-19T00:00:00+00:00</published><updated>2025-07-19T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2025/AEP</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2025/AEP/"><![CDATA[<p>One thing to note is that while coverage of Information Theory often starts with <strong><em>Chapter 2: Entropy, Relative Entropy, and Mutual Information</em></strong>, there are already so many well-organized resources on that topic. Therefore, I will replace that with an attached file of the notes I studied and organized. (The file is right below). So, the first post related to Information Theory will start from <strong>Chapter 3: Asymptotic Equipartition Property (AEP)</strong>, which is deeply related to information compression!!</p>
+
+<p><a href="https://raw.githubusercontent.com/johnjaejunlee95/johnjaejunlee95.github.io/main/assets/files/chapter_2_notes.pdf" download="">Elementes of Information Theory - Chapter 2 Notes</a></p>
+
+<h2 id="asymptotic-equipartition-property-aep">Asymptotic Equipartition Property (AEP)</h2>
+
+<p>The term <em>Asymptotic Equipartition Property (AEP)</em> might look difficult, but if simplified, you can understand it as applying the <em>Law of Large Numbers</em> to entropy. And you can understand it as solving this mathematically. Let me explain starting with the formal definition.</p>
+
+<p>Let’s assume we perform i.i.d sampling $N$ times from an arbitrary random variable $X_i \sim p(x)$. Then, we can define <em>AEP</em> as follows:</p>
+
+<h3 id="theorem-1">Theorem 1:</h3>
+
+\[\begin{align*}
+-\frac{1}{N}\log p(X_1, X_2 , \ldots ,X_N) &amp;= -\frac{1}{N}\sum_ {i=1}^N \log p(X_i) \\
+&amp;= - \mathbb{E}\left[ \log p(x) \right] \\
+ &amp;\rightarrow H(X)
+\end{align*}\]
+
+<hr />
+
+<p>Let’s examine what this means. Usually, the formula for entropy is defined as $- \sum_i p(X_i) \log p(X_i)$. However, since the current situation assumes <strong><em>i.i.d</em></strong>, there is no need to consider the $p(X)$ attached in front of the $\log$. Since the probability of each random variable being sampled is identical (because they are <strong>independent trials</strong>), we simply need to divide by $N$. Therefore, for the expectation as well, we take $\mathbb{E}$ rather than the notation $\mathbb{E}_p$ which considers $p(x)$. <strong>In other words, the final meaning of <em><code class="language-plaintext highlighter-rouge">AEP</code></em> is that given a sequence of random variables in an i.i.d situation, it <code class="language-plaintext highlighter-rouge">converges to entropy</code>.</strong></p>
+
+<blockquote>
+  <p><strong>Remark 3.1:</strong> In Machine Learning, taking the expectation is usually treated the same as simply finding the average. The reason is that we usually assume an <strong><em>i.i.d situation</em></strong> when sampling data.</p>
+</blockquote>
+
+<p>Actually, there is one more part to examine mathematically here. In the formula above, $\frac{1}{N}\sum_i^N \log p(X_i)$ is the sample mean, and $\mathbb{E}\left[ \log p(x) \right]$ is the total mean (or expectation) of the true distribution $p(x)$. In other words, substituting a partial entropy value calculated through partial sampling with the total entropy $H(X)$ cannot be seen as mathematically perfectly identical. However, the reason this can hold is that it has already been proven that the sample mean expectation converges to the expectation of the true distribution. Then, let’s take a look at how this can be proven. (The term <strong><em>Law of Large Numbers</em></strong> appeared earlier in the explanation of <strong><em>AEP</em></strong>, and it is because of this proof.)</p>
+
+<h3 id="proof-1">Proof 1:</h3>
+
+<p>(I will write the proof section in English for convenience.)</p>
+
+<p>Let $X_1, X_2, \ldots, X_N$ be a random sample of $N$ i.i.d. variables from the distribution $p(x)$. Moreover, the mean of the true distribution (population mean) $p(x)$ is defined as $\mathbb{E}[X] = \mu$, and its finite variance is denoted by $\text{Var}[X] = \sigma^2$. Let us first break down the proof for the expectation of the sample mean as follows:</p>
+
+<p>Let the sample mean, denoted by $\bar{X}_ N$, be defined as:</p>
+
+\[\begin{equation*}
+\bar{X}_ {N} = \frac{1}{N} \sum_ {i=1}^N X_{i} 
+\end{equation*}\]
+
+<p>Then, the expectation of the sample mean is given by:</p>
+
+\[\begin{align*}
+\mathbb{E}\left[\bar{X}_ N \right] = \mathbb{E}\left[\frac{1}{N} \sum_ {i=1}^N X_i \right] = \frac{1}{N}\sum_ {i=1}^N \mathbb{E}\left[ X_i \right]
+\end{align*}\]
+
+<p>Here, since the expectation of each random variable $X_i$ is $\mu$, the expectation of the sample mean becomes:</p>
+
+\[\begin{equation*}
+\mathbb{E}\left[\bar{X}_ N \right] = \frac{1}{N}\sum_ {i=1}^N \mathbb{E}\left[ X_i \right] = \frac{1}{N} \times N \times \mu = \mu
+\end{equation*}\]
+
+<p>This shows that the expectation of the sample mean equals the true population mean (i.e., the sample mean is an unbiased estimator of the population mean).</p>
+
+<p>Next, the proof of convergence of the sample mean to the true mean is twofold—based on the <strong><em>Weak Law of Large Numbers (WLLN)</em></strong> and the <strong><em>Strong Law of Large Numbers (SLLN)</em></strong>. In this case, we will focus only on <strong><em>WLLN</em></strong>, which is already sufficient for use in the context of the <strong><em>Asymptotic Equipartition Property (AEP)</em></strong>.</p>
+
+<h5 id="weak-law-of-large-number-wlln">Weak Law of Large Number (WLLN)</h5>
+
+<p>First, WLLN states that the sample mean converges in probability to the population mean. This means that for any small positive number $\epsilon$, the probability that the sample mean $\bar{X}_ N$ deviates from the true mean $\mu$ becomes arbitrarily small. This can be formally expressed as:</p>
+
+\[\begin{equation*}
+\lim_{n \rightarrow \infty} P(\left| \bar{X}_ N - \mu \right| \geq \epsilon ) = 0
+\end{equation*}\]
+
+<p>This can be proven using Chebyshev’s Inequality, assuming finite variance $\sigma^2$. Let us first recall Chebyshev’s Inequality, which states that for any random variable $Y$ with mean $\mathbb{E}\left[Y\right]$ and variance ${Var}\left[ Y \right]$:</p>
+
+\[\begin{equation*}
+P(\left| Y - \mathbb{E}\left[Y\right] \right| \geq \epsilon) \leq \frac{Var\left[ Y \right]}{\epsilon^2}
+\end{equation*}\]
+
+<p>Now, let $Y = \bar{X}_ N$, and we can derive the variance of the sample mean $\bar{X}_ N$ using properties of variance:</p>
+
+\[\begin{align*}
+Var \left[ \bar{X}_ N \right] &amp;= Var\left[ \frac{1}{N}\sum_ {i=1}^N X_i \right] \\
+&amp;= \frac{1}{N^2} Var \left[ \sum_ {i=1}^N X_i \right] \\
+&amp;= \frac{1}{N^2} \sum_ {i=1}^N Var\left[X_i \right] \\
+&amp;= \frac{1}{N^2} \sum_ {i=1}^N \sigma^2 \;\; (Var[X_i] = \sigma^2 \; \text{for all i}) \\
+&amp;= \frac{\sigma^2}{N}
+\end{align*}\]
+
+<p>Since we already know $\mathbb{E}\left[\bar{X}_ N\right] = \mu$ and ${Var}\left[\bar{X}_ N \right] = \frac{\sigma^2}{N}$, we can apply <em>Chebyshev’s Inequality</em> to the sample mean $\bar{X}_ N$:</p>
+
+\[\begin{equation*}
+P(\left| \bar{X}_ N - \mu \right| \geq \epsilon) \leq \frac{\sigma^2}{N \epsilon^2}
+\end{equation*}\]
+
+<p>As the number of samples $N \to \infty$, the right-hand side approaches 0:</p>
+
+\[\begin{equation*}
+\lim_{N \rightarrow \infty} P( \left| \bar{X}_ N - \mu \right| \geq \epsilon) = 0
+\end{equation*}\]
+
+<p>This tells us that the <strong>probability of the sample mean deviating from the true mean</strong> by more than $\epsilon$ becomes arbitrarily small as the sample size grows. Since probabilities are non-negative, this is equivalent to:</p>
+
+\[\begin{equation*}
+\lim_{N \rightarrow \infty} P(\left| \bar{X}_ N - \mu \right| &lt; \epsilon) = 1 
+\end{equation*}\]
+
+<p>This completes the proof of convergence in probability of the sample mean to the population mean, as stated by the <em>WLLN</em>. $\Box$</p>
+
+<hr />
+
+<h2 id="typical-set">Typical Set</h2>
+
+<p>We worked hard to look at the concept called <strong><em>AEP</em></strong> earlier, but the reason this concept emerged is actually to explain the <strong><em>Typical Set</em></strong>. The <strong><em>Typical Set</em></strong> refers to the representative characteristics that a long sequence is expected to possess. Saying it like this might be a bit confusing, so let me explain with an example of a coin toss.</p>
+
+<h3 id="example-1">Example 1:</h3>
+
+<p>Let’s assume we toss a coin a total of 100 times. Then, since every situation in a coin toss is independent, there are $2^{100}$ possible outcomes consisting of Heads (H) and Tails (T). Here, we can explain the <strong>Typical result</strong> and <strong>Non-typical result</strong> as follows:</p>
+
+<ul>
+  <li><strong>Non-typical result</strong>: Cases where only Heads appear 100 times (H:100) or only Tails appear 100 times (T:100). Cases where Heads and Tails alternate exactly 50 times each (HTHT…).</li>
+  <li><strong>Typical result</strong>: Cases where the overall result has a ratio of Heads to Tails close to half and half, such as (H:51, T:49).</li>
+</ul>
+
+<p>In other words, in the case of a coin toss, the Typical Set refers to the set of results where the ratio of Heads to Tails is close to 50:50.</p>
+
+<hr />
+
+<p>To explain it more informally, <strong><em><code class="language-plaintext highlighter-rouge">Typical Set</code></em> can be expressed as <em><code class="language-plaintext highlighter-rouge">a set of probabilistic results that are acceptable within the bounds of common sense</code></em></strong>.</p>
+
+<p>Now, let’s express the definition of the <strong><em>Typical Set</em></strong> formally. If we express the <strong><em>Typical Set</em></strong> mathematically, it can be written as follows:</p>
+
+<h3 id="definition-1">Definition 1:</h3>
+
+<p>Let $(x_1, \ldots x_n) \in \mathcal{X}^n$ denotes sequences with length $n$, and $\epsilon$ is very small positive number. Then typical set ${A}^{(n)}_\epsilon$ with respect to $p(x)$ is set of sequence  with the property</p>
+
+\[\begin{align*}
+2^{-n(H(X)+\epsilon)} \leq p(x_1, x_2, &amp;\ldots, x_n)\leq 2^{-n(H(X)-\epsilon)} 
+\end{align*}\]
+
+<p>By applying logs and if $(x_1, \ldots x_n) \in A_\epsilon^{(n)}$, then</p>
+
+\[\begin{align*}
+{-n(H(X)+\epsilon)} &amp;\leq \log p(X_1, X_2, \ldots, X_n)\leq {-n(H(X)-\epsilon)} \\
+{H(X)-\epsilon} &amp;\leq -\frac{1}{n}\log p(X_1, X_2, \ldots, X_n)\leq {H(X)+\epsilon} 
+\end{align*}\]
+
+<hr />
+
+<p>This means that the average value of the probability of each random variable $\frac{1}{n}\sum_i \log p(X_i)$ is bounded by the entropy $H(X)$ and $\epsilon$. To express this more precisely, it is called the <strong><em>$\epsilon$<code class="language-plaintext highlighter-rouge">-Typical Set</code></em></strong>.</p>
+
+<p>However, if you look closely here, the form of $-\frac{1}{n}\sum_i \log p(X_i)$ in the middle shows a close relationship with the <strong><em>AEP</em></strong> explained above. Based on <strong><em>AEP</em></strong>, we can establish the properties of the <strong><em>typical set</em></strong> $A_\epsilon^{(n)}$. Then, let’s examine what properties $A_\epsilon^{(n)}$ has and the proofs for them.</p>
+
+<h3 id="properties-1">Properties 1:</h3>
+
+<ol>
+  <li>When sequence length $n$ is sufficiently large, then $P(A_\epsilon^{(n)}) \geq 1 - \epsilon$</li>
+  <li>Let $\rvert A \rvert$ denotes the number of elements in the set $A$; $\rvert A_\epsilon^{(n)} \rvert\leq 2^{n(H(X) + \epsilon)}$</li>
+  <li>When sequence length $n$ is sufficiently large, then $\rvert A_\epsilon^{(n)} \rvert \geq (1-\epsilon)2^{n(H(X) - \epsilon)}$</li>
+</ol>
+
+<hr />
+
+<h3 id="proof-2">Proof 2:</h3>
+
+<h5 id="proof-21">Proof 2.1:</h5>
+
+<p>From the <strong><em>Asymptotic Equipartition Property (AEP)</em></strong>, we know that</p>
+
+\[\begin{equation*}
+-\frac{1}{n}\sum_ {i=1}^n \log p(X_i) \rightarrow H(X)
+\end{equation*}\]
+
+<p>in probability. This implies that when $n$ is sufficiently large,</p>
+
+\[\begin{align*}
+p \underbrace{\left(\left|-\frac{1}{n}\log p(X_1, \ldots, X_n) - H(X) \right| \leq \epsilon \right)}_ {\in A_ \epsilon^{(n)}} \geq 1 - \delta,
+\end{align*}\]
+
+<p>where $\delta$ is a small positive number, consistent with the convergence in probability. In the case where $\delta = \epsilon$, this satisfies the first property. $\Box$</p>
+
+<h5 id="proof-22">Proof 2.2:</h5>
+
+<p>We can derive a lower bound on the probability mass of the typical set based on its definition:</p>
+
+\[\begin{align*}
+1 &amp;= \sum_ {\mathbf{x} \in \mathcal{X}^n} p(\mathbf{x}) \\
+&amp;\geq \sum_ {\mathbf{x} \in A^{(n)}_ \epsilon} p(\mathbf{x}) \\
+&amp;\geq \sum_ {\mathbf{x} \in A^{(n)}_ \epsilon} 2^{-n(H(X) +\epsilon)} \scriptsize{\text{(by the lower bound of the Typical Set definition)}}\\
+&amp;= 2^{-n(H(X) +\epsilon)} |A^{(n)}_ \epsilon|.
+\end{align*}\]
+
+<p>Multiplying both sides by $2^{n(H(X) +\epsilon)}$ yields $\rvert A^{(n)}_ \epsilon\rvert  \leq 2^{n(H(X) +\epsilon)},$ which satisfies the second property. $\Box$</p>
+
+<h5 id="proof-23">Proof 2.3:</h5>
+
+<p>From the first property, we can derive an upper bound as follows:</p>
+
+\[\begin{align*}
+1 - \epsilon &amp;\leq p(A_\epsilon^{n}) \\
+&amp;\leq \sum_ {\mathbf{x} \in A^{(n)}_ \epsilon} 2^{-n(H(X) -\epsilon)} \scriptsize{\text{(by the upper bound of the Typical Set definition)}}\\
+&amp;= 2^{-n(H(X) -\epsilon)} |A^{(n)}_ \epsilon|.
+\end{align*}\]
+
+<p>Multiplying both sides by $2^{n(H(X) - \epsilon)}$ gives  $\rvert A^{(n)}_ \epsilon\rvert  \geq 2^{n(H(X) - \epsilon)},$ which satisfies the third property. $\Box$</p>
+
+<hr />
+
+<h2 id="consequences-of-aep-data-compression">Consequences of AEP: Data Compression</h2>
+
+<p>We have examined the concept of <strong><em>AEP</em></strong> and the <strong>$\epsilon$<em>-Typical Set</em></strong>. Then, what can we do with these properties? There are several things, but the most usefully applied field among them is <strong><em>data compression</em></strong>. In other words, <strong>compression of <code class="language-plaintext highlighter-rouge">data to near-lossless</code> becomes possible through <em>AEP</em></strong>. Let’s examine how this is possible through an example as well.</p>
+
+<h3 id="example-2">Example 2:</h3>
+
+<p>Let’s use a coin toss as an example again. To give a more extreme example, let’s assume the probabilities are not equal, but <strong>Heads (H) 90% (P(H)=0.9)</strong> and <strong>Tails (T) 10% (P(T)=0.1)</strong>. In this case, the possible outcomes are as follows:</p>
+
+<ul>
+  <li>$P(HHH) = 0.9 \times 0.9 \times 0.9 \approx 0.729$</li>
+  <li>$P(H\times2, T) = 0.9 \times 0.9 \times 0.1 \approx 0.081$ (3 cases)</li>
+  <li>$P(H, T\times2) = 0.9 \times 0.1 \times 0.1 \approx 0.009$ (3 cases)</li>
+  <li>$P(TTT) = 0.1 \times 0.1 \times 0.1 \approx 0.001$</li>
+</ul>
+
+<p>Next, thinking simply, when tossing the coin 3 times, the expected number of Heads (H) can be seen as $3 \times 0.9 = 2.7$. Taking the range slightly wider, we can see it as coming out about 2 or 3 times when tossed 3 times <em>(lower bound = 2, upper bound = 3)</em>. In other words, getting Heads (H) 2 or 3 times can be said to be <em>typical</em>. Now then, calculating $A^{(3)}$ based on Heads (H) gives:</p>
+
+<p>$A^{(3)} = P(HHH) + P(H\times2,T)\times3 = 0.729 +0.081 \times 3 = 0.972$</p>
+
+<p>That is, intuitively, when finding the typical set, the probability of that set occurring can be seen as about 97.2%. It is virtually close to 100%.</p>
+
+<p>However, the current example is too small with $n=3$, so it is difficult to show by substituting into the properties for <strong><em>AEP</em></strong> and <strong><em>typical set</em></strong> defined above. Because the properties above assume when $n$ is sufficiently large. Therefore, based on the intuition above, let’s examine mathematically how it turns out when we increase it to $n=100$.</p>
+
+<p>From now on, since we need to directly utilize the value of entropy in the formula, let’s calculate the entropy $H$ for the probability of Heads appearing. Calculating the binary entropy $H(p)$ (Binomial trial) for the probability of Heads gives:</p>
+
+\[\begin{align*}
+H(p) &amp;= -p\log p - (1-p)\log (1-p) \;\; \scriptsize{\text{(Entropy for Binomial Trial)}}\\
+H(0.9) &amp;= 0.9 \log 0.9 - (1-0.9)\log 0.9 \\
+&amp;= 0.9 \log 0.9 - 0.1\log0.1 \\
+&amp;\approx 0.1368 + 0.3322\\
+&amp;\approx 0.469
+\end{align*}\]
+
+<p>In other words, the Entropy based on Heads (H) per toss is about ${H(0.9) = 0.469}$. Then now, substituting into the typical set $A_{\epsilon=0}^{(n)}$ gives:</p>
+
+\[\begin{equation*}
+|A^{(n)}_{\epsilon=0}| = 2^{nH} = 2^{100\times0.469} = 2^{46.9} \approx 1.2\times10^{14}
+\end{equation*}\]
+
+<p>Let’s examine the meaning of this result from the perspective of Information Theory and bits.</p>
+
+<p>First, as in the example above, let’s calculate the probability of the typical set occurring. When $n=3$, it was actually hard to set a bound, so we simply designated the bound range as 2 or 3 without setting $\epsilon$ separately. However, since now $n=100$, we can set each lower and upper bound of the typical set via $\epsilon$. In this case, for convenient calculation, let’s say the expected count is $100 \times 0.9 = 90 =np$, and let’s calculate the typical set with a bound of $\pm 5$. (Range of expected Heads: $N_H \in [85, 95]$)</p>
+
+\[\begin{align*}
+p(A^{(100)}_ \epsilon) &amp;= \sum_ {k=85}^{95} p(N_H=k)\\
+&amp;=\sum_ {k=85}^{95}\binom{100}{k}p^k (1-p)^{100-k} \\
+&amp;\approx 0.936
+\end{align*}\]
+
+<p>This means that the sum of cases belonging to the typical set among the total $2^{100}$ possible cases accounts for about 93.6% of the total probability mass. Although not 100%, most cases can be seen as included in the typical set.</p>
+
+<p>Now, imagine communicating information about what happened above to someone. The total number of ways to convey information about the coin toss is $2^{100}$ (size of total set $\mathcal{X}$; $\rvert \mathcal{X}\rvert $). If we think about transmitting this in bits, we would need $\log2^{100} = 100$ bits (excluding prefix). However, the size of the typical set calculated above is about $\log2^{46.9} = 46.9$ bits $ \approx 47$ bits. <em>(We express this as indexing)</em> If we transmit only the Typical Set, we can save about $53$ bits. From a communication perspective, this can be seen as a very large amount of compression. ($53\%$ compression possible)</p>
+
+<p>To summarize, if we say we are communicating information about an event where 100 coin tosses were performed, based on the typical set, it means we can communicate <strong>events corresponding to about 93.6% of the total probability mass</strong> with <strong>about 47 bits</strong>, that is, <strong>compressed by 53% fewer bits than before</strong>.</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">One-line summary: Let's compress the frequently occurring sets, and leave the rarely occurring sets as they are!</code></strong></p>
+
+<hr />
+
+<p>Now let’s look at this formally from the perspective of sequence length. First, the <strong><em>typical set</em></strong> $A^{(n)}_ \epsilon$ defined earlier satisfies the following property:</p>
+
+\[\begin{equation*}
+|A^{(n)}_ \epsilon| \leq 2^{n(H + \epsilon)}
+\end{equation*}\]
+
+<p>In other words, most sequences are included in this <strong><em>typical set</em></strong>, and the number is at most $2^{n(H+\epsilon)}$. As explained in the example, this means sequences within this <strong><em>typical set</em></strong> can be <strong>represented within approximately $n(H + \epsilon) + 1$ bits</strong>. (Here, +1 assumes the case where $n(H + \epsilon)$ might not be an integer) Additionally, since information about whether it is a typical set or not is needed, 1 bit increases, so finally the total length of $A^{(n)}_ \epsilon$ can be represented within $n(H + \epsilon) +2$ bits. Now there is another point to examine here; as explained above, we said we compress the <strong><em>typical set</em></strong> (indexing) and leave the non-typical set as is. We can express the total length of each as follows:</p>
+
+<ul>
+  <li>Typical Set: $n\log \rvert A^{(n)}_ \epsilon\rvert  \leq n(H + \epsilon) +2 $</li>
+  <li>Non-typical Set: $n\log \rvert \mathcal{X}\rvert  \leq n\log \rvert \mathcal{X}\rvert  + 2$</li>
+</ul>
+
+<p>Now we can calculate the expected value of the sequence length. First, let $x^n=$ sequence $(x_1, \ldots x_n)$, and denote the length for $x^n$ as $l(x^n)$. Then the expected value for the required sequence length can be expressed as follows by taking the expectation:</p>
+
+\[\begin{align*}
+\mathbb{E}\left[ l(X^n) \right] &amp;= \sum_ {x^n} p(x^n)l(x^n)\\
+&amp;= \sum_ {x^n \in A^{(n)}_ \epsilon } p(x^n)l(x^n) + \sum_ {x^n \in A^{(n)^c}_ \epsilon} p(x^n)l(x^n)\\
+&amp;\leq \sum_ {x^n \in A^{(n)}_ \epsilon } p(x^n)\left(n(H + \epsilon) + 2\right) + \sum_ {x^n \in A^{(n)^c}_ \epsilon} p(x^n)\left(n\log |\mathcal{X}| + 2 \right)\\
+&amp;= p(A^{(n)}_ \epsilon )\left(n(H + \epsilon) + 2\right) + p(A^{(n)^c}_ \epsilon )\left(n\log |\mathcal{X}| + 2 \right)\\
+\end{align*}\]
+
+<p>Now, another part to consider here is that we want to know not only how many bits are used for the entire sequence $X^n$, but <strong>how many bits are required for each $x_i$</strong>. That is, we need the average number of bits (bit rate) $\frac{1}{n} \mathbb{E}[l(X^n)]$, not the total number of bits $\mathbb{E}[l(X^n)]$. Regarding this, we can summarize as follows:</p>
+
+<h3 id="theorem-2">Theorem 2</h3>
+
+<p>Let $X^n \sim p(x)$. Let $\epsilon &gt; 0$. Then there exists sequences $x^n$ with sufficently large length $n$ as follows:</p>
+
+\[\begin{equation*}
+\mathbb{E}\left[\frac{1}{n}l(X^n) \right] \leq H(X) + \epsilon
+\end{equation*}\]
+
+<hr />
+
+<p>This Theorem can be derived from the expectation calculated just above. First, when $n\rightarrow \infty$, $p(A^{(n)}_ \epsilon)$ and $p(A^{(n)^c}_ \epsilon)$ converge to $p(A^{(n)}_ \epsilon) \rightarrow 1$ and $p(A^{(n)^c}_ \epsilon) \rightarrow 0$ as seen in Property 1.1. Then $\mathbb{E}\left[ l(X^n) \right] \leq n(H + \epsilon) + 2$, and dividing both sides by $n$ leads to <strong>Theorem 2</strong>.</p>
+
+<p>In conclusion, it means that when $n\rightarrow\infty$, the entire sequence $X^n$ can be compressed to approximately (weakly) $nH$ bits.</p>
+
+<h2 id="conclusion">Conclusion</h2>
+
+<p>To briefly summarize the covered content:</p>
+
+<h4 id="aep-theorem-1"><em>AEP</em> (<code class="language-plaintext highlighter-rouge">Theorem 1</code>):</h4>
+
+\[\begin{equation*}
+-\frac{1}{N}\sum_ {i=1}^N \log p(X_i) \rightarrow H(X)
+\end{equation*}\]
+
+<hr />
+
+<h4 id="typical-set-definition-1-properties-1"><em>Typical Set</em> (<code class="language-plaintext highlighter-rouge">Definition 1</code>, <code class="language-plaintext highlighter-rouge">Properties 1</code>):</h4>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">Definition 1:</code></strong></li>
+</ul>
+
+\[\begin{equation*}
+{H(X)-\epsilon} \leq -\frac{1}{n} \log p(X_1, X_2, \ldots, X_n)\leq {H(X)+\epsilon}
+\end{equation*}\]
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">Properties 1</code></strong>
+    <ol>
+      <li>When sequence length $n$ is sufficiently large, then $P(A_\epsilon^{(n)}) \geq 1 - \epsilon$</li>
+      <li>Let $\rvert A\rvert  $ denotes the number of elements in the set $A$; $\rvert A_\epsilon^{(n)}\rvert  \leq 2^{n(H(X) + \epsilon)}$</li>
+      <li>When sequence length $n$ is sufficiently large, then $\rvert A_\epsilon^{(n)}\rvert  \geq (1-\epsilon)2^{n(H(X) - \epsilon)}$</li>
+    </ol>
+  </li>
+</ul>
+
+<hr />
+
+<h4 id="convergence-of-sequence-length-theorem-2"><em>Convergence of Sequence Length</em> (<code class="language-plaintext highlighter-rouge">Theorem 2</code>)</h4>
+
+\[\begin{equation*}
+\mathbb{E}\left[\frac{1}{n} l(X^n) \right] \leq H(X) + \epsilon
+\end{equation*}\]
+
+<hr />
+
+<p>In this chapter, we examined how information can be efficiently compressed and transmitted, along with intuitive explanations and how it is mathematically possible. Whenever I have time in the future, I plan to organize the key concepts from <strong><em>Elements of Information Theory</em></strong>, especially focusing on <strong>content that acts importantly from an AI research perspective</strong>.</p>
+
+<p>Then I’ll see you again in the next post!</p>]]></content><author><name>Jae-Jun Lee</name></author><category term="entropy" /><category term="AEP" /><category term="WLLN" /><category term="typical set" /><category term="sequence length" /><summary type="html"><![CDATA[Recently, while studying AI, I naturally began to think a lot from the perspective of Information Theory. In that process, I took a deep look into the theory itself again, and since my blog content had been sparse for a while, I thought this would be a good opportunity to organize and post what I've studied, centering on the textbook "Elements of Information Theory". I plan to organize it to be as easy to understand as possible, with explanations centered on intuitive examples, accompanied by formulas and proofs where absolutely necessary.]]></summary></entry><entry><title type="html">[Coding] Super Easy Guide to Applying PyTorch DDP</title><link href="https://johnjaejunlee95.github.io/en/blog/2025/DDP/" rel="alternate" type="text/html" title="[Coding] Super Easy Guide to Applying PyTorch DDP" /><published>2025-02-08T00:00:00+00:00</published><updated>2025-02-08T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2025/DDP</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2025/DDP/"><![CDATA[<h1 id="pytorch-ddp">PyTorch DDP</h1>
+
+<h2 id="environment-setup-before-we-begin">Environment Setup Before We Begin</h2>
+
+<p>Before we start, you need to install PyTorch + CUDA, which you can do by following the official website. You can proceed with the PyTorch installation as is, but I notice some people try to install CUDA manually. Personally, I do not recommend this. There are many settings to configure, especially on Windows. Therefore, <strong>I strongly recommend creating a virtual environment using <em>miniconda</em> or venv.</strong> Below, I will briefly outline the method I usually use for setup.</p>
+
+<blockquote>
+  <p><em>I prefer utilizing miniconda over anaconda. It is much lighter because it installs only the absolutely essential elements for creating a virtual environment.</em></p>
+</blockquote>
+
+<h3 id="1-installing-miniconda">1. Installing Miniconda:</h3>
+
+<h4 id="linux"><strong>Linux</strong>:</h4>
+
+<ol>
+  <li>Go to this <a href="https://repo.anaconda.com/miniconda/">Link</a> and download <code class="language-plaintext highlighter-rouge">Miniconda3-latest-Linux-x86_64.sh</code>.</li>
+  <li>Run <code class="language-plaintext highlighter-rouge">bash Miniconda3-latest-Linux-x86_64.sh</code>.</li>
+</ol>
+
+<h4 id="windows"><strong>Windows</strong>:</h4>
+
+<ol>
+  <li>Go to this <a href="https://repo.anaconda.com/miniconda/">Link</a> and download/run <code class="language-plaintext highlighter-rouge">Miniconda3-latest-Windows-x86_64.exe</code>.</li>
+</ol>
+
+<h3 id="2-creating-a-miniconda-virtual-environment">2. Creating a Miniconda Virtual Environment:</h3>
+
+<h4 id="linux-1">Linux:</h4>
+
+<ol>
+  <li>In the terminal: <code class="language-plaintext highlighter-rouge">conda create -n your_own_env_name python=3.9</code></li>
+</ol>
+
+<h4 id="windows-1">Windows:</h4>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">Anaconda Prompt</code> from the Start menu.</li>
+  <li>In the terminal: <code class="language-plaintext highlighter-rouge">conda create -n your_own_env_name python=3.9</code></li>
+</ol>
+
+<blockquote>
+  <p><em>You can set <strong>your_own_env_name</strong> to whatever name you prefer.</em></p>
+</blockquote>
+
+<h3 id="3-installing-packages-within-miniconda-same-for-linux--windows">3. Installing Packages within Miniconda (Same for Linux &amp; Windows)</h3>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">conda activate your_own_env_name</code> in the terminal.</li>
+  <li>Select your <em>desired version and OS</em> on this <a href="https://pytorch.org/get-started/previous-versions/">Link</a> and run the command in the terminal (pip / conda doesn’t matter).</li>
+  <li>*You must run the command that includes CUDA (e.g., <code class="language-plaintext highlighter-rouge">conda install pytorch==2.2.1 torchvision==0.17.1 torchaudio==2.2.1 pytorch-cuda=11.8 -c pytorch -c nvidia</code>)</li>
+</ol>
+
+<blockquote>
+  <p><em>Additionally, recently when installing numpy, version 2 is sometimes installed. If that happens, you can reinstall version 1. (e.g., <code class="language-plaintext highlighter-rouge">pip install numpy==1.26.</code> etc.)</em></p>
+</blockquote>
+
+<p>Now, PyTorch and CUDA are automatically installed within your virtual environment. If you wish to install additional CUDA environments like cuDNN, you can run <code class="language-plaintext highlighter-rouge">conda install -c anaconda cudatoolkit==[desired version]</code> and <code class="language-plaintext highlighter-rouge">conda install -c anaconda cudnn</code>. This will install the desired cudatoolkit version and the matching cudnn version.</p>
+
+<h2 id="applying-ddp">Applying DDP</h2>
+
+<p>Now, let’s get straight to the point. We will look at applying DDP in two parts. The first is the <strong>terminal and script input</strong> method, and the second is the <strong>setting within the Python code</strong>.</p>
+
+<h3 id="terminal-and-script-input-method">Terminal and Script Input Method</h3>
+
+<p>First, assuming that DDP setup is complete within the Python code, you can input the following:</p>
+
+<p><strong><code class="language-plaintext highlighter-rouge">CUDA_VISIBLE_DEVICES=0,1,2,3 torchrun --nproc_per_node=4 --master_port 56789 main.py</code></strong></p>
+
+<p>Let’s look at this step by step.</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">CUDA_VISIBLE_DEVICES=0,1,2,3</code>:</strong> This specifies which GPUs you will use among the ones available to you. For example, if your local machine or server has 8 GPUs, this means you will only use GPUs 0 through 3. If you don’t specify this separately, it will use all of them.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">torchrun</code>:</strong> Before PyTorch version 2.0, we used <code class="language-plaintext highlighter-rouge">python -m torch.distributed.launch</code>, but after version 2.0, <code class="language-plaintext highlighter-rouge">torchrun</code> allows you to execute DDP without needing to type <code class="language-plaintext highlighter-rouge">python -m</code>.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">--nproc_per_node=4</code>:</strong> You can decide how many processors to use on that node. Here, “processor” refers to a GPU. Simply match this to the number of GPUs. <br />(In the example above, since we use 4 GPUs, it is set to 4; the node is the local machine or server).</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">--master_port 56789</code>:</strong> This part is actually optional, but it sets the port number when running DDP. Sometimes, when running multiple DDP instances on a local machine or server, execution might fail if port numbers overlap. In that case, you can just input any number you like.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">main.py</code>:</strong> The name of the file you want to execute. (Obviously…)</li>
+</ul>
+
+<p>There are more arguments you can apply. For instance, there is <code class="language-plaintext highlighter-rouge">--master_addr</code>, which is used when utilizing multi-nodes, i.e., multiple servers. However, since this post is intended for those new to DDP and most won’t need to use multi-nodes, I will skip this.</p>
+
+<h3 id="settings-within-python-code">Settings Within Python Code</h3>
+
+<p>Before we dive in, there is one short thing to mention. As you can see from specifying arguments like <code class="language-plaintext highlighter-rouge">--master_addr</code> above, DDP is similar to creating a sort of virtual environment for each GPU. In other words, it is easier to understand if you imagine that each GPU is configured like a virtual environment to run the Python file. During this process, variables are set within Python for each GPU (<code class="language-plaintext highlighter-rouge">os.environ['variable_name']</code>). Let’s briefly touch upon two variables.</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">os.environ['WORLD_SIZE']</code>:</strong> This refers to the node number executed via torchrun. In practice, this becomes the server number. Since we are explaining based on 1 server (single node), in most cases, this will be <strong><code class="language-plaintext highlighter-rouge">os.environ['WORLD_SIZE']=0</code></strong>.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">os.environ['LOCAL_RANK']</code>:</strong> This refers to each processor executed via torchrun. In other words, understand this as the GPU number (0 to 3 in the current example).</li>
+</ul>
+
+<h4 id="ddp-initialization">DDP Initialization</h4>
+
+<p>Based on this, let’s see how to set it up within the Python code. Everyone has their own coding style, but I usually write it as follows:</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="code"><pre><span class="n">args</span><span class="p">.</span><span class="n">device</span> <span class="o">=</span> <span class="sh">'</span><span class="s">cuda:0</span><span class="sh">'</span>
+<span class="n">args</span><span class="p">.</span><span class="n">world_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">args</span><span class="p">.</span><span class="n">rank</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">args</span><span class="p">.</span><span class="n">local_rank</span> <span class="o">=</span> <span class="nf">int</span><span class="p">(</span><span class="n">os</span><span class="p">.</span><span class="n">environ</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="sh">"</span><span class="s">LOCAL_RANK</span><span class="sh">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="n">torch</span><span class="p">.</span><span class="n">cuda</span><span class="p">.</span><span class="nf">set_device</span><span class="p">(</span><span class="n">args</span><span class="p">.</span><span class="n">local_rank</span><span class="p">)</span>
+<span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">init_process_group</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="sh">'</span><span class="s">nccl</span><span class="sh">'</span><span class="p">,</span> <span class="n">init_method</span><span class="o">=</span><span class="sh">'</span><span class="s">env://</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">args</span><span class="p">.</span><span class="n">world_size</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">get_world_size</span><span class="p">()</span>
+<span class="n">args</span><span class="p">.</span><span class="n">local_rank</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">distributed</span><span class="p">.</span><span class="nf">get_rank</span><span class="p">()</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<hr />
+
+<p>This is just my coding style; I often utilize <code class="language-plaintext highlighter-rouge">args.xxx</code>. (You could set variables separately, but keeping them inside arguments makes it convenient to use anywhere in the code.)</p>
+
+<p>Let’s examine the code line by line.</p>
+
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">args.device='cuda:0' ~ args.rank=0</code>:</strong> You can understand this as the step to initialize variables needed for DDP.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">args.local_rank = int(os.environ.get("LOCAL_RANK", 0))</code>:</strong> As mentioned above, <code class="language-plaintext highlighter-rouge">os.environ['LOCAL_RANK']</code> refers to the GPU number where the code is running. Therefore, understand this as receiving the variable corresponding to the GPU number into <code class="language-plaintext highlighter-rouge">args.local_rank</code> via the <em>get()</em> function inside <em>os.environ</em>.
+    <ul>
+      <li>Example 1: If it corresponds to GPU 0, <code class="language-plaintext highlighter-rouge">args.local_rank = 0</code></li>
+      <li>Example 2: If it corresponds to GPU 3, <code class="language-plaintext highlighter-rouge">args.local_rank = 3</code></li>
+    </ul>
+  </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">torch.cuda.set_device(args.local_rank)</code>:</strong> Usually, there are two ways to move parameters to the GPU in PyTorch: <code class="language-plaintext highlighter-rouge">params.to('cuda:#')</code> and <code class="language-plaintext highlighter-rouge">params.cuda()</code>. I’ll skip explaining the first method as it is widely used. The second method moves them to the current default GPU. At this time, the default GPU is usually set to the first GPU (index 0). <em>set_device</em> can be used to change this. In other words, this part designates the default GPU using the <code class="language-plaintext highlighter-rouge">args.local_rank</code> specified above.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">torch.distributed.init_process_group(backend='nccl', init_method='env://')</code>:</strong> Understand this as the part that finally initializes everything so that each GPU can operate correctly. Here, <em>backend=’nccl’</em> specifies that CUDA will handle the operations, and <em>init_method=’env://’</em> specifies the arbitrary virtual environment created for the current DDP. Since most people use this form, there is no need to change it.</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">args.world_size, args.local_rank</code>:</strong> I typically use these two for the finally designated <code class="language-plaintext highlighter-rouge">WORLD_SIZE</code> and <code class="language-plaintext highlighter-rouge">LOCAL_RANK</code>. For <code class="language-plaintext highlighter-rouge">args.local_rank</code>, understand it as initializing it once more for verification purposes.</li>
+</ul>
+
+<h4 id="applying-ddp-to-the-model">Applying DDP to the Model</h4>
+
+<p>Next, let’s look at how to apply DDP to the model and train it. (It’s very simple.)</p>
+
+<figure class="highlight"><pre><code class="language-python" data-lang="python"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="code"><pre><span class="kn">from</span> <span class="n">torch.nn.parallel</span> <span class="kn">import</span> <span class="n">DistributedDataParallel</span> <span class="k">as</span> <span class="n">DDP</span>
+<span class="n">model</span> <span class="o">=</span> <span class="nc">DDP</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">device_ids</span><span class="o">=</span><span class="p">[</span><span class="n">args</span><span class="p">.</span><span class="n">local_rank</span><span class="p">])</span>
+<span class="bp">...</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="n">loss</span><span class="p">.</span><span class="nf">backward</span><span class="p">()</span> 
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<hr />
+
+<p>As you can see, the model is distributed using DistributedDataParallel provided by PyTorch. In this process, it distributes to each GPU using the <code class="language-plaintext highlighter-rouge">args.local_rank</code> designated earlier. (Note: <em>device_ids=[args.local_rank]</em>, brackets are needed for <em>args.local_rank</em>).</p>
+
+<h3 id="additional-tip---export-nccl_p2p_disable1">Additional Tip - <code class="language-plaintext highlighter-rouge">export NCCL_P2P_DISABLE=1</code></h3>
+
+<p>Unfortunately, sometimes it doesn’t work smoothly… It might fail due to various reasons like twisted configurations or conflicts. Still, nowadays, thanks to LLMs (ChatGPT, Claude, Gemini, etc.), debugging has become much easier if you can catch the error message well. I highly recommend utilizing them properly if it’s not an internal code issue.</p>
+
+<p>However… there are times when no error message appears, and you get stuck in infinite loading. This was my case; right when entering the DDP function, it would suddenly freeze and then hang indefinitely. I don’t know the exact cause, but it seems to be a situation where a problem occurs when GPUs are processing the model during the internal DDP function operations… (I’ve even tried debugging by printing everything inside the PyTorch framework… :confounded::disappointed_relieved:)</p>
+
+<p>In such cases, you can try <code class="language-plaintext highlighter-rouge">export NCCL_P2P_DISABLE=1</code>. If you run this once in the terminal and then run the code, it often works smoothly. Haha.</p>
+
+<h2 id="conclusion">Conclusion…</h2>
+
+<p>This was my first time posting about coding, and I hope this information is beneficial to those who are new to PyTorch and DDP. Haha. I experienced it, and looking around, I see people struggling for quite a long time when trying DDP for the first time. (ㅠㅠ) There are times when looking up blogs doesn’t work, and LLMs are unkind, so I hope this post is a big help in those cases!</p>]]></content><author><name>Jae-Jun Lee</name></author><category term="pytorch" /><category term="ddp" /><summary type="html"><![CDATA[This is my first coding-related post. The topic is DDP. Recently, as model capacities have grown, using multiple GPUs has become essential. Consequently, utilizing DDP effectively has become very important. Therefore, in this post, I will share how to apply DDP. I will cut to the chase regarding the general mechanics and focus simply and clearly on the arguments. (I will proceed with the method I personally use!)]]></summary></entry><entry><title type="html">[Theoretical Background] Convex Optimization 2</title><link href="https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization2/" rel="alternate" type="text/html" title="[Theoretical Background] Convex Optimization 2" /><published>2024-08-15T00:00:00+00:00</published><updated>2024-08-15T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization2</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization2/"><![CDATA[<h3 id="star-recap-previous-post">$\star$ Recap <a href="https://johnjaejunlee95.github.io/Optimization_1/">(Previous Post)</a></h3>
+
+<p>In the previous post, assuming a function is <mark style="background: orange">convex</mark> + $L$-lipschitz, the following Theorem was derived:</p>
+
+<p><mark style="background:skyblue">Theorem</mark> Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:</p>
+
+\[f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{\mid\mid x_1 - x^\star \mid\mid L}{\sqrt{T}} \Rightarrow \mathcal{O}(\frac{1}{\sqrt{T}})\]
+
+<p>Then, what statement would emerge if we apply a stronger constraint or assumption than $L$-Lipschitz? Intuitively, it will probably converge at a much faster speed. Then let’s verify through proof if it actually converges at a faster speed. (All examples are Gradient Descent.)</p>
+
+<h3 id="before-we-begin">Before we begin…</h3>
+
+<p>When dealing with optimization problems, assumptions/constraints can be applied in various ways. (From now on, I will express all situations where assumptions/limits are set as <strong><em>assumption</em></strong>.) The stronger the assumption, the fewer functions satisfy it, but the convergence speed becomes faster. Therefore, by appropriately placing these constraints, we can verify “why it works well” from a Learning Theory perspective. The first assumption we looked at was $L$-Lipschitz, and this time we will look at how gradient descent converges under the $\beta$-Smoothness condition.</p>
+
+<h2 id="problem-formulation-2--assumption-beta--smooth">Problem Formulation 2 <br /> (Assumption: $\beta$ -Smooth)</h2>
+
+<p>Basically, the definition of $\beta$-Smoothness is as follows:</p>
+
+<p><mark style="background:lightgreen">Definition</mark> A continuously differentiable function $f$ is $\beta$-smooth if the gradient $\nabla f$ is $\beta$-Lipschitz:</p>
+
+\[||  \nabla f(x) - \nabla f(y) ||  \leq \beta || x - y ||\]
+
+<p>In other words, if an arbitrary function $f$ is in a differentiable form, it means it is $\beta$-Lipschitz with respect to the differentiated function. If you think about why this is a stronger assumption, you can think of the concept of differentiation we learned in high school.</p>
+
+<p>In the case of $L$-Lipschitz, it means that the rate of change for an arbitrary function $f$ is limited in proportion to $L$. However, $\beta$-Smooth means that the rate of change of the derivative value of an arbitrary function $f$ is limited in proportion to $\beta$. That is, $L$-Lipschitz means function $f$’s rate of change $\rightarrow$ derivative value is proportional to $L$, and $\beta$-Smoothness means function $f$’s derivative value’s rate of change $\rightarrow$ second derivative value is proportional to $\beta$. In this case, all $\beta$-Smooth belong to $L$-Lipschitz, but since not all $L$-Lipschitz belong to $\beta$-Smooth, <strong>$\beta$-Smooth can be seen as a stronger assumption.</strong></p>
+
+<p>Returning to the main point, let’s check how gradient descent converges when an arbitrary function $f$ is $\beta$-smooth.</p>
+
+<p><mark style="background:skyblue">Theorem 2:</mark> Let $f$ be convex and $\beta$-smooth on $\mathbb{R}^n$ . Then, gradient descent with $\gamma = \frac{1}{\beta}$ satisfies</p>
+
+\[f(x_T) - f(x^\star) \leq \frac{2\beta || x_1 - x^\star || ^2}{T-1}\]
+
+<p>The expansion method is similar to when it was $L$-Lipschitz. However, since a stronger assumption is included, we just need to look at a few more things.</p>
+
+<h3 id="proof">Proof:</h3>
+
+<p>Before we begin, there is one more definition we can define due to the property of $\beta$-smooth:</p>
+
+\[f(y)  \leq f(x) + \left&lt; \nabla f(x) , y-x\right&gt; + \frac{\beta}{2} || y - x ||^2\]
+
+<p>Since there is already an assumption that function $f$ is twice-differentiable, this formula can be expanded using the concept of Taylor Expansion. (Since this is not the main point but utilized as a definition, I will leave the proof as a <a href="https://angms.science/doc/CVX/CVX_betasmoothsandwich.pdf">link</a>.)</p>
+
+<p>Then now, let’s proceed with the proof for the convergence of gradient descent when it is really $\beta$-Smoothness. The direction of expansion itself is similar to when it is $L$-Lipschitz. However, you can see that the definitions available to use have increased. First, the gradient descent equation based on the property of $\beta$-Smooth can be expanded as follows.</p>
+
+\[\begin{align}
+  f(x_{t+1}) - f(x_t) &amp;\leq \left&lt; \nabla f(x_{t}) , x_{t+1} - x_t \right&gt; + \frac{\beta}{2} || x_{t+1} - x_t||^2 \\
+  &amp;= \left&lt; \nabla f(x_t) , -\gamma\nabla f(x_t) \right&gt; + \frac{\beta}{2} ||-\gamma\nabla f(x_t)||^2 \\
+  &amp;= -\gamma ||\nabla f(x_t)||^2 + \frac{\beta}{2}*\gamma^2 ||\nabla f(x_t)||^2\\
+  &amp;= -\frac{1}{\beta} ||\nabla f(x_t)||^2 + \frac{1}{2\beta}||\nabla f(x_t)||^2 \;\; \text{where } \gamma = \frac{1}{\beta}\\
+  &amp;= -\frac{1}{2\beta}||\nabla f(x_t)||^2
+  
+\end{align}\]
+
+<p>Also, like the proof when it was $L$-Lipschitz, the bound of $f(x_t) - f(x^\star)$ can be expanded as follows using the convexity of $f$: $f(x_t) - f(x^\star) \leq \left&lt; \nabla f(x_t) , x_t - x^\star \right&gt;$</p>
+
+<p>The term we can utilize here is $\nabla f(x_t)$ when thinking of the proof above. In other words, since the bound related to $\mid\mid \nabla f(x_{t})\mid\mid^2$, which is the squared form of $\nabla f(x_t)$, is already available, utilizing this allows us to expand the equation a bit more smoothly. This can be done by utilizing the <strong>Cauchy-Schwarz Inequality</strong> property.</p>
+
+<p>($\star$ <strong>Cauchy-Schwarz Inequality</strong>: $\left&lt; a,b \right&gt; \leq \mid\mid a \mid\mid \cdot \mid\mid b \mid\mid $)</p>
+
+\[\begin{align}
+\left[f(x_t) - f(x^\star)\right]^2 &amp;\leq \left| \left&lt; \nabla f(x_t) , x_t - x^\star \right&gt;\right|^2 \\
+&amp;\leq || \nabla f(x_t) ||^2 \cdot || x_t - x^\star ||^2 \\
+\Rightarrow \frac{\left[f(x_t) - f(x^\star)\right]^2}{ || x_t - x^\star ||^2} &amp;\leq || \nabla f(x_t) ||^2 
+\end{align}\]
+
+<p>Now, for the next step, we need to re-arrange it into a form that is easy for us to handle, and the easiest way is ultimately to handle the bound for $f(x_{t+1}) - f(x_t)$. By subtracting $f(x^\star)$ from both inequality terms as follows, we can utilize all the methods expanded previously.</p>
+
+<p>However, before that, there is one part to check. Before looking at $f$, we need to check how the bound is formed according to step $t$. Therefore, before looking at $f(x_{t+1}) - f(x_t)$, let’s check how the bound between $x_t$ and $x_{t+1}$ is formed.</p>
+
+\[\begin{align}
+    || x_{t+1} - x^\star ||^2 &amp;= || x_t - \frac{1}{\beta} \nabla f(x_t) - x^\star ||^2 \\
+    &amp;= ||x_t -x^\star||^2 - \frac{2}{\beta} \underbrace{\left&lt; \nabla f(x_t), x_t - x^\star \right&gt;}_{\leq \frac{1}{\beta} ||\nabla f(x_t)||^2} +\frac{1}{\beta^2} ||\nabla f(x_t)||^2 \\
+    &amp;\leq ||x_t - x^\star||^2 \underbrace{- \frac{1}{\beta^2} ||\nabla f(x_t)||^2}_{\text{always decreases}} \\
+    &amp;\leq ||x_t - x^\star||^2 \underbrace{- \frac{1}{\beta^2}\frac{\left[f(x_t) - f(x^\star)\right]^2}{ || x_t - x^\star ||^2}}_{\text{smaller decreases}}
+\end{align}\]
+
+<p>Utilizing this property, we can continue the proof using $f(x^\star)$ as follows.</p>
+
+\[\begin{align}
+    f(x_{t+1}) &amp;\leq f(x_t) - \frac{1}{2\beta} ||\nabla f(x_t)||^2 \\
+    f(x_{t+1}) - f(x^\star) = &amp;\leq f(x_t) - f(x^\star) - \frac{1}{2\beta}||\nabla f(x_t)||^2 \\
+    D_{t+1} &amp;\leq D_t  - \frac{1}{2\beta}||\nabla f(x_t)||^2 \quad \text{where } D_{t+1} = f(x_{t+1}) - f(x^\star)\\
+    D_{t+1} &amp;\leq D_t - \frac{1}{2\beta}\cdot \frac{\left[f(x_t) - f(x^\star)\right]^2}{||x_t - x^\star ||^2} \\
+    D_{t+1} &amp;\leq D_t - \frac{1}{2\beta} \cdot \frac{D_t^2}{||x_t - x^\star ||^2}
+\end{align}\]
+
+<p>If we divide the inequalities above by $D_t D_{T+1}$</p>
+
+\[\begin{align}
+    \frac{1}{D_{t}} - \frac{1}{D_{t+1}} &amp;\leq - \frac{1}{2\beta||x_t - x^\star ||^2}\frac{D_t}{  D_{t+1}}
+\end{align}\]
+
+<p>It becomes. However, here we can reset the bound through 2 conditions.</p>
+
+<ol>
+  <li>Since ${D_t}/{D_{t+1}}  = \left[f(x_t) - f(x^\star)\right] / \left[f(x_{t+1}) - f(x^\star)\right]$  and $f(x_{t+1})$ is smaller than $f(x_t)$, we know that ${D_t}/{D_{t+1}} \geq 1$.</li>
+  <li>Since ${x_t - x^\star} \leq x_1 - x^\star $, we know that $1 /{\mid\mid x_t - x^\star \mid\mid^2} \geq 1 / {\mid\mid x_1 - x^\star \mid\mid^2}$.</li>
+</ol>
+
+<p>And since the Right Hand Side (RHS) term is a negative form, if we hold the bound tighter, it can be expressed as follows.</p>
+
+\[\frac{1}{D_{t+1}} - \frac{1}{D_{t}} \geq \frac{1}{2\beta||x_1 - x^\star ||^2}\]
+
+<p>Just like the previous expansion, if we substitute $t=1, \ldots , {T-1}$ sequentially</p>
+
+\[\begin{align}
+\frac{1}{D_{2}} - \frac{1}{D_{1}} &amp;\geq \frac{1}{2\beta||x_1 - x^\star ||^2} \\
+\frac{1}{D_{3}} - \frac{1}{D_{2}} &amp;\geq \frac{1}{2\beta||x_1 - x^\star ||^2} \\
+    &amp;\;\;\vdots \\
+\frac{1}{D_{T}} - \frac{1}{D_{T-1}} &amp;\geq \frac{1}{2\beta||x_1 - x^\star ||^2} \\
+\end{align}\]
+
+<p>And if we proceed with summation for the inequalities above</p>
+
+\[\begin{align}
+    \sum_{t=1}^{T-1} \left[\frac{1}{D_{t+1}} - \frac{1}{D_{t}} \right] &amp;\geq \sum_{t=1}^{T-1} \left[\frac{1}{2\beta ||x_1 - x^\star ||^2}\right] \\
+    \frac{1}{D_T} - \frac{1}{D_1} &amp;\geq \frac{T-1}{2\beta ||x_1 - x^\star ||^2} \\
+    \frac{1}{D_T} &amp;\geq \frac{1}{D_1} + \frac{T-1}{2\beta ||x_1 - x^\star ||^2}
+    \end{align}\]
+
+<p>Here, utilizing the property of $\beta$-Smooth and properties of convexity, we can set $D_1$ as follows.</p>
+
+\[\begin{align}
+    D_1 = f(x_1) - f(x^\star) &amp;\leq \left&lt; \nabla f(x^\star), x_1 - x^\star \right&gt; + \frac{\beta}{2} ||x_1 - x^\star ||^2\\
+    &amp;\leq \frac{\beta}{2} ||x_1 - x^\star ||^2
+
+\end{align}\]
+
+<p>The reason this is possible is that ultimately, since $x^\star$ is a minimizer value, we can assume the derivative value for $f$ converges to 0. Therefore, since $\nabla f(x^\star) = 0$, we can derive the equation above.</p>
+
+<p>And if we organize the formula</p>
+
+\[\begin{align}
+    \frac{1}{D_T} &amp;\geq \frac{1}{D_1} + \frac{T-1}{2\beta ||x_1 - x^\star ||^2}\\
+    \frac{1}{f(x_T) - f(x^\star)} &amp;\geq \frac{1}{f(x_1) - f(x^\star)} + \frac{T-1}{2\beta ||x_1 - x^\star ||^2} \\
+    \frac{1}{f(x_T) - f(x^\star)} &amp;\geq \frac{2}{\beta ||x_1 - x^\star ||^2} + \frac{T-1}{2\beta ||x_1 - x^\star ||^2} \\
+    \frac{1}{f(x_T) - f(x^\star)} &amp;\geq \frac{T + 3}{2\beta||x_1 - x^\star ||^2}\\
+    &amp;\geq \frac{T -1}{2\beta||x_1 - x^\star ||^2}
+\end{align}\]
+
+<p>The reason for changing the numerator from $T-3 \Rightarrow T-1$ above is that since we checked from step $1$ to $T-1$ when we did the summation, matching the form makes it easier to set the bound.</p>
+
+<p>Now, for the final step, if we take the reciprocal for each term, it’s done. <strong>(inequality direction changes)</strong></p>
+
+\[\begin{align}
+    f(x_T) - f(x^\star) \leq \frac{2\beta || x_1 - x^\star || ^2}{T-1} \Rightarrow \mathcal{O} \left(\frac{\beta}{T}\right)
+    \end{align}\]
+
+<h2 id="afterwards">Afterwards…</h2>
+
+<p>In expanding the formulas, I tried to explain as best as I could, but as the conditions to satisfy increased, the explanation seems to have become a bit verbose. Because of that, you might feel that readability and flow are not smooth. I will try to polish it little by little whenever I have time.</p>
+
+<p>I will stop the proofs related to Convex here. (Most are proved similarly.) I will return with different content in the next post.</p>
+
+<p><strong>$*$Thank you very much for reading. If there are any incorrect parts while reading or if you have any advice, I would appreciate it if you could share your opinions anytime.</strong></p>]]></content><author><name>Jae-Jun Lee</name></author><category term="Convex" /><category term="Optimization" /><category term="Gradient Descent" /><summary type="html"><![CDATA[I’m back with the second post related to optimization. Last time, we examined how it expands and converges when the function is L-lipschitz. This time, let's examine what happens when stronger constraints / assumptions are applied. Then, without further ado, let's jump right in.]]></summary></entry><entry><title type="html">[Theoretical Background] Convex Optimization 1</title><link href="https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization1/" rel="alternate" type="text/html" title="[Theoretical Background] Convex Optimization 1" /><published>2024-07-14T00:00:00+00:00</published><updated>2024-07-14T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization1</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2024/ConvexOptimization1/"><![CDATA[<p>$\star$ First, before explaining, I will omit what convex/non-convex is, and the overall formulas within deep learning. They are explained so well in other blogs, so is there a need? However, here I will try to focus more on “Why?”, or “How?”. Especially, I will try to focus more on the formula derivation.</p>
+
+<h2 id="why-convex-optimization">Why Convex Optimization?</h2>
+
+<p>Most problems we actually have to solve are in non-convex forms. However, solving such non-convex functions requires more precise approximation and proof. In this case, the cost becomes too large and it can be inefficient. But if we solve it assuming that the corresponding function is <mark style="background: orange">convex</mark> within the range we can assume, we can solve it efficiently. In other words, if we assume an arbitrary function $f$ is <mark style="background: orange">convex</mark>, since the local minima for $f$ is the global minima, the task to solve becomes relatively very easy because we only need to find the local minima. Then let’s take a look through simple examples.</p>
+
+<p><em>The <strong>Taxonomy</strong> below represents the classification criteria during optimization.</em> <strong>$\star$ Taxonomy:</strong></p>
+
+<ul>
+  <li><mark style="background-color:rgba(255,25,0,0.4); color:black!important">Zeroth Order</mark>: Only value of Function</li>
+  <li><mark style="background-color:rgba(255,25,0,0.4); color:black!important">$1^{st}$ Order</mark>: Derivation (GD/ SGD/ mini-batch GD, etc.)</li>
+  <li><mark style="background-color:rgba(255,25,0,0.4); color:black!important">$2^{nd}$ Order</mark>: Hessians (Newton Methods, etc.)</li>
+</ul>
+
+<p><br /></p>
+
+<h2 id="example-gradient-descent">Example: Gradient Descent</h2>
+
+<p>One of the most basic methods to find the optimal solution in the Deep Learning field is Gradient Descent (hereinafter, GD). Actually, nowadays most people use other optimization techniques (e.g., SGD, Adam, etc.) instead of GD, but if you understand how GD converges from an optimization perspective, I think you will be able to understand the other techniques sequentially.</p>
+
+<p>Then, let’s look at how optimization is performed for GD, and how the convergence form of optimization changes according to assumptions. (All assumptions here are based on convex)</p>
+
+<h2 id="problem-formulation-1-assumption-l-lipschitz">Problem Formulation 1 <br />(Assumption: $L$-Lipschitz)</h2>
+
+<p>Before we dive in, optimization settings are usually established briefly as follows:</p>
+
+\[\min\limits_{x \in \mathbb{R}^d} f(x)\]
+
+<p>where $f$ is differentiable convex function.</p>
+
+<p>And since GD is, as everyone knows, an iterative algorithm, it can be written as follows:</p>
+
+\[x_{k+1} = x_k -\gamma \nabla f(x_k)\]
+
+<p>​ where $\gamma &gt; 0 $ is the step size, a.k.a learning rate</p>
+
+<p>Then, to find the optimal solution, we will repeat the above content continuously. Assuming that training proceeds without diverging, a good optimization algorithm is a battle of how fast it finds the optimal solution. If asked “How do we find this?”, we can find it through upper bound settings for the final step $T$. In other words, when training has finally proceeded:</p>
+
+<p><mark style="background:skyblue">Theorem 1:</mark> Let $f$ be convex and $L$-Lipschitz continuous. Then gradient descent with $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$  satisfies:</p>
+
+\[f \left ( \frac{1}{T} \sum_{k=1}^T x_k  \right) - f(x^{\star}) \leq \frac{|| x_1 - x^\star || L}{\sqrt{T}} \Rightarrow \mathcal{O}(\frac{1}{\sqrt{T}})\]
+
+<h3 id="proof">Proof:</h3>
+
+<p>First, to solve the problem, we can use a method of projecting onto convex sets. 
+In other words, when projecting onto convex sets, the inner product of $x$ and $z$ with respect to the projection position $\pi_c (z)$ always results in a negative number (obtuse angle), and if we utilize the Pythagorean theorem, the inequality $\mid\mid \pi_c (z)  - x\mid\mid \leq \mid\mid z - x \mid\mid$ holds true.  Also, later during the proof derivation, I plan to utilize the Pythagorean theorem as follows: $\mathbf{\left&lt;a,b\right&gt; = \frac{1}{2}(\mid\mid a\mid\mid^2 + \mid\mid b\mid\mid ^2 -\mid\mid a-b\mid\mid ^2)}$)</p>
+
+<p>Then, using the properties above, let’s develop the proof:</p>
+
+\[\begin{align}
+f(x_k) - f(x^\star) &amp;\leq \; \;\left&lt;\nabla f(x_k) \;, \; x_k - x^\star \right&gt; \; \rightarrow \text{1st order convexity}\\
+&amp;= \; \left&lt;-\frac{1}{\gamma}(x_k - x_{k+1}) \;,\; x_k - x^\star\right&gt; \; \rightarrow \text{$x_{k+1} - x_k = - \gamma \nabla f(x_k)$ }\\
+&amp;= \frac{1}{2\gamma} \left[ \; \mid\mid x_k - x_{k+1}\mid\mid ^2 + \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid (x_k - x_{k+1}) - (x_k - x^\star)\mid\mid ^2 \; \right] \rightarrow  \; \text{pythagoras theorem}\\
+&amp;=\frac{1}{2\gamma} \left[ \; \mid\mid x_k - x^\star\mid\mid ^2 +\mid\mid \gamma \nabla f(x_k)\mid\mid ^2 - \mid\mid  x_{k+1}-  x^\star\mid\mid ^2 \; \right] \\
+&amp;= \frac{1}{2\gamma} \left[ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \right] + \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2
+\end{align}\]
+
+<p>Here, the $L$-Lipschitz Continuity property: if $f$ is differentiable, then $\mid \nabla f (x) \mid \leq L$. $\rightarrow$ Using $\frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2 \leq \frac{\gamma L^2}{2}$, we can set the bound as follows.</p>
+
+\[\begin{align}
+\frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma}{2} \mid\mid \nabla f(x_k)\mid\mid ^2 \\ \leq  \frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma}{2} L^2
+\end{align}\]
+
+<p>Now, let’s substitute the $k$ values sequentially and expand the formula.</p>
+
+\[\begin{align}
+f(x_1) - f(x^\star) &amp;\leq \frac{1}{2\gamma} \bigg [ \; \mid\mid x_1 - x^\star\mid\mid ^2 - \mid\mid x_{2} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma L^2}{2} \\
+f(x_2) - f(x^\star) &amp;\leq \frac{1}{2\gamma} \bigg [ \; \mid\mid x_2 - x^\star\mid\mid ^2 - \mid\mid x_{3} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma L^2}{2} \\
+&amp;\;\;\vdots \\
+f(x_k) - f(x^\star) &amp;\leq \frac{1}{2\gamma} \bigg [ \; \mid\mid x_k - x^\star\mid\mid ^2 - \mid\mid x_{k+1} - x^\star\mid\mid ^2 \bigg] + \frac{\gamma L^2}{2} \\
+&amp;\;\;\vdots \\
+
+\end{align}\]
+
+<p>If we take the average for both hand sides of the Inequality:</p>
+
+\[\frac{1}{T} \sum_{k=1}^T \bigg[ f(x_k) - f(x^\star)\bigg] \leq \frac{1}{T*2\gamma} \bigg[ ||x_1 - x^\star||^2 - ||x_{T+1} - x^\star||^2 \bigg] + \frac{\gamma L^2}{2}\]
+
+<p>Here, since $\mid\mid  x_{T+1} - x^\star\mid\mid ^2$ has a $-$ attached in front, this term is always negative. Therefore, we can just eliminate it and set an additional upper bound.</p>
+
+\[\Rightarrow \frac{1}{T*2\gamma} \left[ || x_1 - x^\star || ^2 - || x_{T+1} - x^\star || ^2 \right] \leq \frac{1}{T*2\gamma} \cdot || x_1 - x^\star || ^2\]
+
+<p>And then, *utilizing Jensen’s Inequality, we can express it as $f(\frac{1}{T} \sum_{k=1}^Tx_k) \leq \frac{1}{T} \sum_{k=1}^Tf(x_k)$. (Since we already assumed $f$ is <mark style="background: orange">convex</mark>)</p>
+
+<p>*Jensen’s Inequality: If $f$ is <mark style="background: orange">convex</mark>, it satisfies $f(\mathbb{E}[x])\leq \mathbb{E}[f(x)]$.</p>
+
+<p>Expanding the formula according to this gives:</p>
+
+\[\begin{align}
+f(\frac{1}{T} \sum_{k=1}^Tx_k) - f(x^\star) &amp;\leq \frac{1}{T} \sum_{k=1}^Tf(x_k) - f(x^\star) \leq \frac{\mid\mid x_1 - x^\star\mid\mid ^2}{2\gamma T} + \frac{\gamma L^2}{2} \\
+\Rightarrow f(\frac{1}{T} \sum_{k=1}^Tx_k) - f(x^\star) &amp;\leq \frac{\mid\mid x_1 - x^\star\mid\mid ^2}{2\gamma T} + \frac{\gamma L^2}{2} \\
+\end{align}\]
+
+<p>Finally, if we substitute the step size $\gamma = \frac{\mid\mid x_1 - x^\star\mid\mid}{L\sqrt{T}}$</p>
+
+\[\begin{align}
+f(\frac{1}{T} \sum_{k=1}^Tx_k) - f(x^\star) &amp;\leq \frac{|| x_1 - x^\star|| ^2}{2\gamma T} + \frac{\gamma L^2}{2} \\
+&amp;= \frac{L \sqrt{T}}{|| x_1 - x^\star|| } * \frac{|| x_1 - x^\star|| ^2}{2 T} + \frac{L^2|| x_1 - x^\star || }{2*L \sqrt{T}} \\
+&amp;= \frac{L\sqrt{T}(|| x_1 - x^\star || )}{2T} + \frac{L\sqrt{T}(|| x_1 - x^\star || )}{2T} \\
+&amp;= \frac{L || x_1 - x^\star|| }{\sqrt{T}}
+\end{align}\]
+
+<p>When expanded like this, we can see it comes out identical to <mark style="background:skyblue">Theorem </mark>. This means that the convergence rate varies according to $T$, and assuming $f$ is convex and $L$-Lipschitz, that speed converges to $\mathcal{O}\left(\frac{1}{\sqrt{T}}\right)$.</p>
+
+<h3 id="side-note-fixed-step-size-vs-adaptive-step-size">Side Note: Fixed Step Size vs. Adaptive Step Size</h3>
+
+<p>If you look at other textbooks, papers, blogs, etc., when proving Gradient Descent, they often set a fixed step size $\gamma = \frac{1}{L}$ and derive it. Actually, when done this way, it is quite neat mathematically and the convergence rate is also faster at $\mathcal{O}(\frac{1}{T})$. However, when proceeding like this, because you have to set a constant value, and when expanding the formula, if it is a fixed step size, an independent term regarding $\frac{1}{T}$ is created in the bound RHS, so you cannot guarantee it really goes to the minimum. Therefore, you can understand the method I developed as giving up the convergence rate to set a step size dependent on the difference between the actual first input $x_1$ and optimal $x^\star$ and the number of iterations $T$, to make a slightly more adaptive step size.</p>
+
+<p><strong>(Since the proof for Fixed Step Size is available so widely, I will omit it)</strong></p>
+
+<h2 id="afterwards">Afterwards…</h2>
+
+<p>The derivation above is a formula developed assuming $f$ is convex and $L$-Lipchitz continuous. If the assumption becomes stronger ($\beta$-smooth, $\alpha$-strongly convex, etc.), the convergence rate changes. Future postings will proceed by proving the convergence rate according to assumptions.</p>
+
+<p>I will finish by introducing the convergence rate table according to assumptions for GD.</p>
+
+<p><img src="/en/assets/img/24-07-24/convex_2.png" style="zoom:50%;" /></p>
+
+<p><br /></p>
+
+<p><strong>$*$Thank you very much for reading. If there are any incorrect parts while reading or if you have any advice, I would appreciate it if you could share your opinions anytime.</strong>​</p>]]></content><author><name>Jae-Jun Lee</name></author><category term="Convex" /><category term="Optimization" /><category term="Gradient Descent" /><summary type="html"><![CDATA[This year, I took a class involving the concept of Optimization for the first time. In dealing with the Deep Learning field, it was accepted like a foundational discipline to mathematically verify whether convergence happens, and if so, how fast it happens. While the Meta Learning and Generative Models I posted previously, and the Foundation Models I announced I would post in the future, are good, I thought it would also be good to upload concepts based on mathematics. So, I plan to try posting mainly about the content I learned during my graduate school classes. Since I have organized what I learned regarding these contents, I plan to post them periodically without making excuses.]]></summary></entry><entry><title type="html">[Conceptual Background] Meta Learning (2) - Approaches</title><link href="https://johnjaejunlee95.github.io/en/blog/2024/MetaLearning2/" rel="alternate" type="text/html" title="[Conceptual Background] Meta Learning (2) - Approaches" /><published>2024-01-02T00:00:00+00:00</published><updated>2024-01-02T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2024/MetaLearning2</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2024/MetaLearning2/"><![CDATA[<div>In the previous post, I briefly explained the context of how meta-learning emerged and the basic concept of few-shot learning to help understand meta-learning. So, in this post, I intend to explain meta-learning approaches. I plan to summarize what the pioneer papers are and what points each paper wants to make.
+<br /><br />
+  However... since so many papers have been published since 2017, it is impossible to cover all of them, so I will organize the summary mainly around key papers and papers that I found interesting to read. And in the next post, I will take time to briefly review papers focused on advanced methods.</div>
+
+<h2 id="2-meta-learning-approaches">2. Meta Learning Approaches</h2>
+
+<p>Actually, the reason I explained few-shot learning in the previous post was to explain meta-learning. You can understand meta-learning as applying various approaches utilizing the concept of Few-shot learning. Without further ado, let’s see what concepts exist in meta-learning.</p>
+
+<p>Meta-learning can basically be classified into the following 3 broad categories:</p>
+
+<ul>
+  <li>Optimization-based Approach</li>
+  <li>Metric-based Approach</li>
+  <li>Model-based Approach</li>
+</ul>
+
+<p>I will explain the key approaches of important papers for each category. However, I will skip the model-based approach here. Since model-based approaches are usually used a lot in RL, I will post about them separately next time if I have the chance.</p>
+
+<blockquote>
+  <p>It would be good to check how $S$ and $Q$ are utilized for training while reading.</p>
+</blockquote>
+
+<h3 id="21-optimization-based-meta-learning">2.1 Optimization-based Meta Learning</h3>
+
+<p>Optimization-based meta-learning is a method of learning centered on gradients. Accordingly, the very first paper mentioned is <a href="https://arxiv.org/pdf/1703.03400.pdf">Model-Agnostic Meta-Learning (MAML)</a>, which came out in 2017. It is essentially the paper that popularized the concept of “Meta Learning”. Then let’s examine what kind of paper MAML is.</p>
+
+<h4 id="211-maml">2.1.1 MAML</h4>
+
+<p>The final goal of MAML is to train the model parameter $\theta$ to a position where fast adaptation/finetuning (hereinafter FT) is possible. The keyword to notice here is “FT”. The core mechanism of MAML is ultimately “It would be efficient if we can reach specific tasks through a few steps of parameter updates!”. Let me explain with an example. If a person has a job that requires traveling all over the country (Korea), it would be more efficient to live in Daejeon (central region) than to live in Busan, Gangneung, or Incheon. Like this, moving $\theta$ to a position where it can quickly reach tasks is better for achieving good performance on various tasks than learning every task individually.</p>
+
+<p>While the paragraph above explained it in words, let’s look at it mathematically this time. Before diving in, MAML is divided into an inner-loop and an outer-loop to train one epoch. The inner-loop is the FT mentioned above, and the outer-loop is the model update$^*$. The MAML algorithm is as shown in <a href="#figure1">Figure 1</a>.</p>
+
+<p>$^*$ Usually, this process is also called bi-level optimization.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-03-13/MAML_Diagram.png" alt="image.png1" /></td>
+      <td><img src="/en/assets/img/23-03-13/MAML_algo.png" alt="image.png2" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<center>
+  <figcaption>
+    <a id="figure1">Figure 1. Diagram and Algorithm of MAML </a>
+  </figcaption>
+</center>
+
+<p>And explaining the pseudo-code above in detail:</p>
+
+<ol>
+  <li>Initialize model parameter $\theta$ (line 1)</li>
+  <li>Sample task $\mathcal{T}$ =($S$,$\mathcal{Q}$ ) ; $\mathcal{T} \sim p(\mathcal{T})$ along with the number of batches (line 3)</li>
+  <li>Inner-Loop updates with $n$ steps (line 4-7):
+    <ol>
+      <li>Repeat SGD update: $\phi = \theta - \alpha\nabla_\theta \mathcal{L}(S;\theta)$</li>
+      <li>From $n \geq 2$, it changes from $\theta$ → $\phi$; i.e., update in the form of $\phi = \phi - \alpha \nabla_\phi \mathcal{L}(\mathcal{S}; \phi)$</li>
+    </ol>
+  </li>
+  <li>Outer-Loop (line 8):
+    <ol>
+      <li>With fine-tuned model $\phi$, evaluate with $\mathcal{Q}$ and update</li>
+      <li>$\Rightarrow$ $\theta \leftarrow \theta - \frac{1}{N}\sum_{i=1}^N \nabla_\theta \mathcal{L}_i(\mathcal{Q};\phi) $</li>
+    </ol>
+  </li>
+  <li>Repeat 2-4 (line 2-9)</li>
+</ol>
+
+<p>The part to keep an eye on here is the derivative (meta-gradient) during the outer loop. If you look, when performing the outer loop update, it differentiates not with $\phi$ but with $\theta$ for the loss value resulting from the fine-tuned parameter $\phi$ and $Q$. The related formula expands as follows by the chain rule.</p>
+
+\[\begin{aligned} 
+\nabla_\theta \mathcal{L}(\mathcal{Q};\phi) &amp;= \frac{\partial }{\partial \theta}\mathcal{L}(\mathcal{Q};\phi) \\
+&amp;= \frac{\partial \mathcal{L}(\mathcal{Q};\phi)}{\partial \phi} \frac{\partial \phi}{\partial \theta} \\
+&amp;= \nabla_\phi \mathcal{L}(\mathcal{Q};\phi)\nabla_\theta \phi \\ 
+&amp;=\nabla_\phi \mathcal{L}(\mathcal{Q};\phi)\nabla_\theta (\theta - \alpha \nabla_\theta \mathcal{L}(\mathcal{S};\theta)) \\
+&amp;= \nabla_\phi \mathcal{L}(\mathcal{Q};\phi)(I - \alpha \nabla^2_\theta \mathcal{L}(\mathcal{S};\theta)) \\
+\end{aligned}\]
+
+<p>The purpose of this formula is ultimately to update $\theta$ towards a lower loss, but to update it in a direction that lowers the loss $\mathcal{L}(\mathcal{Q};\phi)$ at the FT’d $\phi$. This might feel ambiguous, but looking at <a href="#figure2">Figure 2</a> might help you understand the direction of the update to some extent. (Reference: <a href="https://boyangzhao.github.io/posts/few_shot_learning">Boyang Zhao’s Blog</a>, the notation is slightly different, but you can just view loss as loss.)</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-12-24/maml_task.png" alt="" /></td>
+      <td><img src="/en/assets/img/23-12-24/maml_task_multi.png" alt="" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<center>
+  <figcaption>
+    <a id="figure2">Figure 2. Visualization of how MAML updates $\theta$; $\mathcal{D}^{tr}= S, \mathcal{D}^{ts}=Q$ </a>
+  </figcaption>
+</center>
+
+<h4 id="212-fomaml-reptile">2.1.2 FOMAML, Reptile</h4>
+
+<p>In the case of MAML, Hessian matrix multiplication ($=\nabla_\theta^2 \mathcal{L}(\mathcal{S};\phi)$) is included, so there is a penalty from a computational cost perspective. So, methods were proposed to reduce computational cost while maintaining performance to some extent.</p>
+
+<p>One of them is FOMAML (First-Order MAML). FOMAML was experimentally verified in the MAML paper, showing that it maintains performance to some extent even if training proceeds while ignoring the Hessian matrix. In other words, it assumes $\nabla_\theta^2 \mathcal{L}(\mathcal{S};\phi) = 0$. This is well shown in <a href="#figure3">Figure 3</a>; it applies the “direction of the gradient” that lowers the loss $\mathcal{L}(\mathcal{Q};\phi)$ at the finetuned $\phi$ to $\theta$. The paper explains that this mechanism is possible because the Hessian value converges to 0 while passing through ReLU. Thinking from a Loss landscape perspective, the “direction lowering the loss” is similar. That is, it implicitly contains the assumption that the final updated $\theta$ position in MAML and the $\theta$ position in FOMAML are in a similar loss landscape.</p>
+
+<center>
+  <img width="70%" height="70%" src="/en/assets/img/23-12-24/fomaml_task.png" /> <br />
+  <br />
+  <figcaption>
+    <a id="figure3">Figure 3. Visualization of how FOMAML updates $\theta$</a>
+  </figcaption>
+  <br />
+</center>
+<p>Next is the <a href="https://arxiv.org/pdf/1803.02999.pdf">Reptile</a> paper. The Reptile paper was published by OpenAI in 2018, and you can think of it as a variant of FOMAML. The characteristic of Reptile is that $S$ and $Q$ do not exist separately. It trains in few-shot, but it picks multiple tasks and trains the tasks selected through sampling. Then, it proceeds with the update using the difference between the initial model parameter $\theta$ and the fine-tuned model parameter $\phi$ as the gradient. <a href="#figure4">Figure 4</a> below is a picture of the Reptile algorithm and the update direction.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-12-24/reptile.png" /></td>
+      <td><img src="/en/assets/img/23-12-24/reptile_task.png" style="zoom:140%;" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<center>
+  <figcaption>
+    <a id="figure4">Figure 4. Overview of Reptile Algorithm and Visualization of how Reptile updates $\theta$</a>
+  </figcaption>
+  <br />
+</center>
+
+<p>It might be confusing because the notation is different from the existing MAML paper, but explaining the process in detail is as follows:</p>
+
+<ol>
+  <li>Initialize model parameter $\theta$</li>
+  <li>Pick $N$ Tasks $\mathcal{T}_i$. (where $\mathcal{T}_i \sim p(\mathcal{T})$, batch = $N$)</li>
+  <li>Inner Loop: FT for each task $\mathcal{T}_i$ (fine-tuned parameters: $\phi_i$)</li>
+  <li>Outer Loop: Update $\theta$ by the difference between $\theta$ and $\phi$: $\theta \leftarrow \theta + \frac{\beta}{N}\sum_{i=1}^N (\phi_i - \theta)$</li>
+  <li>repeat 2-4</li>
+</ol>
+
+<p>When trained like this, ultimately the expectation value of the meta-gradient in the Reptile algorithm converges similarly to the meta-gradient of MAML. Most of the Reptile paper is content proving mathematically how it converges similarly to MAML and FOMAML. However, here we will only look briefly at the big context. I will also make a post related to proofs if I have the chance someday.</p>
+
+<h4 id="213-wrap-up">2.1.3 Wrap-up</h4>
+
+<p>Optimization-based Meta Learning is a meta-learning approach on how to utilize gradients for training when doing few-shot learning. Unlike other approaches, it has the advantage that if the gradient is set appropriately, it can be applied model-agnostically to various fields. In other words, it can be utilized in various fields such as Regression, classification, reinforcement learning, etc.</p>
+
+<h3 id="22-metric-based-meta-learning">2.2 Metric-based Meta Learning</h3>
+
+<p>Metric-based meta-learning is literally a concept of training by calculating similarity based on distance. Simply put, there is semantic information that each class possesses, and training proceeds through the similarity between that semantic information. In a way, it can be seen as similar to the concept of nearest neighbors like $k$-NN. Representative examples include Matching Network, Prototypical Network, and Relation Network, and we will examine the main concepts discussed in each paper. (It would be good to keep the concept of Few-shot in mind.)</p>
+
+<h4 id="221-matching-network">2.2.1 Matching Network</h4>
+
+<p>The first paper to look at is <a href="https://arxiv.org/pdf/1606.04080.pdf">Matching Network</a>. It is a pioneer paper in the metric-based approach. Thinking about the situation at that time, the seq2seq paper, which became the basis of the Transformer, had emerged. It is about training through the overall context, not just looking at extracted features through the Attention mechanism. Therefore, this paper intends to compare the context between features produced through an encoder.</p>
+
+<center>
+  <img src="/en/assets/img/23-12-24/matching.png" width="60%" height="60%" />
+  <figcaption>
+    <a id="figure5">Figure 5. Overview of Matching Network Algorithm</a>
+  </figcaption>
+</center>
+
+<p>First, before explaining the training process, this paper explains the final output.</p>
+
+\[C_{\mathcal{S}}(\hat{\textbf{x}}) = P(y|\hat{\textbf{x}}, S) = \sum_{i=1}^k a(\hat{\textbf{x}}, \textbf{x}_i)y_i \; \;\; \text{where} \; \mathcal{S=\{ \text{(}\textbf{x}_i, y_i\text{)}\}_{i=1}^{k}}\]
+
+<p>The formula above implies utilizing the attention mechanism by giving it more weight. Here, $a(\cdot, \cdot)$ is the attention kernel, which takes a softmax on cosine similarity:</p>
+
+\[a(\hat{x},x) =\frac{\exp(cos(f(\hat{x}), g(x)))}{\sum_{j=1}^k \exp(cos(f(\hat{x}), g(x_j)))}\]
+
+<p>Interpreting the meaning above simply, it means calculating the similarity through the attention kernel for each support sample $\textbf{x}_i $ and input $\textbf{x}$, and then using this as a weight to predict towards the side with higher similarity when comparing. Here, you can understand input $\textbf{x}$ as a query sample.</p>
+
+<p>Then let’s look at the training process with notation.</p>
+
+<ol>
+  <li>Extract feature representation vector of support set through $g_\theta$</li>
+  <li>Extract feature representation vector of query set through $f_\theta$ (Usually $f_\theta = g_\theta$)</li>
+  <li>Calculate attention value between feature representation vectors from 1 and 2 $\rightarrow  a(\cdot, \cdot)$</li>
+  <li>Predict label of query set through $C_\mathcal{S}$</li>
+</ol>
+
+<p>Unlike recent papers, early papers related to meta-learning utilized LSTM structures to solve the few-shot setting from a context perspective. So, this paper also proposed a method utilizing the LSTM structure additionally. ($\rightarrow$ Full Context Embeddings; FCE) Let’s see the FCE training process along with notation on how the LSTM model architecture is utilized.</p>
+
+<ul>
+  <li>Embedding $g$
+    <ul>
+      <li>$g \rightarrow $ bidirectional LSTM, $g’ \rightarrow$ CNN (feature extractor)</li>
+      <li>$g(x_i, \mathcal{S})= \overrightarrow{h}_i + \overleftarrow{h}_i + g^\prime (x_i) $</li>
+      <li>$\overrightarrow{h}_i,\overrightarrow{c}_i = \text{LSTM}(g^{\prime} (x_i), {\overrightarrow{h}}_{i-1},  {\overrightarrow{c}}_{i-1})$ ,  $\overleftarrow{h}_i,\overleftarrow{c}_i = \text{LSTM}(g^{\prime} (x_i), {\overleftarrow{h}}_{i+1},  {\overleftarrow{c}}_{i+1})$</li>
+    </ul>
+  </li>
+  <li>$f \rightarrow$ LSTM , $f’ \rightarrow$ CNN (feature extractor)
+    <ul>
+      <li>$f(\hat{x}, \mathcal{S}) = \text{attLSTM}(f^\prime(\hat{x}), g(\mathcal{S}), K) $</li>
+    </ul>
+  </li>
+</ul>
+
+<p>$\Rightarrow$ According to $k$ step…</p>
+
+<ol>
+  <li>$\hat{h}_k,  c_k = \text{LSTM}(f^\prime (\hat{x}), [h_{k-1}, r_{k-1}], c_{k-1}) $​</li>
+  <li>$h_k = \hat{h}_k + f^\prime(\hat{x})$</li>
+  <li>$r_{k-1} = \sum_{i=1}^{|\mathcal{S}|}a(h_{k-1}, g(x_i))g(x_i)$</li>
+  <li>$a(h_{k-1}, g(x_i)) = \text{softmax}(h^\text{T}_{k-1}g(x_i))$</li>
+</ol>
+
+<p>Ultimately, the reason for using LSTM here is to better view the context of each feature vector. In easy tasks like Omniglot, there is not much performance gain, but in slightly more difficult tasks like $mini$-ImageNet, there is performance gain.</p>
+
+<h4 id="222-prototypical-networks">2.2.2 Prototypical Networks</h4>
+
+<p>The next paper is <a href="https://arxiv.org/pdf/1703.05175.pdf">Prototypical Networks</a> (hereinafter ProtoNet). In fact, you can consider most metric-based meta-learning research as based on ProtoNet rather than Matching Network.</p>
+
+<p>I’ll get straight to the point. ProtoNet proceeds with training through Euclidean distance calculation between the prototype vector of each label and feature vectors. Looking at <a href="#figure6">Figure 6</a> below, $c_n$s represent the prototype of each label. So, for a new task, it calculates the distance with each prototype and maps it to the prototype label with the minimum distance. At this time, the prototype is obtained by the average of feature vectors derived from the support set. Then, let’s look at it in more detail through the following training process.</p>
+
+<ul>
+  <li>Notation (I will explain as similarly to the paper as possible):
+    <ul>
+      <li>Support Set $\mathcal{S}_{n}= \{ (x_{n,j}^s, y_{n,j}^s) \}_{j=1}^{K}$,  Query Set $\mathcal{Q}_{n}= \{ (x_{n,j}^q, y_{n,j}^q) \}_{j=1}^{Q}$​</li>
+      <li>$K$: number of support set (a.k.a $K$-shot)</li>
+      <li>$Q$: number of query set</li>
+      <li>$c_n$: prototype of label $n$ $\rightarrow$ $\{c_1,\dots,c_N \}$, ($N$: $N$-way)</li>
+      <li>$f_\theta$ : Model parameterized by $\theta$​ (hereinafter feature extractor or backbone network)</li>
+      <li>loss $\mathcal{L}(\mathcal{D},c,\theta) = \frac{1}{|\mathcal{D}|}\sum_{(x,y)\in \mathcal{D}} l(-d(f_\theta(x), c),y)$, <br />
+$\rightarrow$ loss function $l(\cdot, \cdot)$: Cross Entropy (CE),  $-d(\cdot, \cdot)$: Euclidean Distance</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li>$c_n = \frac{1}{| \mathcal{S}_n |} \sum_{j=1}^{| \mathcal{S}_n |} f_\theta (x^s_{n, j}) \Rightarrow $ Calculate <strong><mark>prototype vector ${c_n}$</mark></strong> with <strong><mark>support set</mark></strong></li>
+  <li>$\sum_{n=1}^{N}\mathcal{L}(Q_{n}, c_n, \theta) \Rightarrow$ Calculate <strong><mark>Euclidean distance</mark></strong> between <strong><mark>query set</mark></strong> and <strong><mark>prototype $c_n$​</mark></strong></li>
+  <li>$\theta \leftarrow \theta - \nabla_{\theta}\sum_{n=1}^{N}\mathcal{L}(Q_{n}, c_n, \theta)$ $\Rightarrow$ <strong><mark>model parameter update</mark></strong></li>
+</ol>
+
+<p>Since there is quite a lot of notation and it’s complex, I think it might be difficult to understand. If the process is a bit complicated, it would be good to understand it simply as follows:</p>
+
+<ul>
+  <li>Make a label called prototype with Support Set</li>
+  <li>Compare distance between prototypes with Query Set $\Rightarrow$ Logits (Final output)</li>
+  <li>Calculate CE between Query Set Label and Logits</li>
+  <li>Update parameter with CE</li>
+</ul>
+
+<center>
+  <img src="/en/assets/img/23-12-24/protonet.png" width="100%" height="100%" />
+  <figcaption>
+    <a id="figure6">Figure 6. Overview of ProtoNet</a>
+  </figcaption>
+</center>
+
+<p>This paper does not use a linear layer. Since feature vectors are directly used to find distance anyway, it is not used despite being a classification task. However, this paper explains that Euclidean distance can be reinterpreted like a linear model. I will explain while looking at the following two formulas.</p>
+
+\[-||f_\theta (x) - c_k||^2 = -f_\theta (x)^{\text{T}}\cdot f_\theta(x) +2c_k^{\text{T}}\cdot f_\theta(x) -c_k^{\text{T}}\cdot c_k \\\]
+
+\[2c_k^{\text{T}} \cdot f_\theta (x) - c_k^{\text{T}} \cdot c_k = w_k^{\text{T}}f_\theta(x) +b_k \;\; \text{where}\;\; w_k = 2c_k, \; b_k=-c_k^{\text{T}}c_k\]
+
+<p>Actually, the reason why ProtoNet chose Euclidean distance over other distance metrics is here. The basic concept of Deep Learning is that if the backbone network performs feature representation smoothly, the rest only requires linear transformation suitable for the situation (especially classification tasks). Usually, in deep learning, this process is trained by attaching a learnable linear layer behind the backbone network. However, ProtoNet interprets that <strong><mark>proceeding with training via Euclidean distance implies this linear transformation process</mark></strong>. Also, another reason why it can be assumed that Euclidean distance is appropriate is that they claim parts requiring non-linearity during training have already been learned through the backbone network. Actually, this assumption is about the structure we take for granted: backbone model - linear layer. It seems mentioned in the paper since deep learning research was not as abundant at that time.</p>
+
+<p>(Really lastly…) Another advantage when reinterpreted like this is that MAML (hereinafter Proto-MAML) can be applied to ProtoNet. Since $w_k^{\text{T}}f_\theta(x) +b_k$ acts as a linear layer, FT becomes possible. I will (briefly) explain the Proto-MAML training process.</p>
+
+<ul>
+  <li>Notation:
+    <ul>
+      <li>$f_\theta$: backbone network</li>
+      <li>$g_\theta(x_i) = w_{i,k}^{\text{T}}f_\theta(x_i) +b_k$</li>
+      <li>Loss $\mathcal{L}(\mathcal{D};\theta) = \frac{1}{|\mathcal{D}|}\sum_{(x,y)\in\mathcal{D}}l(g_\theta(x), y)$</li>
+    </ul>
+  </li>
+</ul>
+
+<ol>
+  <li><strong>Inner Loop</strong> 1. Calculate prototype $c_{i,k}$ through support set $\mathcal{S}_i$
+    <ol>
+      <li>$\phi  = \theta - \alpha \nabla_\theta \mathcal{L}(\mathcal{S}_i;\theta)$</li>
+      <li>Repeat $n$ steps</li>
+    </ol>
+  </li>
+  <li><strong>Outer Loop</strong>: $\theta \leftarrow \theta - \frac{\beta}{\mathcal{B}}\sum_{i=1}^{\mathcal{B}}\nabla_\theta \mathcal{L}(\mathcal{Q}_i;\phi)$</li>
+</ol>
+
+<p>Actually, there is a paper that proposed <a href="https://arxiv.org/pdf/1903.03096.pdf">(fo-)Proto-MAML</a>. If you read it, although it is not the very main concept in the paper, it showed that Proto-MAML has performance gain.</p>
+
+<h3 id="conclusion">*Conclusion</h3>
+
+<p>Up to this post, I think I have covered almost all pioneer papers of meta-learning. Research on meta-learning exploded for about 4-5 years after 2016 and 2017 when the papers explained above appeared, and although it has decreased slightly now, it is still consistently published in top-conference papers. However, the trend has now changed from researching the meta-learning algorithm itself to applying it to other research. Especially, as foundation model research becomes extremely active, the concept of few-shot, which can train with a small amount of data, seems to have become more important.</p>
+
+<p>As the next topic, I am thinking of posting about foundation models (LLM, LVM, etc.) that I have just started, whether it be paper reviews or concepts. I’m not sure which specific direction to take yet, but I will return after studying to some extent. Thank you for reading.</p>]]></content><author><name>Jae-Jun Lee</name></author><category term="Meta-Learning" /><category term="Few-Shot Learning" /><category term="MAML" /><category term="Reptile" /><category term="MatchingNet" /><category term="ProtoNet" /><summary type="html"><![CDATA[In the previous post, I briefly explained the context of how meta-learning emerged and the basic concept of few-shot learning to help understand meta-learning. So, in this post, I intend to explain meta-learning approaches. I plan to summarize what the pioneer papers are and what points each paper wants to make. However... since so many papers have been published since 2017, it is impossible to cover all of them, so I will organize the summary mainly around key papers and papers that I found interesting to read. And in the next post, I will take time to briefly review papers focused on advanced methods.]]></summary></entry><entry><title type="html">[Conceptual Background] Meta Learning (1) - Few-Shot Learning</title><link href="https://johnjaejunlee95.github.io/en/blog/2023/MetaLearning1/" rel="alternate" type="text/html" title="[Conceptual Background] Meta Learning (1) - Few-Shot Learning" /><published>2023-12-24T00:00:00+00:00</published><updated>2023-12-24T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2023/MetaLearning1</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2023/MetaLearning1/"><![CDATA[<div>I would like to introduce the basic concepts of Meta Learning, a topic I have been putting off for a while. Over the past few years, Meta Learning has been a hot topic, consistently making its name as a Main Keyword in Top Tier Conferences. Especially considering the circulation speed of the AI ecosystem, it has been researched for quite a long time. However, perhaps because it has been studied for so long, this field seems to have saturated recently. It has become difficult to grow the "pie" any further with research on Meta Learning itself.
+<br /><br /> Nevertheless, I believe the concept of Meta Learning and its effectiveness are still important. In particular, when training foundation models such as <highlight style="color: red">LLM/LMM</highlight>, they need to cover a significantly wide variety of tasks, and in this process, most learning proceeds in the form of Few-Shot Learning. In other words, if looked at from a broad category, they are trained in the form of Meta Learning.
+  <br /><br /> Therefore, I think it is important to know the concept of Meta Learning, or in a smaller category, Few-Shot Learning. You don't need to know all the specific related algorithms, but I thought that knowing how to define problems and set up training settings when utilizing Meta Learning would allow for more diverse approaches, so I decided to cover this.</div>
+
+<h3 id="0-what-is-meta-learning">0. What is Meta Learning?</h3>
+<p>When explaining Meta Learning, many people describe it as “Learn to Learn.” Put simply, you can think of it as the way humans learn. As humans live, they accumulate various experiences and acquire new knowledge based on them. At this time, humans acquire new knowledge by combining existing knowledge with new experiences Even if they aren’t taught everything from A to Z, they can infer based on the knowledge they already possess (of course, completely new things are exceptions). For example, even if someone cannot distinguish between an apple and a dog at first, through a few experiences, they grasp the characteristics of apples and dogs, and based on this, they become able to distinguish new apples or dogs. And later, even if they see an animal similar to a dog or a fruit similar to an apple, they become able to distinguish them. Like this, humans have the ability to learn through ‘experience’, and Meta Learning is the application of this human learning ability to deep learning training methods.</p>
+
+<h3 id="1-few-shot-learning">1. Few-Shot Learning</h3>
+<p>Then, let’s try applying this process to AI model training methods.</p>
+
+<p>First, let’s think about conventional deep learning. Existing deep learning requires training numerous images for each class, as shown in <a href="#figure1">Figure 1</a> below. However, training this way causes problems such as overfitting, and from a generalization perspective, it is difficult to find methods other than inputting more diverse data. However, since data is always limited, gathering more data, and more diverse data, is difficult and inefficient. Then, what should we do to train deep learning efficiently like humans? One of the concepts introduced in this situation is “<a href="https://en.wikipedia.org/wiki/Few-shot_learning">Few-Shot Learning</a>”.</p>
+
+<center>
+  <img width="70%" height="70%" src="/en/assets/img/23-12-24/supervised_learning.png" /> <br />
+  <figcaption>
+    <a id="figure1">Figure 1. Fundamental Process of Supervised Learning</a>
+  </figcaption>
+  <br />
+</center>
+
+<p>To express Few-shot learning simply, it is learning by seeing only a few data. In other words, it is a method of training by showing only a few data every epoch. Here, you must not be confused; it does not mean training with only a few data in total, but extracting a few data from the entire data to proceed with training. Therefore, the setting method is also slightly different from conventional deep learning methods. To understand the Few-Shot setting, you need to know the concepts of $N$-ways $K$-shots, as well as the Support Set ($S$) and Query Set ($Q$).</p>
+
+<h4 id="11-n-ways-k-shots">1.1 $N$-Ways $K$-Shots</h4>
+
+<p>Here, $N$ means the number of classes to extract from among the classes of the entire datasets (<a href="#figure2">Figure 2</a>). And here, $K$ means the number of images to extract per class. For example, let’s assume the total classes of a certain dataset is 100. And if we say the experiment setting is 5-ways 1-shot, every epoch, we randomly select 5 classes out of 100 classes, and extract 1 image for each class.</p>
+
+<center>
+  <img width="70%" height="70%" align="center" src="/en/assets/img/23-12-24/n_ways_k_shots.png" />
+  <br />
+  <figcaption>
+    <a id="figure2">Figure 2. Example of N-ways K-shots</a>
+  </figcaption>
+</center>
+
+<h4 id="12-support-set-s-and-query-set-q">1.2 Support Set ($S$) and Query Set ($Q$)</h4>
+
+<p>First, before explaining, you must think of $S$ and $Q$ as a bundle. In the AI community, this bundle is expressed as an <b>episode</b> or <b>task</b>. Going further, few-shot learning is sometimes expressed as <b>episodic learning</b>. When training, we pick episodes/tasks corresponding to the batch size every epoch.</p>
+
+<p>Here, $S$ are the data that directly participate in training according to the method, and $Q$ are the data used to evaluate how well it was trained after training. Those encountering few-shot learning for the first time might find this setting a bit confusing. So, I will explain through <a href="#figure3">Figure 3</a> below.</p>
+
+<center>
+  <img src="/en/assets/img/23-12-24/support_query.png" width="70%" height="70%" />
+  <figcaption>
+    <a id="figure3">Figure 3. An example of utilizing a support set and a query set.</a>
+  </figcaption>
+  <br />
+</center>
+
+<p>If you look at <a href="#figure3">Figure 3</a>, examples for $S$ and $Q$ are shown on the left. $S$ participates in training while knowing what class it is. In other words, we train the model with $S$ like supervised learning. So $S$ follows $N$-ways $K$-shots. And $Q$ is put into the trained model without knowing what class it is, and the result is utilized as an evaluation metric.</p>
+
+<p>One important point here is that while $Q$ follows $N$-ways, it does not follow $K$-shots. That is, the number of classes is fixed due to $S$, but the number of images per class is not fixed. It means we don’t necessarily have to pick $K$ images per class. Usually, the query set picks 15 data points per class.</p>
+
+<p>Additionally, we usually express $S$ as the seen task and $Q$ as the unseen task. Ultimately, the reason for doing few-shot learning is to achieve good performance on unseen tasks, so updates are proceeded with $Q$.</p>
+
+<h4 id="13-wrap-up">1.3 Wrap-up</h4>
+
+<p>To summarize Few-shot learning, it is as follows:</p>
+
+<ol>
+  <li><strong>Sample a task(= [$S$, $Q$]) according to $N$-ways $K$-shots.</strong></li>
+  <li><strong>Train with $S$ according to the method.</strong></li>
+  <li><strong>Evaluate whether it was trained well with $Q$.</strong></li>
+  <li><strong>Extract the final loss from the result in 3.</strong></li>
+  <li><strong>Update the model with the loss from 4.</strong></li>
+  <li><strong>Repeat 1~5 for the number of epochs.</strong></li>
+</ol>
+
+<p>When done this way, since the labeling for classes changes every time, it shows the effect of learning <em>how to learn</em> rather than learning each specific class. For example, in <a href="#figure2">Figure 2</a>, ‘car’ was labeled as class 1, but in another epoch, it could be class 2 or class 3. In other words, the model develops the ability to distinguish cars rather than learning the car itself. When this happens, even if a completely new task comes in, it becomes able to distinguish it to some extent. It becomes beneficial from a Generalization perspective.</p>
+
+<p>As a side note, when training LLM/LMM these days, most are trained with few-shot or zero-shot learning. (I will post about zero-shot learning separately when I have a chance next time.) In fact, the strength of LLM/LMM is not just doing well in a specific situation but producing good performance in various situations. In this case, it is reasonable to train them with few-shot or zero-shot learning, that is, teaching them how to distinguish situations. If I have the chance, I will explain in more detail when posting about LLM/LMM.</p>
+
+<h3 id="future-series">*Future Series</h3>
+
+<p>Trying to post as detailed as possible made it too long. Originally, I intended to put all information in one post, but as I wrote, there were more parts to explain and too much content to cover than I thought, so I think it shouldn’t get any longer. So, I will wrap up here for now, and continue posting about meta learning approaches, methods, significance, etc., in a series format later. Thank you for reading.</p>]]></content><author><name>Jae-Jun Lee</name></author><category term="Meta-Learning" /><category term="Few-Shot Learning" /><summary type="html"><![CDATA[I would like to introduce the basic concepts of Meta Learning, a topic I have been putting off for a while. Over the past few years, Meta Learning has been a hot topic, consistently making its name as a Main Keyword in Top Tier Conferences. Especially considering the circulation speed of the AI ecosystem, it has been researched for quite a long time. However, perhaps because it has been studied for so long, this field seems to have saturated recently. It has become difficult to grow the "pie" any further with research on Meta Learning itself. Nevertheless, I believe the concept of Meta Learning and its effectiveness are still important. In particular, when training foundation models such as LLM/LMM, they need to cover a significantly wide variety of tasks, and in this process, most learning proceeds in the form of Few-Shot Learning. In other words, if looked at from a broad category, they are trained in the form of Meta Learning. Therefore, I think it is important to know the concept of Meta Learning, or in a smaller category, Few-Shot Learning. You don't need to know all the specific related algorithms, but I thought that knowing how to define problems and set up training settings when utilizing Meta Learning would allow for more diverse approaches, so I decided to cover this.]]></summary></entry><entry><title type="html">[Paper Review] Sharp-MAML</title><link href="https://johnjaejunlee95.github.io/en/blog/2023/SharpMAML/" rel="alternate" type="text/html" title="[Paper Review] Sharp-MAML" /><published>2023-03-13T00:00:00+00:00</published><updated>2023-03-13T00:00:00+00:00</updated><id>https://johnjaejunlee95.github.io/en/blog/2023/SharpMAML</id><content type="html" xml:base="https://johnjaejunlee95.github.io/en/blog/2023/SharpMAML/"><![CDATA[<h2 id="sharp-maml-sharpness-aware-model-agnostic-meta-learning">Sharp-MAML: Sharpness-Aware Model-Agnostic Meta Learning</h2>
+
+<h2 id="1-what-is-sam">1. What is SAM?</h2>
+<p>SAM (Sharpness Aware Minimization) is a paper published at ICLR 2021, which opened a new perspective on generalization research at Google Research. The key goals of SAM are the following two:</p>
+
+<ul>
+  <li><strong>Improves Model Generalization via Finding Flat Minima</strong></li>
+  <li><strong>Provides Robustness to Label Noise</strong></li>
+</ul>
+
+<p>Here, what does it mean to find flat minima? Before moving on to the SAM algorithm, I will briefly touch upon what flat minima means.</p>
+
+<h3 id="11-flat-minima">1.1 Flat Minima</h3>
+<p>Flat minima is basically one of the concepts that comes up when discussing generalization in Deep Learning. From a Loss Landscape perspective, if the minima region of the loss is flat, it shows relatively good generalization, and if the minima region of the loss is sharp, it can be seen as showing good performance on a specific task. You can understand this more intuitively by looking at the figure below[1].</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-03-13/flat_minima.png" alt="img" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Figure [1]: <i>Example of Flat minimum &amp; Sharp Minimum</i></p>
+
+<p>If you look at Figure 1 in Figure [1], the loss landscape is not deep but flat, and if you look at Figure 2, the loss landscape is deep but narrow. If we calculate the loss at the minima point (<highlight style="color: red">red dot</highlight>) of Figure 1, it will probably be higher than the loss at the minima point of Figure 2. However, even if it deviates slightly from the optimal point during training (<highlight style="color: blue">blue dot</highlight>), that is, even if it deviates slightly from the minima, the difference in loss value will not be large because the landscape is gentle.</p>
+
+<p>However, in Figure 2, since the landscape is steep, even a slight deviation from the minima will result in a large difference in loss value. In other words, <strong>Figure 1</strong> has a <strong>small loss difference</strong> between the red dot and blue dot positions, while <strong>Figure 2</strong> can be seen as having a <strong>large loss difference</strong> between the red dot and blue dot positions. Since there is no guarantee that Deep Learning always finds the optimal point during training, it can be seen as more advantageous from a generalization perspective when the loss landscape is made flat.</p>
+
+<p>(However… there is another perspective on whether flatness really has a big impact on generalization; Li, Hao, et al. “Visualizing the loss landscape of neural nets.” <i>Advances in neural information processing systems 31 (2018).</i> <a href="https://arxiv.org/abs/1712.09913" title="Paper">Paper</a> )</p>
+
+<h3 id="12-sam-algorithm">1.2 SAM Algorithm</h3>
+<p>Then, how can we make the loss landscape flat?
+The SAM algorithm finds flat minima through the following 4 steps. (I will omit the proof through formulas.)</p>
+
+<ol>
+  <li>Calculate Loss: \(\mathcal{L}_\mathcal{B}\)</li>
+  <li>Move in the <strong>”+”</strong> gradient direction of the calculated Loss:  \(\hat{\epsilon}(w)\rightarrow\) \(w_{adv}=w_t+\hat{\epsilon}(w)\)<br />
+(= Move to the highest Loss)</li>
+  <li>Calculate gradient <strong>at the moved position</strong>:
+\(g =\nabla\mathcal{L}_\mathcal{B}(w)|_{w+\hat{\epsilon}(w)}\)</li>
+  <li>Proceed with weight update from the original position: \(w_t=w_t-\eta g\)</li>
+</ol>
+
+<blockquote>
+  <p>*In the case of 2 and 3, the proof is shown in great detail in the paper. During operations including \(\epsilon\), it approximates via Taylor Expansion. Since this is not a SAM paper review… if you are interested, it would be good to look at the paper directly. I will review it if I have a chance next time. (<a href="https://arxiv.org/abs/2010.01412">https://arxiv.org/abs/2010.01412</a>)</p>
+</blockquote>
+
+<p>You can think of the core of SAM as an algorithm based on minmax optimization. Usually, when updating gradients during training, we proceed in the form of \(w = w - \nabla_w{L(w)}\). We update in the opposite direction of the gradient calculated for the Loss. However, in the SAM algorithm, we first move in the positive direction of the gradient. The meaning of this is that even if we give up finding the lowest loss, we will perform the gradient update considering the direction that lowers the highest losses. (Refer to Figure [2])</p>
+
+<p>To explain it a bit more easily and intuitively, it means proceeding with the update while pressing down on the highest losses. It means making the loss landscape generally flat by lowering the high losses rather than finding the low loss.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-03-13/SAM_Algorithm.png" alt="img" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Figure [2]: <i align="left">SAM Algorithm</i></p>
+
+<p>Since SAM is an optimization algorithm rather than a single model algorithm, it can be applied to various models. (Can be used like an optimizer)</p>
+
+<h2 id="2-what-is-maml">2. What is MAML?</h2>
+<p>MAML (Model-Agnostic Meta-Learning) is a paper written by Professor Chelsea Finn (a PhD student at the time) in 2017, and it is one of the papers that signaled the beginning of Meta-Learning. Since it is such a famous paper, many people probably know it, but I will briefly explain what Meta-Learning is and what kind of algorithm MAML is.</p>
+
+<h3 id="21-meta-learning">2.1 Meta-Learning</h3>
+<p>Before that, what is Meta-Learning here? Meta-Learning is one of the fields of few-shot learning. It is a learning method that learns centered on various tasks rather than learning centered on Labels (supervised learning), so that it can classify/predict well even if a completely new task comes in. In other words, it is learning how to adapt to new tasks quickly. (task: Sample extracting <strong>K</strong> items of <strong>N types</strong> of data from datasets → <strong>N-way K-shot</strong>)</p>
+
+<blockquote>
+  <p>Before understanding Meta-Learning, actually, an understanding of few-shot learning must precede. Since the explanation of Few-Shot Learning is well presented in <a href="https://zzaebok.github.io/machine_learning/FSL/">this blog</a>, I will replace it with a link. Here, I think you just need to touch upon the concepts of Support/Query set.</p>
+</blockquote>
+
+<p>Meta-Learning methods are usually divided into the following 3 types.</p>
+<ul>
+  <li><strong>model-based  :arrow_right: Learning centered on the task’s model</strong></li>
+  <li><strong>metric-based (non-parametric) :arrow_right: Learning centered on distance in task parameters</strong></li>
+  <li><strong>gradient-based (parametric) :arrow_right: Learning centered on the gradient of task parameters</strong></li>
+</ul>
+
+<p><strong style="font-size: 0.9rem; font-style: normal">As a side note, each method varies depending on the application used. </strong></p>
+<ul>
+  <li>In <strong>computer vision applications</strong> like few-shot classification among Meta-Learning, <strong>metric-based learning</strong> is often utilized.</li>
+  <li>In <strong>RL applications</strong> like Robotics, <strong>model-based learning</strong> is often utilized.</li>
+  <li>Since <strong>Gradient-based learning</strong> learns the parameters of the model, it is widely utilized in <strong>various fields</strong>.</li>
+</ul>
+
+<p>Meta-Learning also has meta-training and meta-validation/test processes.</p>
+
+<h3 id="22-maml">2.2 MAML</h3>
+<p>MAML belongs to gradient-based meta-learning among the learning methods classified above. MAML is referenced in most papers related to meta-learning to date because it is extremely simple and convenient to use. As the name MAML suggests, it can be utilized with any model (Model-Agnostic) and can adapt quickly (fast adaptation) to various tasks. The core processes that make up MAML are the following two.</p>
+
+<ul>
+  <li>Calculate loss for tasks through fine-tuning from Initialized $\theta$ <strong>(Inner-Loop)</strong></li>
+  <li>Gradient update $\theta$ with the calculated loss <strong>(Outer-Loop)</strong></li>
+</ul>
+
+<blockquote>
+  <p>Usually, this process is called <strong>bi-level optimization</strong>.</p>
+</blockquote>
+
+<p>Ultimately, MAML’s final goal is to send the initialized $\theta$ to a position that can cover any task well. To do so, it goes through the two processes mentioned above, which I will explain in detail through the following Figure [3] and notation.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-03-13/MAML_Diagram.png" alt="image.png1" /></td>
+      <td><img src="/en/assets/img/23-03-13/MAML_algo.png" alt="image.png2" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Figure [3]: <i>Diagram and Algorithm of MAML  </i></p>
+
+<p><strong>Notation </strong>:</p>
+<ul>
+  <li>$\mathcal{T_i} = (\mathcal{S_i}, \mathcal{Q_i})$ : (Support, Query) datasets</li>
+  <li>$\theta$ : Initialized parameter</li>
+  <li>$\theta^\prime$ or $\phi$ : fine-tuned parameter</li>
+  <li>$\nabla \mathcal{L_i}$ : gradient of loss from fine-tuned parameter</li>
+  <li><em>(Notation may differ from other blogs and papers.)</em> As mentioned above, to understand MAML, you need to understand two processes: Inner &amp; Outer Loop.</li>
+</ul>
+
+<h4 id="--inner-loop--outer-loop">- Inner-Loop &amp; Outer-Loop</h4>
+<p>First is the Inner-Loop. The Inner-Loop is the process of finding the optimal point for that task through fine-tuning. Expressing this process as a formula, it is $\theta^{\prime} = \theta - \alpha \nabla_{\theta} \mathcal{L}(\theta) $. (Same as step 6 on the right of Figure [3]) This process is identical to <em>Stochastic</em> <em>Gradient</em> <em>Descent</em>. In other words, it is a process of quickly finding the optimal point for that task through SGD. In the MAML paper, this process is performed for 5 steps. Mathematically, from step 2 onwards, in the SGD equation above, it (obviously) changes from $\theta$ → $\theta^{\prime}$.
+The detailed process of the Inner-Loop is as follows.</p>
+<ol>
+  <li>Sample $\mathcal{T_i}$: ($\mathcal{S_i}$, $\mathcal{Q_i}$) from distribution $\mathcal{p(T)}$</li>
+  <li>Iterate $\theta^{\prime} ← \theta - \alpha \nabla_{\theta} \mathcal{L}(\theta)$ with the $\mathcal{S_i}$ N times (= fine-tuning)</li>
+  <li>Calculate the $\mathcal{L}(\theta^{\prime})$ using the $\mathcal{Q_i}$</li>
+</ol>
+
+<p>To explain the detailed process above easily: fine-tune with the support set, and at the fine-tuned position, check performance with the query set, that is, calculate the loss.</p>
+
+<p>Next is the Outer-Loop. The Outer-Loop is the process of updating $\theta$ with the average of losses calculated in the Inner-Loop. The key here is that the update is done not at the fine-tuned point but <strong>at the point where fine-tuning started: $\theta$</strong>. Expressing this process as a formula, it is $\theta = \theta - \beta \nabla_{\theta} \sum \mathcal{L}(\theta^{\prime}) $. (Same as step 8 on the right of Figure [3]) The meaning of this formula can be thought of as follows.</p>
+<ol>
+  <li>Use $\mathcal{S_i}$ to provide some information about the corresponding task and train the model. (= Fine-tuning)</li>
+  <li>After Fine-tuning, use $\mathcal{Q_i}$ to evaluate the performance on the corresponding Task and calculate the Loss. (= Calculate Loss)</li>
+  <li>Secure the direction for $\theta$ to learn through the Gradient of the Loss calculated in 2.</li>
+  <li>Update based on the average of gradients of the loss for $n$ tasks. ($i = 1,2,…,n$)</li>
+</ol>
+
+<p>You can think of the gradient of the loss calculated with $\mathcal{Q_i}$ (gradient vector) as informing the direction to update in the future. Since training an unseen-task (here $\mathcal{Q_i}$) from the beginning is difficult and inefficient, we adapt to some extent with $\mathcal{S_i}$, and then train with the gradient that comes out through the unseen task. Unlike supervised learning which learns individual tasks or data one by one, it can be seen as <strong>learning the method to go to the optimal point</strong>. When this happens, since it is not learning on specific data, overfitting does not occur easily, and it also has strengths in generalization as it can quickly adapt to unseen-tasks.</p>
+
+<p><em>However, in this case, there is a disadvantage that the computational cost is slightly high because differentiation is performed twice (<strong>Inner-Loop differentiation</strong>, <strong>Outer-Loop differentiation</strong> $\rightarrow$ <strong>Hessian</strong>).</em></p>
+
+<blockquote>
+  <p>From now on:<br />
+Inner-Loop = <strong>Fine-tuning </strong><br />
+Outer-Loop = <strong>Meta-update </strong></p>
+</blockquote>
+
+<h2 id="3-sharp-maml">3. Sharp-MAML?</h2>
+
+<p>You can consider the Sharp-MAML paper as a combination of SAM and MAML described above.</p>
+
+<h3 id="31-problem-formulation--algorithm">3.1 Problem Formulation &amp; Algorithm</h3>
+
+<p><img src="/en/assets/img/23-03-13/Sharp-MAML_formulation.png" alt="img" width="70%" height="50%" /></p>
+
+<blockquote>
+  <ol>
+    <li>Apply only during Fine-Tuning: $\alpha_{up} = 0$ &amp; $\alpha_{low} &gt; 0$</li>
+    <li>Apply only during Meta-update: $\alpha_{up} &gt; 0$ &amp; $\alpha_{low} = 0$</li>
+    <li>Apply Both:  $\alpha_{up} &gt; 0$ &amp; $\alpha_{low} &gt; 0$</li>
+  </ol>
+</blockquote>
+
+<p>Figure [4]: <i>Problem formulation of Sharp-MAML</i></p>
+
+<p>Before diving in!!</p>
+<ul>
+  <li>In this paper, the Taylor approximation defined in SAM is defined as biased mini-batch gradient descent (BGD). (at point: $\theta + \epsilon + \epsilon_m$)</li>
+  <li>BGD$(\theta,\epsilon, \epsilon_m) = \theta + \epsilon - \beta_{low} \nabla \mathcal{L}(\theta + \epsilon + \epsilon_m) $</li>
+</ul>
+
+<p>If you look at the right side of Figure [4], you can see how SAM was applied to MAML; it was applied in a total of 3 ways: fine-tuning, meta-update, and Both.
+First, let’s look at the lower part. The author of the paper gives perturbation to the surroundings at every one-step update during fine-tuning to find the high loss and proceeds in the direction of lowering that loss based on it. The formula in the paper is as follows.</p>
+
+<ul>
+  <li>For each task m…</li>
+  <li>perturbation: $\epsilon_{m}(\theta) = \alpha_{low} \nabla \mathcal{L}(\theta) / ||{\nabla \mathcal{L}(\theta)}||_{2}$</li>
+  <li>maximum point (=maximum loss): $\theta + \underset{||\epsilon_m||_{2} \leq \alpha_{low}}{\max} \epsilon_{m}(\theta)$</li>
+  <li>gradient descent: $\tilde{\theta^1} = BGD(\theta, 0, \epsilon_m) = \theta -\beta_{low}\nabla \mathcal{L}(\theta + \epsilon_{m}(\theta))$</li>
+  <li>regularizer term: $\frac{|| \theta_m - \theta ||}{\beta_{low}}$</li>
+</ul>
+
+<p>Next is the upper part. Here too, we give perturbation to find the highest loss within that range and proceed in the direction of lowering that loss. The difference is that when giving perturbation, we utilize the gradient calculated during fine-tuning. The formula in the paper is as follows.</p>
+
+<ul>
+  <li>(meta) perturbation: \(\epsilon(\theta) = \alpha_{up} \nabla \mathcal{h} / \|\mathcal{h}\|_2\)(→\(\nabla \mathcal{h} = \nabla_{\theta} \sum_{m=1}^{M}\mathcal{L}(\tilde{\theta^1})\))</li>
+  <li>maximum point: $\theta + \underset{||\epsilon_m||_{2} \leq \alpha_{low}}{\max} \epsilon_{m}(\theta) + \epsilon(\theta)$</li>
+  <li>gradient descent: $\tilde{\theta^2} = BGD(\theta, \epsilon, \epsilon_m) = \theta + \epsilon - \beta_{low} \nabla \mathcal{L}(\theta + \epsilon + \epsilon_m)$</li>
+  <li>meta-update: $\theta \leftarrow \theta - \beta_{up} \sum_{m=1}^M \nabla_{\theta}\mathcal{L}(\tilde{\theta^2}) $</li>
+</ul>
+
+<p>Showing the above process in Pseudo-Code is like Figure [5].</p>
+
+<p><img src="/en/assets/img/23-03-13/Sharp-MAML_algorithm.png" alt="image.png1" width="70%" height="50%" />
+Figure [5]: <i>Pseudo-Code for Sharp-MAML</i></p>
+
+<h3 id="32-results">3.2 Results</h3>
+
+<p>The results are as follows.</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td><img src="/en/assets/img/23-03-13/Sharp-MAML_result_1shots.png" alt="image.png1" /></td>
+      <td><img src="/en/assets/img/23-03-13/Sharp-MAML_result_5shots.png" alt="image.png2" /></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Figure [6]: <i>Results of Sharp-MAML</i></p>
+
+<p>It was somewhat disappointing. There is a gain of about 2~3%, but compared to meta-learning papers coming out these days, it is not a huge gain. Actually, when I first read this paper (around May 2022 last year…), the result in the officially published paper was around 60% based on 5way-1shot, but when I looked it up again recently, it had changed to 50%. In terms of Novelty, there is definitely a contribution, but since the results are not outstanding, I think it would have been a more excellent paper if there were more gains. Also, if they wanted to emphasize generalization more, I wonder how it would have been if results for cross-domain adaptation were also included.</p>
+
+<p>Finally, let’s briefly examine what significance Sharp-MAML has along with its loss landscape. (Subjective thoughts are also included.)
+<img src="/en/assets/img/23-03-13/Sharp-MAML_Diagram.png" alt="img" /></p>
+
+<p>Figure [7]: <i>Loss Landscape of Sharp-MAML</i></p>
+
+<p>Looking at Figure [7], you can see it has become fairly flatter than the existing MAML. The MAML paper said it had strengths in generalization, so I was curious, “Is MAML also flat?”. However, it was not very flat on the loss landscape. Then, we can think, “Does generalization increase if MAML’s loss landscape becomes flatter?”, and Sharp-MAML showed those results. If we think carefully, when the loss landscape is flat, the possibility of various tasks falling into local minima during fine-tuning or meta-update decreases, so we can think that the possibility of generalization increasing rises.</p>
+
+<h2 id="4-conclusion">4. Conclusion</h2>
+
+<p>Just as I was getting interested in Flatness while studying Meta-Learning, the Sharp-MAML paper came out. It was impressive to see them trying to solve MAML with flatness while looking at it from a generalization perspective. However, since it is gradient-based, no matter how good the novelty is, it seems insufficient to overcome the limitations of the black-box (?) yet, and much research seems necessary. For those who want to check the novelty of this paper more, it would be good to read the theoretical analysis part or the appendix in the paper.</p>
+
+<h2 id="5-reference">5. Reference</h2>
+
+<ul>
+  <li>Abbas, Momin, et al. “Sharp-MAML: Sharpness-Aware Model-Agnostic Meta Learning.” International Conference on Machine Learning. PMLR, 2022. (<a href="https://proceedings.mlr.press/v162/abbas22b/abbas22b.pdf">Paper</a>)</li>
+  <li>Finn, Chelsea, Pieter Abbeel, and Sergey Levine. “Model-agnostic meta-learning for fast adaptation of deep networks.” International conference on machine learning. PMLR, 2017. (<a href="http://proceedings.mlr.press/v70/finn17a/finn17a.pdf">Paper</a>)</li>
+  <li>Foret, Pierre, et al. “Sharpness-aware minimization for efficiently improving generalization.” arXiv preprint arXiv:2010.01412 (2020). (<a href="https://arxiv.org/pdf/2010.01412">Paper</a>)</li>
+  <li>Li, Hao, et al. “Visualizing the loss landscape of neural nets.” Advances in neural information processing systems 31 (2018). (<a href="https://arxiv.org/abs/1712.09913">Paper</a>)</li>
+</ul>]]></content><author><name>Jae-Jun Lee</name></author><category term="Meta-Learning" /><category term="MAML" /><category term="Flat-Minima" /><category term="SAM" /><summary type="html"><![CDATA[For my first blog post, I would like to write about Sharp-MAML, which combines SAM, a hot topic in the generalization field these days (since 2020), and MAML, the pioneer of Meta Learning algorithms. After briefly introducing the SAM algorithm and MAML, I will explain what contribution was made by combining these two.]]></summary></entry></feed>
