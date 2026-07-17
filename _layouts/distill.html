@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<!-- _layouts/distill.html -->
+<html>
+  <head>
+    {%- include head.html %}
+
+    {% include scripts/jquery.html %}
+    {% include scripts/mathjax.html %}
+    <!-- Distill js -->
+    <script src="{{ '/assets/js/distillpub/template.v2.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/distillpub/transforms.v2.js' | relative_url }}"></script>
+    <script src="{{ '/assets/js/distillpub/overrides.js' | relative_url }}"></script>
+    {% if page._styles %}
+    <!-- Page/Post style -->
+    <style type="text/css">
+      {{ page._styles }}
+    </style>
+    {%- endif %}
+  </head>
+
+  <d-front-matter>
+    <script async type="text/json">{
+      "title": {{ page.title | jsonify }},
+      "description": {{ page.description | strip_newlines | jsonify }},
+      "published": {{ page.date | date: '%B %-d, %Y' | jsonify }},
+      "authors": [
+        {% for author in page.authors -%}
+        {
+          "author": {{ author.name | jsonify }},
+          "authorURL": {{ author.url | jsonify }},
+          "affiliations": [
+            {
+              "name": {{ author.affiliations.name | jsonify }},
+              "url": {{ author.affiliations.url | jsonify }}
+            }
+          ]
+        }{% if forloop.last == false %},{% endif %}
+        {% endfor %}
+      ],
+      "katex": {
+        "delimiters": [
+          {
+            "left": "$$",
+            "right": "$$",
+            "display": true
+          },
+          {
+            "left": "$",
+            "right": "$",
+            "display": false
+          }
+        ]
+      }
+    }</script>
+  </d-front-matter>
+
+  <body class="{%- if site.navbar_fixed -%}fixed-top-nav{%- endif -%} {%- unless site.footer_fixed -%}sticky-bottom-footer{%- endunless -%}">
+
+    <!-- Header -->
+    {%- include header.html %}
+
+    <!-- Content -->
+    <div class="post distill">
+
+      <d-title>
+        <h1>{{ page.title }}</h1>
+        <p>{{ page.description }}</p>
+      </d-title>
+
+      <d-byline></d-byline>
+
+      <d-article>
+        {% assign rendered_content = content %}
+        {% assign heading_blocks = rendered_content | split: '<h' %}
+        {% assign has_auto_toc = false %}
+        {% for heading_block in heading_blocks %}
+          {% assign heading_level = heading_block | slice: 0 %}
+          {% if heading_block contains 'id="' %}
+            {% if heading_level == '2' or heading_level == '3' %}
+              {% assign has_auto_toc = true %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% if page.toc -%}
+        <d-contents>
+          <nav class="l-text figcaption">
+          <h3>Contents</h3>
+            {% for section in page.toc -%}
+            <div><a href="#{{ section.name | slugify }}">{{ section.name }}</a></div>
+            {% if section.subsections -%}
+            <ul>
+              {% for subsection in section.subsections -%}
+              <li><a href="#{{ subsection.name | slugify }}">{{ subsection.name }}</a></li>
+              {% endfor %}
+            </ul>
+            {%- endif -%}
+            {%- endfor %}
+          </nav>
+        </d-contents>
+        {% elsif has_auto_toc -%}
+        <d-contents>
+          <nav class="l-text figcaption">
+          <h3>Contents</h3>
+            {% for heading_block in heading_blocks %}
+              {% assign heading_level = heading_block | slice: 0 %}
+              {% if heading_block contains 'id="' %}
+                {% if heading_level == '2' or heading_level == '3' %}
+                  {% assign heading_id = heading_block | split: 'id="' | last | split: '"' | first %}
+                  {% assign heading_fragment = heading_block | split: '</h' | first %}
+                  {% assign heading_html = '<h' | append: heading_fragment | append: '</h' | append: heading_level | append: '>' %}
+                  <div class="toc-level-{{ heading_level }}"><a href="#{{ heading_id }}">{{ heading_html | strip_html | strip }}</a></div>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </nav>
+        </d-contents>
+        {%- endif %}
+
+        {{ rendered_content }}
+      </d-article>
+
+      <d-appendix>
+        <d-footnote-list></d-footnote-list>
+        <d-citation-list></d-citation-list>
+      </d-appendix>
+
+    </div>
+
+    <!-- Footer -->
+    {%- include footer.html %}
+
+    <d-bibliography src="{{ page.bibliography | prepend: '/assets/bibliography/' | relative_url }}"></d-bibliography>
+    
+    {% if site.disqus_shortname and page.comments %}
+    <d-article>
+      <div id="disqus_thread"></div>
+    </d-article>
+    <script type="text/javascript">
+      var disqus_shortname  = '{{ site.disqus_shortname }}';
+      var disqus_identifier = '{{ page.id }}';
+      var disqus_title      = '{{ page.title | jsonify }}';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+  {% endif %}
+
+    {% include scripts/bootstrap.html %}
+    {% include scripts/analytics.html %}
+  </body>
+</html>

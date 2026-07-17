@@ -1,4 +1,7 @@
+---
+permalink: /robots.txt
+---
 User-agent: *
-Allow: /
+Disallow:
 
-Sitemap: https://johnjaejunlee95.github.io/en/sitemap.xml
+Sitemap: {{ site.baseurl | prepend: site.url }}/sitemap.xml

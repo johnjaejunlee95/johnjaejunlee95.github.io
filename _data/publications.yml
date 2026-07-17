@@ -1,6 +1,7 @@
 - title: "Understanding Multimodal Learning: A Loss Landscape Smoothness Perspective"
+  abbr: "ICML"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
-  conference: "Forty-third International Conference on Machine Learning (ICML)"
+  conference: "the Forty-third International Conference on Machine Learning"
   year: 2026
   location: "Seoul, South Korea"
   paper_url: "https://openreview.net/forum?id=2htwc6cHmu"
@@ -8,16 +9,18 @@
 
 
 - title: "Can One Modality Model Synergize Training of Other Modality Models?"
+  abbr: "ICLR"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
-  conference: "The Thirteenth International Conference on Learning Representations (ICLR)"
+  conference: "the Thirteenth International Conference on Learning Representations"
   year: 2025
   location: "Singapore"
   paper_url: "https://openreview.net/forum?id=5BXWhVbHAK"
   code_url: "https://github.com/johnjaejunlee95/synergistic-multimodal"
 
 - title: "XB-MAML: Learning Expandable Basis Parameters for Effective Meta-Learning with Wide Task Coverage"
+  abbr: "AISTATS"
   authors: "**Jae-Jun Lee**, Sung Whan Yoon"
-  conference: "International Conference on Artificial Intelligence and Statistics (AISTATS)"
+  conference: "the 27th International Conference on Artificial Intelligence and Statistics"
   year: 2024
   location: "Valencia, Spain"
   paper_url: "https://proceedings.mlr.press/v238/lee24a/lee24a.pdf"

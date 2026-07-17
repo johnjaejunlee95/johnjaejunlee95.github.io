@@ -1,35 +1,38 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: 'Bug:'
-labels: ''
+title: ''
+labels: bug
 assignees: ''
 
 ---
 
-<!-- Prefer English -->
+**Acknowledge the following**
+- [ ] I carefully read and followed the [Getting Started](https://github.com/alshedivat/al-folio#getting-started) guide.
+- [ ] I read through [FAQ](https://github.com/alshedivat/al-folio#faq) and searched through the [past issues](https://github.com/alshedivat/al-folio/issues), none of which addressed my issue.
+- [ ] The issue I am raising is a potential bug in al-folio and not just a usage question. <br> [For usage questions, please post in the [Discussions](https://github.com/alshedivat/al-folio/discussions) instead of raising an issue.]
 
-**Description**
+**Describe the bug**
+A clear and concise description of what the bug is.
 
-[Description of the bug]
-
-**Steps to Reproduce**
-
-1. [First Step]
-2. [Second Step]
-3. [and so on...]
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
 
 **Expected behavior**
+A clear and concise description of what you expected to happen.
 
-[What you expected to happen]
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-**Screenshots (If Necessary)**
+**System (please complete the following information):**
+ - OS: [e.g. iOS]
+ - Browser (and its version) [e.g. chrome, safari]
+ - Jekyll version [e.g. 3.8.7]
+- Ruby version [e.g. 2.6.5]
 
-[Screenshots to help explain your problem.]
-
-**Environment (If Necessary)**
-
-- OS: [e.g. Github Pages, Windows 10, macOS 10.13, Linux(CentOS 7.5), iOS 11, Android 8(Pixel 2)]
-- Ruby: [e.g. Github Pages, 2.4.0p0]
-- Jekyll: [e.g. Github Pages, 3.7.3]
-- Browser: [e.g. Chrome, Safari, Edge, Firefox]
+**Additional context**
+Add any other context about the problem here.

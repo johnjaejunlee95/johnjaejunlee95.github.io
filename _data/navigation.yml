@@ -1,9 +1,0 @@
-header:
-  - title:      Home
-    url:        /
-  - title:      Posts
-    url:        /posts.html
-  - title:      Tags
-    url:        /archive.html
-  - title:      About Me
-    url:        /about.html

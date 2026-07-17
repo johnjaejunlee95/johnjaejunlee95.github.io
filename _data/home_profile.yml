@@ -1,7 +1,7 @@
 eyebrow: "AI Researcher"
 name: "Jae-Jun Lee"
 headline: "Ph.D. Candidate @ Graduate School of Artificial Intelligence, UNIST"
-summary_primary: "I am a fifth-year Ph.D. candidate whose research focuses on understanding how AI models learn and generalize from a theoretical perspective. My previous work centered on meta-learning, while my current research interests lie in multimodal learning, robustness, and generalization. More recently, I have also been exploring AI applications for biosignal data."
+summary_primary: "I am a fifth-year Ph.D. candidate whose research focuses on understanding how AI models learn and generalize from a theoretical perspective. My previous work centered on meta-learning, while my current research interests lie in multimodal learning, robustness, and generalization. More recently, I have also been exploring AI applications for biomedical data."
 # summary_secondary: "My recent research explores robustness and generalization in multimodal learning, and AI + applications for bio-signals, such as EEG and NIRS."
 location: "Ulsan, South Korea"
 focus_keywords:
