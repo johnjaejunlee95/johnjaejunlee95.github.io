@@ -236,18 +236,3 @@ I have organized concepts used in deep learning after a long time. I will often 
 * Bishop, Christopher M. Pattern Recognition and Machine Learning. New York :Springer, 2006. ([Original Book](https://www.microsoft.com/en-us/research/wp-content/uploads/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf))
 * Andriushchenko, Maksym, et al. "Why do we need weight decay in modern deep learning?." ICLR (2023). ([Paper](http://proceedings.mlr.press/v70/finn17a/finn17a.pdf))
 * Stanford CS336 Lecture 3 ([Youtube](https://www.youtube.com/watch?v=ptFiH_bHnJw&list=PLoROMvodv4rOY23Y0BoGoBGgQ1zmU_MT_&index=3))
-
-
-<div id="disqus_thread"></div>
-<script>
-var disqus_config = function () {
-  this.page.url = window.location.href;
-  this.page.identifier = window.location.pathname;
-};
-(function() {
-  var d = document, s = d.createElement('script');
-  s.src = 'https://johnjaejunlee95.disqus.com/embed.js';
-  s.setAttribute('data-timestamp', +new Date());
-  (d.head || d.body).appendChild(s);
-})();
-</script>
