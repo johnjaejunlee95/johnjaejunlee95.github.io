@@ -19,7 +19,7 @@ _meta: >
   <meta name="twitter:description" content="I’m back with the second post related to optimization. Last time, we examined how it expands and converges when the function is L-lipschitz. This time, let's examine what happens when stronger constraints / assumptions are applied. Then, without further ado, let's jump right in.">
 ---
 
-### $\star$ Recap [(Previous Post)](https://johnjaejunlee95.github.io/Optimization_1/)
+### $\star$ Recap [(Previous Post)](https://johnjaejunlee95.github.io/kr/Optimization_1/)
 
 In the previous post, assuming a function is <mark style="background: orange">convex</mark> + $L$-lipschitz, the following Theorem was derived:
 

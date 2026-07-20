@@ -4,4 +4,5 @@ permalink: /robots.txt
 User-agent: *
 Disallow:
 
-Sitemap: {{ site.baseurl | prepend: site.url }}/sitemap.xml
+Sitemap: https://johnjaejunlee95.github.io/sitemap.xml
+Sitemap: https://johnjaejunlee95.github.io/kr/sitemap.xml
