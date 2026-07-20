@@ -2,11 +2,11 @@
 # Site settings
 # -----------------------------------------------------------------------------
 
-title: Cozy johnjaejunlee95's AI Blog # the website title (if blank, full name will be used instead)
+title: johnjaejunlee95's Cozy AI Blog # the website title (if blank, full name will be used instead)
 first_name: Jae-Jun
 middle_name: 
 last_name: Lee
-email: johnjaejunlee95@unist.ac.kr
+email: johnjaejunlee@gmail.com
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   Ph.D. candidate at UNIST studying multimodal learning, robustness, generalization, and AI + X.
 footer_text: >
@@ -65,7 +65,7 @@ og_image: # The site-wide (default for all links) Open Graph preview image
 # Social integration
 # -----------------------------------------------------------------------------
 
-email: johnjaejunlee95@unist.ac.kr
+email: johnjaejunlee@gmail.com
 github_username: johnjaejunlee95 # your GitHub user name
 gitlab_username: # your GitLab user name
 twitter_username: # your Twitter handle
