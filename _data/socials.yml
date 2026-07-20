@@ -1,6 +1,6 @@
 # this file contains the social media links and usernames of the author
 # the socials will be displayed in the order they are defined here
-email: johnjaejunlee95@unist.ac.kr
+email: johnjaejunlee@gmail.com
 github_username: johnjaejunlee95
 linkedin_username: johnjaejunlee95
 facebook_id: johnjaejunlee
@@ -8,4 +8,4 @@ rss_icon: true
 custom_blog:
   logo: fa-solid fa-globe
   title: Korean Blog
-  url: https://johnjaejunlee95.github.io/
+  url: https://johnjaejunlee95.github.io/kr/
