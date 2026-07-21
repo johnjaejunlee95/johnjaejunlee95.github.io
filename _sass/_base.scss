@@ -459,6 +459,42 @@ footer.sticky-bottom {
 }
 
 
+// Home recent news
+
+.home-recent-news {
+  margin-top: 2rem;
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 0.7rem;
+  }
+
+  .news-date {
+    flex: 0 0 3.5rem;
+    margin-right: 0.4rem;
+    font-weight: 600;
+    color: var(--global-theme-color);
+  }
+
+  li > a,
+  li > span:not(.news-date) {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+
 // Publications
 
 .publications {
