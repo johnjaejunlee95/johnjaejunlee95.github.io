@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: "[Conceptual Background] Sharpness-Aware Minimization Through the Lens of Shrinkage Theory"
-date: 2026-10-20 00:00:00 +0000
+date: 2026-10-19 00:00:00 +0000
 description: >
   In this post, I revisit Sharpness-Aware Minimization (SAM), explain its connection to Hessian curvature, and explore how the same geometric perspective can be related to shrinkage theory and covariance eigenvalues.
 authors:
