@@ -32,7 +32,7 @@ But what does it mean to find flat minima? Before moving on to the SAM algorithm
 ### 1.1 Flat Minima  
 Flat minima is one of the concepts that commonly comes up when discussing generalization in Deep Learning. From a Loss Landscape perspective, if the region around a minimum is flat, it generally indicates better generalization. On the other hand, if the region around a minimum is sharp, the model may perform well on a specific task but generalize less effectively. You can understand this more intuitively by looking at the figure below [1].
 
-![img]({{ '/assets/img/23-03-13/flat_minima.png' | relative_url }})|
+![img]({{ '/assets/img/23-03-13/flat_minima.png' | relative_url }}){: .post-image style="--post-image-width: 680px;"}
 
 Figure [1]: <i>Example of Flat minimum & Sharp Minimum</i>
 
@@ -59,7 +59,7 @@ You can think of the core of SAM as an algorithm based on min-max optimization. 
 
 To explain it a bit more intuitively, SAM updates the model while pressing down on the highest losses. In other words, it makes the loss landscape generally flat by lowering the high losses rather than simply searching for the lowest loss.
 
-![img]({{ '/assets/img/23-03-13/SAM_Algorithm.png' | relative_url }})|
+![img]({{ '/assets/img/23-03-13/SAM_Algorithm.png' | relative_url }}){: .post-image}
 
 Figure [2]: <i align='left'>SAM Algorithm</i>
 
@@ -95,7 +95,10 @@ MAML belongs to gradient-based Meta-Learning among the methods classified above.
 
 Ultimately, MAML's goal is to move the initialized $\theta$ to a position that can perform well on many different tasks. To do so, it goes through the two processes mentioned above, which I will explain in detail using Figure [3] and the notation below.
 
-![image.png1]({{ '/assets/img/23-03-13/MAML_Diagram.png' | relative_url }}) |![image.png2]({{ '/assets/img/23-03-13/MAML_algo.png' | relative_url }})
+<div class="post-image-pair">
+  <img src="{{ '/assets/img/23-03-13/MAML_Diagram.png' | relative_url }}" alt="MAML update diagram">
+  <img src="{{ '/assets/img/23-03-13/MAML_algo.png' | relative_url }}" alt="MAML algorithm">
+</div>
 
 Figure [3]: <i>Diagram and Algorithm of MAML  </i>
 
@@ -136,7 +139,7 @@ You can think of the Sharp-MAML paper as a combination of SAM and MAML, as descr
 
 ### 3.1 Problem Formulation & Algorithm
 
-![img]({{ '/assets/img/23-03-13/Sharp-MAML_formulation.png' | relative_url }}){: width="70%" height="50%"}
+![img]({{ '/assets/img/23-03-13/Sharp-MAML_formulation.png' | relative_url }}){: .post-image style="--post-image-width: 640px;"}
 
 > 1. Apply only during Fine-Tuning: $\alpha_{up} = 0$ & $\alpha_{low} > 0$  
 > 2. Apply only during Meta-update: $\alpha_{up} > 0$ & $\alpha_{low} = 0$  
@@ -168,21 +171,24 @@ Next is the upper part. Here too, we add a perturbation to find the highest loss
 
 The above process is shown in pseudo-code in Figure [5].
 
-![image.png1]({{ '/assets/img/23-03-13/Sharp-MAML_algorithm.png' | relative_url }}){: width="70%" height="50%"}
+![image.png1]({{ '/assets/img/23-03-13/Sharp-MAML_algorithm.png' | relative_url }}){: .post-image style="--post-image-width: 640px;"}
 Figure [5]: <i>Pseudo-Code for Sharp-MAML</i>
 
 ### 3.2 Results
 
 The results are as follows.
 
-![image.png1]({{ '/assets/img/23-03-13/Sharp-MAML_result_1shots.png' | relative_url }}) |![image.png2]({{ '/assets/img/23-03-13/Sharp-MAML_result_5shots.png' | relative_url }})
+<div class="post-image-pair">
+  <img src="{{ '/assets/img/23-03-13/Sharp-MAML_result_1shots.png' | relative_url }}" alt="Sharp-MAML one-shot results">
+  <img src="{{ '/assets/img/23-03-13/Sharp-MAML_result_5shots.png' | relative_url }}" alt="Sharp-MAML five-shot results">
+</div>
 
 Figure [6]: <i>Results of Sharp-MAML</i>
 
 It was somewhat disappointing. There is a gain of about 2–3%, but compared to the Meta-Learning papers being published these days, it is not a huge gain. Actually, when I first read this paper (around May 2022...), the result in the officially published paper was around 60% for 5-way 1-shot, but when I looked it up again recently, it had changed to 50%. In terms of novelty, there is definitely a contribution, but since the results are not outstanding, I think it would have been a stronger paper if the gains had been larger. Also, if the authors wanted to emphasize generalization more, I wonder what the results would have looked like if they had included cross-domain adaptation as well.
 
 Finally, let's briefly examine what Sharp-MAML means from the perspective of its loss landscape. (These are also my subjective thoughts.)
-![img]({{ '/assets/img/23-03-13/Sharp-MAML_Diagram.png' | relative_url }})
+![img]({{ '/assets/img/23-03-13/Sharp-MAML_Diagram.png' | relative_url }}){: .post-image}
 
 Figure [7]: <i>Loss Landscape of Sharp-MAML</i>
 

@@ -181,9 +181,9 @@ The problem appears in the **latter part of training**. When the LR becomes very
 It is precisely from this perspective that the **role of WD** in the loss term becomes important. Although this has not yet been clearly defined, recent [research/papers](https://arxiv.org/pdf/2310.04415) have revealed a *phenomenon*, and we can see the results in <a href='#figure1'>Figure 1</a> below. Looking closely at <a href='#figure1'>Figure 1</a>, although the Training Loss value might be somewhat larger in the early part of training when strong WD is applied, we can verify that **ultimately, it converges to a lower value when larger WD is applied**.
 
 <center>
-  <div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="{{ '/assets/img/25-11-30/wd_lr_decay.png' | relative_url }}" style="width: 48%;">
-    <img src="{{ '/assets/img/25-11-30/wd_lr_decay_v2.png' | relative_url }}" style="width: 48%;">
+  <div class="post-image-pair">
+    <img src="{{ '/assets/img/25-11-30/wd_lr_decay.png' | relative_url }}" alt="Training loss with cosine learning-rate decay">
+    <img src="{{ '/assets/img/25-11-30/wd_lr_decay_v2.png' | relative_url }}" alt="Weight decay comparison with cosine learning-rate decay">
   </div>
   <figcaption>
     <a id='figure1'>Figure 1. Comparison of WD settings on cosine LR decay</a>
@@ -202,9 +202,9 @@ First, the **graph on the left** shows the relationship between Training & Valid
 On the other hand, the **graph on the right** shows the results for different WD values when using **Constant LR** (keeping the Learning Rate constant without decreasing). Here, unlike <a href='#figure1'>Figure 1</a>, we can see that the Training Loss value *rather* increases as WD gets larger. In other words, in a situation where the LR does not decrease, applying strong WD has the effect of **strongly constraining the Prior**; *rather* than improving performance, it causes harm to performance.
 
 <center>
-  <div style="display: flex; justify-content: center; gap: 10px;">
-    <img src="{{ '/assets/img/25-11-30/train_validation_loss_WD.png' | relative_url }}" style="width: 45%; height: 45%">
-    <img src="{{ '/assets/img/25-11-30/wd_lr_decay_v3.png' | relative_url }}" style="width: 54%; height: 54%">
+  <div class="post-image-pair">
+    <img src="{{ '/assets/img/25-11-30/train_validation_loss_WD.png' | relative_url }}" alt="Training and validation loss comparison">
+    <img src="{{ '/assets/img/25-11-30/wd_lr_decay_v3.png' | relative_url }}" alt="Weight decay comparison with a constant learning rate">
   </div>
   <figcaption>
     <a id='figure2'>Figure 2. WD on Constant LR</a>

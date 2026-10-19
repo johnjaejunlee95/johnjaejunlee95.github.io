@@ -50,7 +50,10 @@ While the paragraph above explained the idea in words, let's look at it mathemat
 
 $^*$ Usually, this process is also called bi-level optimization.
 
-![image.png1]({{ '/assets/img/23-03-13/MAML_Diagram.png' | relative_url }}) |![image.png2]({{ '/assets/img/23-03-13/MAML_algo.png' | relative_url }})
+<div class="post-image-pair">
+  <img src="{{ '/assets/img/23-03-13/MAML_Diagram.png' | relative_url }}" alt="MAML update diagram">
+  <img src="{{ '/assets/img/23-03-13/MAML_algo.png' | relative_url }}" alt="MAML algorithm">
+</div>
 
 <center>
   <figcaption>
@@ -86,7 +89,10 @@ $$
 
 The purpose of this formula is ultimately to update $\theta$ toward a lower loss, specifically in a direction that lowers the loss $\mathcal{L}(\mathcal{Q};\phi)$ at the fine-tuned $\phi$. This might feel ambiguous, but looking at <a href='#figure2'>Figure 2</a> may help you understand the direction of the update. (Reference: [Boyang Zhao's Blog](https://boyangzhao.github.io/posts/few_shot_learning). The notation is slightly different, but you can simply interpret it as the loss.)
 
-![]({{ '/assets/img/23-12-24/maml_task.png' | relative_url }})|![]({{ '/assets/img/23-12-24/maml_task_multi.png' | relative_url }})
+<div class="post-image-pair">
+  <img src="{{ '/assets/img/23-12-24/maml_task.png' | relative_url }}" alt="MAML update for one task">
+  <img src="{{ '/assets/img/23-12-24/maml_task_multi.png' | relative_url }}" alt="MAML update for multiple tasks">
+</div>
 
 <center>
   <figcaption>
@@ -105,16 +111,20 @@ One of them is FOMAML (First-Order MAML). The MAML paper experimentally showed t
 
 
 <center>
-  <img width="70%" height="70%" src="{{ '/assets/img/23-12-24/fomaml_task.png' | relative_url }}"> <br>
+  <img class="post-image" style="--post-image-width: 580px;" src="{{ '/assets/img/23-12-24/fomaml_task.png' | relative_url }}"> <br>
   <br>
   <figcaption>
     <a id='figure3'>Figure 3. Visualization of how FOMAML updates $\theta$</a>
   </figcaption>
   <br>
 </center>
+
 Next is the [Reptile](https://arxiv.org/pdf/1803.02999.pdf) paper. The Reptile paper was published by OpenAI in 2018, and you can think of it as a variant of FOMAML. The characteristic of Reptile is that $S$ and $Q$ do not exist separately. It uses a few-shot setting, but samples multiple tasks and trains on the selected tasks. It then updates the model using the difference between the initial model parameter $\theta$ and the fine-tuned model parameter $\phi$ as the gradient. <a href="#figure4">Figure 4</a> below shows the Reptile algorithm and its update direction.
 
-<img src="{{ '/assets/img/23-12-24/reptile.png' | relative_url }}">|<img src="{{ '/assets/img/23-12-24/reptile_task.png' | relative_url }}" style="zoom:140%;">
+<div class="post-image-pair">
+  <img src="{{ '/assets/img/23-12-24/reptile.png' | relative_url }}" alt="Reptile algorithm">
+  <img src="{{ '/assets/img/23-12-24/reptile_task.png' | relative_url }}" alt="Reptile update direction">
+</div>
 
 <center>
   <figcaption>
@@ -149,7 +159,7 @@ Metric-based Meta-Learning is an approach that trains by calculating similarity 
 The first paper to look at is [Matching Network](https://arxiv.org/pdf/1606.04080.pdf), a pioneering paper in the metric-based approach. Thinking about the context at that time, the seq2seq paper, which later became one of the foundations of the Transformer, had emerged. It focused on learning from the overall context rather than looking only at extracted features through the Attention mechanism. Therefore, the Matching Network paper aimed to compare the context between features produced by an encoder.
 
 <center>
-  <img src="{{ '/assets/img/23-12-24/matching.png' | relative_url }}" width="60%" height="60%">
+  <img class="post-image" style="--post-image-width: 680px;" src="{{ '/assets/img/23-12-24/matching.png' | relative_url }}">
   <figcaption>
     <a id="figure5">Figure 5. Overview of Matching Network Algorithm</a>
   </figcaption>
@@ -233,7 +243,7 @@ Since there is quite a lot of notation and it is complex, the process may be dif
 
 
 <center>
-  <img src="{{ '/assets/img/23-12-24/protonet.png' | relative_url }}" width="100%" height="100%">
+  <img class="post-image" src="{{ '/assets/img/23-12-24/protonet.png' | relative_url }}">
   <figcaption>
     <a id="figure6">Figure 6. Overview of ProtoNet</a>
   </figcaption>

@@ -32,7 +32,7 @@ Then, let's try applying this process to AI model training.
 First, let's think about conventional deep learning. Existing deep learning usually requires training on numerous images for each class, as shown in <a href='#figure1'>Figure 1</a> below. However, this approach can cause problems such as overfitting, and from a generalization perspective, it is difficult to find a solution other than providing more diverse data. Since data is always limited, gathering more and more diverse data is difficult and inefficient. So, what should we do to train deep learning models more efficiently, like humans? One of the concepts introduced to address this problem is "[Few-Shot Learning](https://en.wikipedia.org/wiki/Few-shot_learning)".
 
 <center>
-  <img width="70%" height="70%" src="{{ '/assets/img/23-12-24/supervised_learning.png' | relative_url }}"> <br>
+  <img class="post-image" style="--post-image-width: 680px;" src="{{ '/assets/img/23-12-24/supervised_learning.png' | relative_url }}"> <br>
   <figcaption>
     <a id='figure1'>Figure 1. Fundamental Process of Supervised Learning</a>
   </figcaption>
@@ -48,7 +48,7 @@ To put Few-Shot Learning simply, it means learning from only a few data points a
 Here, $N$ means the number of classes to extract from the entire dataset (<a href='#figure2'>Figure 2</a>), while $K$ means the number of images to extract per class. For example, let's assume that a certain dataset has 100 classes. If the experimental setting is 5-way 1-shot, we randomly select 5 classes out of the 100 in each epoch and extract 1 image for each class.
 
 <center>
-  <img width="70%" height="70%" align='center' src="{{ '/assets/img/23-12-24/n_ways_k_shots.png' | relative_url }}">
+  <img class="post-image" src="{{ '/assets/img/23-12-24/n_ways_k_shots.png' | relative_url }}">
   <br>
   <figcaption>
     <a id='figure2'>Figure 2. Example of N-ways K-shots</a>
@@ -62,7 +62,7 @@ First, before going further, you should think of $S$ and $Q$ as a bundle. In the
 Here, $S$ consists of the data that directly participate in training, while $Q$ consists of the data used to evaluate how well the model was trained. Those encountering few-shot learning for the first time might find this setting a bit confusing, so I will explain it using <a href='#figure3'>Figure 3</a> below.
 
 <center>
-  <img src="{{ '/assets/img/23-12-24/support_query.png' | relative_url }}" width="70%" height="70%">
+  <img class="post-image" style="--post-image-width: 680px;" src="{{ '/assets/img/23-12-24/support_query.png' | relative_url }}">
   <figcaption>
     <a id='figure3'>Figure 3. An example of utilizing a support set and a query set.</a>
   </figcaption>

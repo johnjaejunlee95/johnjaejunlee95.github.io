@@ -159,7 +159,7 @@ The derivation above was developed under the assumption that $f$ is convex and $
 
 I will finish by introducing a convergence-rate table for GD under different assumptions.
 
-<img src="{{ '/assets/img/24-07-24/convex_2.png' | relative_url }}" style="zoom:50%;" />
+<img class="post-image" src="{{ '/assets/img/24-07-24/convex_2.png' | relative_url }}" style="--post-image-width: 660px;" />
 
 <br>
 

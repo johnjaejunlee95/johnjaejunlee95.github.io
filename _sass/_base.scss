@@ -36,6 +36,44 @@ figure, img {
   max-width: 90vw;
 }
 
+// Keep post figures inside the text column in both supported post layouts.
+.post-content,
+.post.distill d-article {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .post-image {
+    display: block;
+    width: 100%;
+    max-width: var(--post-image-width, 100%);
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .post-image-pair {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 1rem;
+    min-width: 0;
+    max-width: 100%;
+    margin: 1.5rem 0;
+
+    > img {
+      width: 100%;
+      max-width: var(--post-image-width, 100%);
+      min-width: 0;
+      justify-self: center;
+    }
+
+    @media (max-width: 575.98px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+}
+
 blockquote {
   background: var(--global-bg-color);
   border-left: 2px solid var(--global-theme-color);
